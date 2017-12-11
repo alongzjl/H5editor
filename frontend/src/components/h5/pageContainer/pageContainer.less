@@ -1,0 +1,80 @@
+.pageContainer{
+    width: calc(~"100% - 556px");
+    position: relative;
+    margin: 0 auto;
+    padding-top: 58px;
+    padding-bottom: 58px;
+    .phone {
+        margin: 0 auto;
+        background: #FFFFFF;
+        box-shadow: 0 2px 8px 0 rgba(0,0,0,0.20);
+        width: 375px;
+        position:relative;
+        & > div{
+                width: 375px;
+                height: 667px;
+        }
+
+        .alignElement{
+            width: 250px;
+            padding: 20px;
+            height: auto;
+            position: absolute;
+            right: -300px;
+            top:0;
+            background: #FFFFFF;
+            box-shadow: 0 4px 10px 0 rgba(0,0,0,0.20);
+            img{
+                width: 20px;
+                height: 20px;
+            }
+            h3{
+                font-family: PingFangSC-Semibold;
+                font-size: 18px;
+                color: #505766;
+                letter-spacing: 0;
+                margin-bottom: 30px;
+            }
+        }
+    }
+    
+    .action{
+        width: 42px;
+        position: absolute;
+        top: 36px;
+        left: -50px;
+        li{
+            width:40px;
+            height:40px;
+            border: 1px solid #505766;
+            border-radius: 8px;
+            margin-bottom: 22px;
+            cursor: pointer;
+        }
+        & li:first-child{
+            background: url('./images/reply.svg') no-repeat center;
+
+            &:hover{
+                background: rgba(4,190,212,0.10) url('./images/reply.svg') no-repeat center;
+            }
+        }
+        & li:nth-of-type(2){
+            background: url('./images/reply_copy.svg') no-repeat center;
+
+            &:hover{
+                background: rgba(4,190,212,0.10) url('./images/reply_copy.svg') no-repeat center;
+            }
+        }
+    }
+
+    .topLine, .bottomLine{
+        position: absolute;
+        top: 80px;
+        border: 1px dashed #D6DADE;
+        width: 100%;
+    }
+    .bottomLine{
+        top: auto;
+        bottom: 65px;
+    }
+}

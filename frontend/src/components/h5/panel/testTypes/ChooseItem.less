@@ -1,0 +1,88 @@
+.itemsBox{
+    font-family: 'PingFangSC-Regular';
+    font-size: 14px;
+    color: #505766;
+    letter-spacing: 1.17px;
+    width: 212px;
+    margin: 0 auto;
+    background: #FFFFFF;
+    padding-bottom: 20px;
+    -webkit-touch-callout: none; /* iOS Safari */
+    -webkit-user-select: none; /* Chrome/Safari/Opera */
+    -khtml-user-select: none; /* Konqueror */
+    -moz-user-select: none; /* Firefox */
+    -ms-user-select: none; /* Internet Explorer/Edge */
+    user-select: none; /* Non-prefixed version, currently not supported by any browser */
+    .addChoose, .addChooseItem{
+        width: 210px;
+        height: 28px;
+        border: 1px solid #505766;
+        border-radius: 6px;
+        margin: 22px auto 27px;
+        text-align: center;
+        line-height: 28px;
+        cursor: pointer;
+        &:hover{
+            border: 1px solid #00bcd3;
+            color: #00bcd3;
+        }
+    }
+    .addSubItem{
+        color: #7B818F;
+        overflow: hidden;
+        height: 22px;
+        line-height: 22px;
+        font-size: 14px;
+        margin-bottom: 16px;
+        cursor: auto;
+        span{
+            float: right;
+            width: 20px;
+            height: 20px;
+            line-height: 16px;
+            border: 1px solid #505766;
+            border-radius: 3px;
+            margin-left: 17px;
+            text-align: center;
+            font-size: 28px;
+            cursor: pointer;
+            &:hover{
+                border: 1px solid #00bcd3;
+                color: #00bcd3;
+            }
+        }
+    }
+    .answerSelect{
+        width: 100%;
+        height: 20px;
+        border: 1px solid #505766;
+        border-radius: 6px;
+        padding: 4px 0 4px 9px;
+        margin-bottom: 20px;
+        cursor: pointer;
+
+        &:last-child{
+            margin-bottom: 50px;
+        }
+    }
+    .answerItem{
+        padding-left: 10px;
+        height: 22px;
+        width: 196px;
+        overflow: hidden;
+        font-family: Helvetica;
+        font-size: 16px;
+        color: #7B818F;
+        line-height: 22px;
+        margin-bottom: 22px;
+        cursor: auto;
+        .delSpan{
+            float: right;
+            width: 12px;
+            height: 12px;
+            margin-top: 5px;
+            background: url("../images/music_delete.png") no-repeat center;
+            cursor: pointer;
+        }
+    }
+}

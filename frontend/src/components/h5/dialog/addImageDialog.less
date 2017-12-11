@@ -1,0 +1,160 @@
+@import "../../../common/css/default";
+.addImageBody{
+    min-height: 300px;
+    margin: 15px -15px -15px -15px;
+    border-top: 1px solid #EAEFF1;
+    .left{
+        width: 130px;
+        min-height: 535px;
+        font-size: 14px;
+        ul{
+            width: 100%;
+            height: 100%;
+            li{
+                width: 100%;
+                height: 60px;
+                line-height: 60px;
+                text-align: center;
+                font-family: PingFangSC-Regular;
+                font-size: 14px;
+                color: @black;
+                letter-spacing: 0;
+            }
+            li:hover{
+                color: @wordoor ;
+            } 
+            .selectLi{
+                background: @white;
+                color:@wordoor;
+            }
+        }
+        //.uploadBtn:hover{
+        //    color: @themeColor ;
+        //}
+    }
+    .right{
+        width: e("calc(100% - 130px)");
+        background: @white;
+        position:relative;
+        .top{
+            border-bottom: solid 1px #EAEFF1;
+            height: 60px;
+            .searchItem{
+                width: 200px;
+                height: 30px;
+                border: solid 1px @themeColor;
+                border-radius: 100px;
+                margin: 15px auto;
+                font-size: 14px;
+                input{
+                    width: e("calc(100% - 50px)");
+                    border: none;
+                    padding-left: 20px;
+                    border-radius: 100px 0 0 100px;
+                }
+                button{ 
+                    width: 30px;
+                    height: 28px;
+                    border-radius: 0 100px 100px 0;
+                }
+            }
+        }
+        .uploadBtn{
+            width: 150px;
+            height: 40px;
+            line-height: 38px;
+            margin-top: 200px;
+            font-size: 14px;
+            text-align: center;
+            color: @themeColor;
+            border: solid 1px @themeColor;
+            border-radius: 6px;
+        }
+        .page { 
+            position:absolute;
+            bottom:0;
+            height:80px;
+            background: #f9f9f9;
+            width:680px;
+            font-family: PingFangSC-Regular;
+            font-size: 10px;
+            color: #9CA3B1;
+            letter-spacing: 0;
+            padding-top:12px;
+        }
+        .images{
+            width: e("calc(100% - 20px)");
+            margin: 0 0 0 20px;
+            .imageItem{
+                width: 83px;
+                height: 83px;
+                background: #f7f7f7;
+                margin: 20px 20px 0 0;
+                position: relative;
+                img{
+                    max-width: 83px;
+                    max-height: 83px;
+                    position: absolute;
+                    z-index: 1;
+                }
+                .handleBack{
+                    width: 100%;
+                    height: 100%;
+                    background: #000;
+                    position: absolute;
+                    opacity: 0.5;
+                    z-index: 2;
+                }
+                .handles{
+                    width: 100%;
+                    height: 100%;
+                    position: absolute;
+                    z-index: 3;
+                    button{
+                        padding: 5px 15px;
+                        border-radius: 2px;
+                        margin: 2px 0;
+                        font-size: 14px;
+                    }
+                    .preview{
+                        border: solid 1px @white;
+                        color: @white;
+                        background: none;
+                    }
+                    .preview:hover, .preview:visited{
+                        border: solid 1px @themeColor;
+                        color: @white;
+                        background: @themeColor;
+                    }
+                    .use{
+                        background: @themeColor;
+                        color: @white;
+                    }
+                }
+            }
+        }
+    }
+}
+.previewBody{
+    width: 100%;
+    .imageBody{
+        width: 400px;
+        height:400px;
+        background: #f7f7f7;
+        img{
+            max-height: 100%;
+            max-width: 100%;
+        }
+    }
+    h2{
+        line-height: 70px;
+        margin-left: 20px;
+    }
+    .useNow{
+        width: 100px;
+        height: 36px;
+        border-radius: 2px;
+        line-height: 36px;
+        margin-left: 20px;
+    }
+}

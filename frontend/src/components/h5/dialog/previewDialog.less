@@ -1,0 +1,58 @@
+.previewDialog{
+    .bg{
+        background: url('./images/iPhone_6.png') no-repeat;
+        width: 240px;
+        height: 436px;
+        padding: 68px 18px;
+    }
+    .currentPage{
+        width: 375px;
+        height: 667px;
+        transform: scale(0.64,0.64);
+        transform-origin:top left;
+    }
+    .right, .left{
+        width: 80px;
+        position: absolute;
+        bottom: 15px;
+    }
+    .right{
+        right: 200px;
+    }
+    .left{
+        left: 200px;
+    }
+    .preview {
+        width: 375px;
+        height: 667px;
+        position: absolute;
+        background: #FFFFFF;
+        overflow: hidden;
+        transform: scale(0.2,0.2);
+        transform-origin:top left;
+    }
+    .pages1, .pages2{
+        width: 202px;
+        height: 113.5px;
+    }
+    .pages1 > div {
+        width: 71px;
+        margin-right: 30px;
+    }
+    .pages2 > div {
+        width: 71px;
+        margin-left: 30px;
+    }
+    .hideDialog{
+        color: #ffffff;
+        &:hover{
+            cursor: pointer;
+        }
+    }
+}
+div.skylight-overlay{
+    z-index: 990 !important;
+}
+.skylight-dialog{
+    z-index: 999 !important;
+}

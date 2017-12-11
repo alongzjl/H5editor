@@ -1,0 +1,146 @@
+@import "../../common/css/default";
+.templateBody{
+    width: 100%;
+    min-width: 1440px;
+    min-height: 100%;
+    .left{
+        width: 402px;
+        min-height: 100%;
+        background: @themeColor;
+        .logo{
+            height: 31px;
+            margin: 39px auto auto 50px;
+        }
+        .title{
+            font-size: 24px;
+            color: @white;
+            margin: 100px auto 57px 50px;
+        }
+        .left_container {
+            width: 100%;
+            height: 680px;
+            .tempItem{
+                padding: 15px 0;
+                height:100px;
+                &:hover{
+                    opacity: 0.8;
+                    background: rgba(48,103,109,0.10);
+                }
+                .content{
+                    position: relative;
+                    margin-left: 50px;
+                    .nameAndTime{
+                        line-height: 30px;
+                        position: absolute;
+                        top: 12px;
+                        left: 80px;
+                    }
+                }
+    
+                .preview {
+                    width: 375px;
+                    height: 667px;
+                    overflow: hidden;
+                    transform: scale(0.16,0.16);
+                    transform-origin:top left;
+    
+                    box-shadow: 0 2px 8px 0 rgba(0,0,0,0.20);
+                }
+            }
+        }
+        
+    }
+    .right{
+        width: e("calc(100% - 403px)");
+        height: 100%;
+        background: @white;
+        .part{
+            width: 900px;
+            height: 100%;
+            margin-left: 111px;
+            padding: 0.1px;
+            .searchItem{
+                width: 465px;
+                height: 40px;
+                border: 1px solid #505766;
+                border-radius: 21px;
+                margin-top: 35px;
+                input{
+                    width: 86%;
+                    margin-left: 21px;
+                }
+                img{
+                    width: 25px;
+                }
+            }
+            .keywordItem{
+                min-width: 50px;
+                height: 22px;
+                border: 1px solid #9CA3B1;
+                border-radius: 11px;
+                margin: 10px;
+                padding: 0 10px;
+                color: #9CA3B1;
+                button{
+                    width: 16px;
+                    height: 16px;
+                }
+            }
+            .blank{
+                width: 100%;
+                height: 50px;
+            }
+            .course_template_my {
+                height:220px;
+                &>div {
+                    margin-right:20px;
+                    float:left;
+                    height:220px;
+                }
+            } 
+            .tempName{
+                margin: 0 15px 0 0;
+                height: 40px;
+                line-height: 40px;
+                color: rgba(44,52,64,0.50);
+                &:hover {
+                    color: rgba(44,52,64, 1);
+                }
+            }
+            .tempShowItem{
+                width: 80px;
+                height: 173px;
+                margin-right: 48px;
+                p{
+                    width: 100%;
+                    height: 30px;
+                    margin-top: -520px;
+                    line-height: 30px;
+                    color: rgba(44,52,64,0.50);
+                    overflow:hidden;
+                    text-overflow:ellipsis;
+                }
+                .preview {
+                    width: 375px;
+                    height: 667px;
+                    background: #FFFFFF;
+                    overflow: hidden;
+                    transform: scale(0.20, 0.22);
+                    transform-origin:2px 2px;
+                    box-shadow: 0 0 0 2px rgba(44,52,64,0.50);
+                    cursor: pointer;
+                    &:hover{
+                        box-shadow: 0 0 0 2px #50CBE3;
+                    }
+                    h1 {
+                        font-size:60px;
+                         transform: scale(5, 5);
+                        text-align: center;
+                        margin-top: 250px;
+                        color: rgba(44,52,64,0.50);
+                    }
+                }
+            }
+        }
+    }
+}

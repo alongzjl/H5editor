@@ -1,0 +1,107 @@
+@import "../../../common/css/default";
+.wordPanel {
+    .WordAlign {
+        height:28px;
+        margin-bottom:30px;
+        li {
+            float:left;
+            height:28px;
+           width:28px;
+           margin-right:20px;
+           cursor:pointer;
+           img {
+               width:100%;
+           }
+        }
+    } 
+    .WordStr {
+        width:184px;
+        height:28px;
+        background: rgba(255,255,255,0.10);
+        border: 1px solid #505766;
+        border-radius: 6px;
+        
+        li {
+            float:left;
+            width:45px;
+            border-right: 1px solid rgba(80,87,102,.3);
+            text-align: center;
+            line-height: 28px;
+            cursor:pointer;
+        }
+    }
+    .wordFont {
+        margin-top:30px;
+        background: rgba(255,255,255,0.10);
+        border: 1px solid #505766;
+        border-radius: 6px;
+        height:28px;
+        width:147px;
+        font-family: PingFangSC-Regular;
+        font-size: 14px;
+        color: #505766;
+        letter-spacing: 1.17px;
+        outline:none;
+        cursor:pointer;
+        
+    }
+    .wordFunction{
+        margin-top: 30px;
+        margin-bottom: 15px;
+        .addBtn{
+            width: 40px;
+            height: 40px;
+            margin: 10px 25px 0 0;
+            background-repeat: no-repeat;
+            background-size: 100%;
+        }
+        .addPinyin{
+            background-image: url('./images/add_pinyin.png');
+        }
+        .addPinyin:hover, .addPinyin:visited, .addPinyinSelect{
+            background-image: url('./images/add_pinyin_selected.png');
+        }
+        .addWordColor{
+            background-image: url('./images/fonts_color_normal.png');
+        }
+        .addWordColor:hover, .addWordColor:visited, .addWordColorSelect{
+            background-image: url('./images/fonts_color_selected.png');
+        }
+        .addWordBgColor{
+            background-image: url('./images/fonts_bg_normal.png');
+        }
+        .addWordBgColor:hover, .addWordBgColor:visited, .addWordBgColorSelect{
+            background-image: url('./images/fonts_bg_selected.png');
+        }
+        .addSymbol{
+            background-image: url('./images/items_normal.png');
+        }
+        .addSymbol:hover, .addSymbol:visited, .addSymbolSelect{
+            background-image: url('./images/items_selected.png');
+        }
+    }
+    .symbolList{
+        width: 220px;
+        height: 96px;
+        padding: 10px;
+        box-shadow: rgba(0, 0, 0, 0.15) 0px 0px 0px 1px, rgba(0, 0, 0, 0.15) 0px 8px 16px;
+        div{
+            padding: 10px;
+            border: solid 1px @white;
+        }
+        .selected{
+            border: solid 1px @themeColor;
+        }
+    }
+    .tabs {
+        .tabs-menu-item {
+            padding:0 22px;
+        } 
+         .tab-panel {
+            padding:0;
+        }
+    }
+    .visible{
+        margin-top: 30px;
+    }
+}

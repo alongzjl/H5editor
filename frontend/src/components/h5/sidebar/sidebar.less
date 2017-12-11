@@ -1,0 +1,47 @@
+.sidebar {
+    width: 256px;
+    position: absolute;
+    box-shadow: 0 2px 4px 0 rgba(0,0,0,0.10);
+    margin-top: 4px;
+    min-height: calc(~"100%");
+    @size: 140px;
+    background-color: #fff;
+    .row{
+        height: @size;
+        line-height: @size;
+        background: #fff;
+        border-bottom: 1px solid #E6EBEC;
+        font-family: 'PingFangSC-Regular';
+        font-size: 16px;
+        color: #486172; 
+        position: relative;
+        padding-left: 16px;
+        input {
+            border: 1px solid #00BCD3;
+            border-radius: 2px;
+            height:30px;
+            width:137px;
+            outline:none;
+            background:#fff;
+            font-family: 'PingFangSC-Regular';
+            font-size: 16px;
+            color: #486172;
+            letter-spacing: 1.33px;
+        }
+        .preview {
+            width: 375px;
+            height: 667px;
+            position: absolute;
+            top: 13px;
+            right: 27px;
+            background: #FFFFFF;
+            box-shadow: 0 2px 8px 0 rgba(0,0,0,0.20);
+            overflow: hidden;
+            transform: scale(0.17,0.17);
+            transform-origin:top right;
+        }
+    }
+    .current{
+        background-color: rgba(48,103,109,0.03);
+    }
+}

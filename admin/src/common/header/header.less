@@ -1,0 +1,31 @@
+.header{
+    @headerHeight: 3rem;
+
+    background: #2389d0;
+    height: @headerHeight;
+
+    .menu{
+        width: 70%;
+        margin: 0 auto;
+        height: 100%;
+        font-size: 0.8rem;
+        text-align: center;
+        a{
+            color: #fff;
+            display: block;
+            height: @headerHeight;
+            line-height: @headerHeight;
+        }
+    }
+    .menu > li{
+        float: left;
+        width: 5.5rem;
+    }
+
+    .menu li:hover{
+        background: #2ea4e1;
+    }
+    .active{
+        background: #2ea4e1;
+    }
+}

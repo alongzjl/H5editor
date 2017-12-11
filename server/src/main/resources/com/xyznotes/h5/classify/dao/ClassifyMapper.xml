@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.xyznotes.h5.classify.dao.ClassifyMapper">
+    <cache flushInterval="300000" />
+
+    <insert id="save" parameterType="Classify" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO classify
+        (name, type)
+        VALUES
+        (#{name}, #{type})
+    </insert>
+
+    <select id="findByType" resultType="Classify">
+        SELECT
+        id,
+        name,
+        type
+        FROM classify
+        <where>
+            <choose>
+                <when test="param1!=null">
+                    type = #{param1}
+                </when>
+            </choose>
+        </where>
+    </select>
+
+    <update id="update" parameterType="Classify">
+        UPDATE classify
+        SET name = #{name}
+        WHERE id = #{id}
+    </update>
+
+    <delete id="deleteById" parameterType="Integer">
+        DELETE FROM classify
+        WHERE id = #{param1}
+    </delete>
+</mapper>
