@@ -3,12 +3,12 @@
     position: absolute;
     box-shadow: 0 2px 4px 0 rgba(0,0,0,0.10);
     margin-top: 4px;
-    min-height: calc(~"100%");
+    height: calc(~"100% - 4px");
+    overflow-y: auto;
     @size: 140px;
     background-color: #fff;
     .row{
         height: @size;
-        line-height: @size;
         background: #fff;
         border-bottom: 1px solid #E6EBEC;
         font-family: 'PingFangSC-Regular';
@@ -39,6 +39,22 @@
             overflow: hidden;
             transform: scale(0.17,0.17);
             transform-origin:top right;
+        }
+        .pageNo{
+            position: absolute;
+            top: 16px;
+            left: 16px;
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            border: 1px solid #486172;
+            color: #486172;
+            line-height: normal;
+            text-align: center;
+        }
+        .pageNoFocus{
+            border: 1px solid #00BCD3;
+            color: #00BCD3;
         }
     }
     .current{

@@ -10,6 +10,9 @@ import API_URL from '../../../../common/url';
 import './lineQuestion.less';
 
 export default class LineQuestion extends React.Component {
+    state = {
+        index: 0,
+    };
     onClicked = e => {
         e.stopPropagation();
         store.dispatch(changeFocus(this.props.value));
@@ -76,7 +79,7 @@ export default class LineQuestion extends React.Component {
         line.style.visibility = 'visible';
     };
     longClick = () => {
-        this.timer = setTimeout(this.props.showImage, 500);
+        this.timer = setTimeout(this.props.showImage, 1000);
     };
     cancelLongClick = () => {
         clearTimeout(this.timer);
@@ -85,13 +88,39 @@ export default class LineQuestion extends React.Component {
         this.cancelLongClick();
         store.dispatch(changeFocus(this.props.value));
     };
+    onAnimationEnd = () => {
+        this.setState({
+            index: this.state.index + 1,
+        });
+    };
+    componentWillReceiveProps() {
+        if (this.state.index === this.props.value.animations.length) {
+            this.setState({
+                index: 0,
+            });
+        }
+    }
     render() {
         const { value, focusId, viewing } = this.props;
+        let animation = {};
+        if (value.animations.length > this.state.index) {
+            animation = value.animations[this.state.index];
+        }
+        const style = Object.assign({}, value.style, {
+            animationDelay: animation.animationDelay,
+            animationDuration: animation.animationDuration,
+            animationIterationCount: animation.animationIterationCount,
+        });
         if (viewing) {
             return (
-                <div className="lineQuestion" style={{ ...value.style, position: 'absolute' }} onClick={() => this.props.drawLine(value)}>
+                <div
+                    className={`lineQuestion ${animation.className}`}
+                    style={{ ...style, position: 'absolute' }}
+                    onClick={() => this.props.drawLine(value)}
+                    onAnimationEnd={this.onAnimationEnd}
+                >
                     {
-                        value.src ? <img src={API_URL.domain + value.src} alt="" width="100%" /> : <div dangerouslySetInnerHTML={{ __html: value.text }} />
+                        value.src ? <img src={API_URL.upload + value.src} alt="" width="100%" /> : <div dangerouslySetInnerHTML={{ __html: value.text }} />
                     }
                 </div>
             );
@@ -104,21 +133,22 @@ export default class LineQuestion extends React.Component {
                 isDraggable
                 style={value.style}
                 onDoubleClick={this.changeEditable}
-                initial={getPosition(value.style)}
+                initial={{...getPosition(value.style), width: style.width, height: style.height}}
             >
                 <div
-                    className="lineQuestion"
-                    style={{ ...value.style, left: 'auto', top: 'auto' }}
+                    className={(focusId === value.id || focusId === -1) ? `${animation.className} lineQuestion` : 'lineQuestion'}
+                    style={{ ...style, left: 'auto', top: 'auto' }}
                     onMouseOver={this.drawLine}
                     onMouseOut={this.cancelLine}
                     onMouseDown={this.longClick}
                     onContextMenu={this.rightClick}
                     onBlur={this.handleBlur}
                     onMouseUp={this.cancelLongClick}
+                    onAnimationEnd={this.onAnimationEnd}
                 >
                     <span>{value.num}</span>
                     {
-                        value.src ? <img src={API_URL.domain + value.src} alt="" width="100%" /> : <div contentEditable={value.contenteditable} dangerouslySetInnerHTML={{ __html: value.text }} />
+                        value.src ? <img src={API_URL.upload + value.src} alt="" width="100%" /> : <div contentEditable={value.contenteditable} dangerouslySetInnerHTML={{ __html: value.text }} />
                     }
                 </div>
             </Rnd>

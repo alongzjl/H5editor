@@ -1,6 +1,7 @@
 import React from 'react';
 import Slider from 'rc-slider';
 import 'rc-slider/assets/index.css';
+import Select from 'react-select';
 import { SketchPicker } from 'react-color';
 import { changeStyle } from '../../../actions/h5Actions';
 import store from '../../../store';
@@ -8,7 +9,6 @@ import CropperDialog from '../dialog/cropperDialog';
 import AddImageDialog from '../dialog/addImageDialog';
 import API_URL from '../../../common/url';
 import t from '../../i18n';
-
 import './shapePanel.less';
 import './imagePanel.less';
 
@@ -17,7 +17,6 @@ export default class ImagePanel extends React.Component {
         super();
         this.state = {
             shadowColor: false,
-            fillColorTool: false,
             borderColorTool: false,
         };
     }
@@ -43,9 +42,12 @@ export default class ImagePanel extends React.Component {
         }));
     };
     changeBorder = e => {
-        if (e.target.value === 'border') {
+        if (e.value === 'border') {
             store.dispatch(changeStyle({
                 border: '#000 solid 1px',
+                borderStyle: 'solid',
+                borderColor: '#000',
+                borderWidth: '1px',
             }));
         } else {
             store.dispatch(changeStyle({
@@ -58,10 +60,18 @@ export default class ImagePanel extends React.Component {
             borderWidth: Number.parseInt(e.target.value),
         }));
     };
+    changeBorderRadius = e => {
+        store.dispatch(changeStyle({
+            borderRadius: Number.parseInt(e.target.value),
+        }));
+    };
     changeBorderColor = color => {
         store.dispatch(changeStyle({
             borderColor: color.hex,
         }));
+        this.setState({
+            borderColorTool: false,
+        });
     };
     changeRotate = rotate => {
         store.dispatch(changeStyle({
@@ -72,11 +82,6 @@ export default class ImagePanel extends React.Component {
         this.setState({
             borderColorTool: !this.state.borderColorTool,
         });
-    };
-    changeVisible = e => {
-        store.dispatch(changeStyle({
-            visibility: e.target.checked ? 'hidden' : 'visible',
-        }));
     };
     changeShadowOpacity = opc => {
         const shadow = this.props.focus.style.shadow ? this.props.focus.style.shadow : { r: 0, g: 0, b: 0, a: 0 };
@@ -100,6 +105,9 @@ export default class ImagePanel extends React.Component {
                 a: shadow.a,
             },
         }));
+        this.setState({
+            shadowColor: false,
+        });
     };
     handleShadowColor = () => {
         this.setState({
@@ -110,7 +118,7 @@ export default class ImagePanel extends React.Component {
         const { style } = this.props.focus;
         return (
             <div className="shapePanelBody imagePanel">
-                <div className="previewImg"><img src={API_URL.domain + this.props.focus.src} alt="" /></div>
+                <div className="previewImg"><img src={API_URL.upload + this.props.focus.src} alt="" /></div>
                 <div className="flex_row_around action">
                     <button onClick={this.showCropper}>{t('image_clip')}</button>
                     <button onClick={this.showAddImage}>{t('image_change')}</button>
@@ -129,41 +137,46 @@ export default class ImagePanel extends React.Component {
                     </div>
                 </div>
                 <div className="flex_row_between flex_vertical_middle line fs14 blackColor opacity">
-                    {t('opacity')}：
+                    {t('opacity')}
                     <Slider onAfterChange={this.changeOpacity} min={0} max={1} step={0.1} />
                     <span>{Number.parseInt(style.opacity * 100)}%</span>
                 </div>
                 <div className="flex_row_between flex_vertical_middle line fs14 blackColor opacity">
-                    {t('rotation')}：
+                    {t('rotation')}
                     <Slider
                         onChange={this.changeRotate} min={-180} max={180} step={1}
                         value={Number.parseInt(style.transform.substring(7))}
                     />
                     <span>{Number.parseInt(style.transform.substring(7))}</span>
                 </div>
-                <div className="flex_row_start flex_vertical_middle line fs14 blackColor">
-                    {t('border')}：
-                    <select value={style.border === 'none' ? 'none' : 'border'} onChange={this.changeBorder}>
-                        <option value="none">{t('border_none')}</option>
-                        <option value="border">{t('border_line')}</option>
-                    </select>
+                <div className="flex_row_between flex_vertical_middle line fs14 blackColor">
+                    {t('border')}
+                     <Select
+                         name="form-field-name1"
+                         onChange={this.changeBorder}
+                         value={style.border === 'none' ? 'none' : 'border'}
+                         clearable={false}
+                         searchable={false}
+                         options={[{ value: 'none', label: t('border_none') }, { value: 'border', label: t('border_line') }]}
+                     />
                 </div>
                 {
                     style.border !== 'none' ?
-                        <div className="line fs14 blackColor border">
-                            {t('width')}：<select value={style.borderWidth} onChange={this.changeBorderWidth}>
-                                <option value={1}>1</option>
-                                <option value={2}>2</option>
-                                <option value={3}>3</option>
-                                <option value={4}>4</option>
-                                <option value={5}>5</option>
-                            </select>px
+                        <div>
+                            <div className="flex_row_between flex_vertical_middle line fs14 blackColor">
+                                <div className="width flex_row_around flex_vertical_middle">
+                                    {t('width')}
+                                    <input type="number" className="inputClass" min={0} value={parseInt(style.borderWidth)} onChange={this.changeBorderWidth} />px
+                                </div>
+                                <div className="height flex_row_around flex_vertical_middle">
+                                    {t('border_radius')}<input type="number" className="inputClass" min={0} value={parseInt(style.borderRadius)} onChange={this.changeBorderRadius} />px
+                                </div>
+                            </div>
                         </div> : null
                 }
                 {
                     style.border !== 'none' ?
-                        <div className="flex_row_start flex_vertical_middle line fs14 blackColor border">
-                            {t('color')}：
+                        <div className="flex_row_end flex_vertical_middle line fs14 blackColor border">
                             <div className="flex_row_start flex_vertical_middle">
                                 <div className="colorDiv" style={{ backgroundColor: style.borderColor }} />
                                 <button
@@ -177,11 +190,10 @@ export default class ImagePanel extends React.Component {
                 }
                 {
                     this.state.borderColorTool ?
-                        <SketchPicker onChangeComplete={this.changeBorderColor} color={style.borderColor} /> : null
+                        <div style={{ position: 'absolute', top: '160px', left: 0, zIndex: 20 }}><SketchPicker onChangeComplete={this.changeBorderColor} color={style.borderColor} /></div> : null
                 }
-                <div className="visible">{style.visibility === 'hidden' ? <input type="checkbox" checked onChange={this.changeVisible} /> : <input type="checkbox" onChange={this.changeVisible} />} 隐藏</div>
                 <div className="flex_row_between flex_vertical_middle line fs14 blackColor opacity">
-                    {t('shadow')}：
+                    {t('shadow')}
                     <Slider onAfterChange={this.changeShadowOpacity} min={0} max={1} step={0.1} defaultValue={style.shadow.a} />
                     <span>{parseInt(style.shadow.a * 100)}%</span>
                 </div>

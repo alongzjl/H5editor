@@ -30,14 +30,14 @@ export default class FileUploader extends React.Component {
             if (file.response) {
                 return file.response.success;
             }
-            return true; 
+            return true;
         });
         this.setState({ fileList });
         return fileList;
     };
 
     onChange = info => {
-    	this.props.onChange(this.handleUpload(info));
+        this.props.onChange(this.handleUpload(info));
     };
 
     componentWillReceiveProps = nextProps => {

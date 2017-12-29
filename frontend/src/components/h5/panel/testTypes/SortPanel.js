@@ -1,12 +1,13 @@
 import React from 'react';
+import Select from 'react-select';
 import store from '../../../../store';
 import WordModal from '../../modal/WordModal';
-import { addElements, delElementId } from '../../../../actions/h5Actions';
+import {addElements, changeFocus, delElementId} from '../../../../actions/h5Actions';
 import { changeSortAnswer, changeSortAnswerStyle } from '../../../../actions/testActions';
 import SortQuestionModal from '../../modal/testTypes/SortQuestionModal';
 import TestConfirmModal from '../../modal/testTypes/TestConfirmModal';
-
 import './testCommon.less';
+import TestModal from "../../modal/TestModal";
 
 
 class Sort extends React.Component {
@@ -40,56 +41,62 @@ class Sort extends React.Component {
             }, 3).plainObject()));
             store.dispatch(addElements(new WordModal('选项1', {
                 left: `${this.state.defaultLeft}px`,
+                fontSize: '14px',
                 top: `${this.state.defaultTop + 100}px`,
                 ...this.state.style_word,
-            }).plainObject()));
+            }, 'sort').plainObject()));
             store.dispatch(addElements(new WordModal('选项2', {
                 left: `${this.state.defaultLeft + 100}px`,
+                fontSize: '14px',
                 top: `${this.state.defaultTop + 100}px`,
                 ...this.state.style_word,
-            }).plainObject()));
+            }, 'sort').plainObject()));
             store.dispatch(addElements(new WordModal('选项3', {
                 left: `${this.state.defaultLeft + 200}px`,
+                fontSize: '14px',
                 top: `${this.state.defaultTop + 100}px`,
                 ...this.state.style_word,
-            }).plainObject()));
+            }, 'sort').plainObject()));
 
-            store.dispatch(addElements(new TestConfirmModal().plainObject()));
+            store.dispatch(addElements(new TestConfirmModal('sort').plainObject()));
         } else {
             store.dispatch(addElements(new SortQuestionModal({
                 left: `${this.state.defaultLeft}px`,
                 top: `${this.state.defaultTop + 80}px`,
             }, index + 1).plainObject()));
         }
+        store.dispatch(changeFocus(new TestModal().plainObject()));
     };
     /* 添加答案*/
     addAnswer = () => {
         const index = this.state.size.length;
         store.dispatch(addElements(new WordModal(`选项${index + 1}`, {
             left: `${this.state.defaultLeft}px`,
+            fontSize: '14px',
             top: `${this.state.defaultTop + 160}px`,
             ...this.state.style_word,
-        }).plainObject()));
+        }, 'sort').plainObject()));
+        store.dispatch(changeFocus(new TestModal().plainObject()));
     };
     /* 删除*/
     deleteThis = (index, id) => {
-        const new_arr = this.state.size.filter(element => (element.name === 'SortQuestionModal') && (element.num !== index));
+        const newArr = this.state.size.filter(element => (element.name === 'SortQuestionModal') && (element.num !== index));
         this.setState({
-            size: new_arr,
+            size: newArr,
         });
         store.dispatch(delElementId(id));
     };
     /* 排序*/
     sortNumber = () => {
-        const answer_list = this.props.page.elements.filter(element => element.name === 'WordModal');
-        const length = answer_list.length;
-        const new_arr = [];
+        const answerList = this.props.page.elements.filter(element => element.name === 'WordModal');
+        const length = answerList.length;
+        const newArr = [];
         for (let i = 0; i < length; i++) {
-            new_arr.push(i);
+            newArr.push(i);
         }
-        new_arr.sort((a, b) => 0.5 - Math.random());
-        answer_list.forEach((item, index) => {
-            const obj = { left: answer_list[new_arr[index]].style.left, top: answer_list[new_arr[index]].style.top };
+        newArr.sort((a, b) => 0.5 - Math.random());
+        answerList.forEach((item, index) => {
+            const obj = { left: answerList[newArr[index]].style.left, top: answerList[newArr[index]].style.top };
             store.dispatch(changeSortAnswerStyle(item.id, obj));
         });
     };
@@ -106,13 +113,21 @@ class Sort extends React.Component {
     }
 }
 class RightAnswer extends React.Component {
+    state = {
+        rightAnswer: '',
+    }
     delectThis = () => {
         this.props.deleteThis();
     };
     chooseQues = e => {
-        store.dispatch(changeSortAnswer(this.props.sortId, e.target.value));
+        this.setState({
+            rightAnswer: e.value,
+        });
+        store.dispatch(changeSortAnswer(this.props.sortId, e.value));
     };
+
     render() {
+        const answers = this.props.answers.map((item, index) => ({ value: item.text, label: item.text }));
         return (
             <div className="choose_question">
                 <div className="left_question">
@@ -120,13 +135,15 @@ class RightAnswer extends React.Component {
                     <p>&nbsp;</p>
                 </div>
                 <div className="right_question">
-                    <select onChange={this.chooseQues}>
-                        <option value="">请选择答案</option>
-                        {
-                            this.props.answers.map((item, index) => <option key={index} value={item.text}>{item.text}</option>)
-                        }
-                    </select>
-                    <span onClick={this.delectThis}>×</span>
+                    <Select
+                        name="form-field-name1"
+                        value={this.state.rightAnswer}
+                        onChange={this.chooseQues}
+                        clearable={false}
+                        searchable={false}
+                        options={answers}
+                    />
+                    <span className="sort_span" onClick={this.delectThis}>×</span>
                 </div>
             </div>
         );

@@ -31,6 +31,8 @@ export const ELEMENT_VISIBILITY_CHANGE = Symbol('ELEMENT_VISIBILITY_CHANGE');
 export const ELEMENT_ACTION_CHANGE = Symbol('ELEMENT_ACTION_CHANGE');
 export const ELEMENT_MULTIPLE_SELECT = Symbol('ELEMENT_MULTIPLE_SELECT');
 export const ELEMENT_ALIGN = Symbol('ELEMENT_ALIGN');
+export const WORD_FONT_FACE_CHANGE = Symbol('WORD_FONT_FACE_CHANGE');
+export const WORD_ACCESS_KEY_CHANGE = Symbol('WORD_ACCESS_KEY_CHANGE');
 
 // focus
 export const FOCUS_CHANGED = Symbol('FOCUS_CHANGED');
@@ -42,6 +44,7 @@ export const STYLE_CHANGE = Symbol('STYLE_CHANGE');
 export const ANIMATION_CHANGE = Symbol('ANIMATION_CHANGE');
 export const ANIMATION_ADD = Symbol('ANIMATION_ADD');
 export const ANIMATION_DELETE = Symbol('ANIMATION_DELETE');
+export const ANIMATION_REFRESH = Symbol('ANIMATION_REFRESH');
 
 // image
 export const IMAGE_CHANGE = Symbol('IMAGE_CHANGE');
@@ -85,6 +88,7 @@ export const TEST_CHOOSE_ADD = Symbol('TEST_CHOOSE_ADD');
 export const TEST_CHOOSE_ITEMS_ADD = Symbol('TEST_CHOOSE_ITEMS_ADD');
 
 export const TEST_SORT_QUESTION_STYLE_CHANGE = Symbol('TEST_SORT_QUESTION_STYLE_CHANGE');
+export const TEST_CHECK = Symbol('TEST_CHECK');
 
 export const HIGHLIGHT_ADD = Symbol('HIGHLIGHT_ADD');
 export const HIGHLIGHT_CANCEL = Symbol('HIGHLIGHT_CANCEL');

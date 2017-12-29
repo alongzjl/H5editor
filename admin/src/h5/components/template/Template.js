@@ -365,13 +365,14 @@ class Template extends React.Component {
         key: 'operation',
         render: (text, record) => (
             <span>
+            	<a href="javascript:void(0)" onClick={() => this.add(record.id,record.name)}>编辑</a><span>   </span> 
                 <a href="javascript:void(0)" onClick={() => this.del(record.id)}>删除</a>
             </span>
             ),
     }];
 
-    add = () => {
-        location.href = `${API_URL.www}#/builder?from=admin&isPublic=true&token=${sessionStorage.getItem('token')}`;
+    add = (id,name) => {
+    	location.href = `${API_URL.www}#/builder?from=admin&templateId=${id}&name=${name}&access_token=${sessionStorage.getItem('token')}`;
     };
 
     del = id => {
@@ -393,7 +394,7 @@ class Template extends React.Component {
                             <Sidebar current="1" />
                         </Col>
                         <Col span={20}>
-                            <Button type="primary" size="large" onClick={this.add}>添加</Button>
+                            <Button type="primary" size="large" onClick={()=>this.add('','')}>添加</Button>
                             <Table
                                 columns={this.getColumns()}
                                 dataSource={this.props.templates}

@@ -3,6 +3,7 @@
  */
 import React from 'react';
 import InputNumber from 'rc-input-number';
+import Select from 'react-select';
 import 'rc-input-number/assets/index.css';
 import 'rc-slider/assets/index.css';
 import store from '../../../store';
@@ -59,7 +60,7 @@ class AnimationSetting extends React.Component {
 
     onChange = e => {
         store.dispatch(changeAnimation(this.props.index, Object.assign({}, this.props.value, {
-            className: e.target.value,
+            className: e.value,
         })));
     };
 
@@ -85,128 +86,108 @@ class AnimationSetting extends React.Component {
 
         return (
             <div className="model_animation">
-                <h4><img src={require('./images/pulldown.png')} onClick={this.shrink} /> {t('animation') + (index + 1)}<div className="floatRight" onClick={this.deleteAnimation}>X</div></h4>
-                <div className="detail"><span className="label">方式</span>
-                    <select onChange={this.onChange} defaultValue={value.className}>
-                        <option value="">Nothing</option>
-                        <optgroup label="Attention Seekers">
-                            <option value="animated bounce">bounce</option>
-                            <option value="animated flash">flash</option>
-                            <option value="animated pulse">pulse</option>
-                            <option value="animated rubberBand">rubberBand</option>
-                            <option value="animated shake">shake</option>
-                            <option value="animated swing">swing</option>
-                            <option value="animated tada">tada</option>
-                            <option value="animated wobble">wobble</option>
-                            <option value="animated jello">jello</option>
-                        </optgroup>
-
-                        <optgroup label="Bouncing Entrances">
-                            <option value="animated bounceIn">bounceIn</option>
-                            <option value="animated bounceInDown">bounceInDown</option>
-                            <option value="animated bounceInLeft">bounceInLeft</option>
-                            <option value="animated bounceInRight">bounceInRight</option>
-                            <option value="animated bounceInUp">bounceInUp</option>
-                        </optgroup>
-
-                        <optgroup label="Bouncing Exits">
-                            <option value="animated bounceOut">bounceOut</option>
-                            <option value="animated bounceOutDown">bounceOutDown</option>
-                            <option value="animated bounceOutLeft">bounceOutLeft</option>
-                            <option value="animated bounceOutRight">bounceOutRight</option>
-                            <option value="animated bounceOutUp">bounceOutUp</option>
-                        </optgroup>
-
-                        <optgroup label="Fading Entrances">
-                            <option value="animated fadeIn">fadeIn</option>
-                            <option value="animated fadeInDown">fadeInDown</option>
-                            <option value="animated fadeInDownBig">fadeInDownBig</option>
-                            <option value="animated fadeInLeft">fadeInLeft</option>
-                            <option value="animated fadeInLeftBig">fadeInLeftBig</option>
-                            <option value="animated fadeInRight">fadeInRight</option>
-                            <option value="animated fadeInRightBig">fadeInRightBig</option>
-                            <option value="animated fadeInUp">fadeInUp</option>
-                            <option value="animated fadeInUpBig">fadeInUpBig</option>
-                        </optgroup>
-
-                        <optgroup label="Fading Exits">
-                            <option value="animated fadeOut">fadeOut</option>
-                            <option value="animated fadeOutDown">fadeOutDown</option>
-                            <option value="animated fadeOutDownBig">fadeOutDownBig</option>
-                            <option value="animated fadeOutLeft">fadeOutLeft</option>
-                            <option value="animated fadeOutLeftBig">fadeOutLeftBig</option>
-                            <option value="animated fadeOutRight">fadeOutRight</option>
-                            <option value="animated fadeOutRightBig">fadeOutRightBig</option>
-                            <option value="animated fadeOutUp">fadeOutUp</option>
-                            <option value="animated fadeOutUpBig">fadeOutUpBig</option>
-                        </optgroup>
-
-                        <optgroup label="Flippers">
-                            <option value="animated flip">flip</option>
-                            <option value="animated flipInX">flipInX</option>
-                            <option value="animated flipInY">flipInY</option>
-                            <option value="animated flipOutX">flipOutX</option>
-                            <option value="animated flipOutY">flipOutY</option>
-                        </optgroup>
-
-                        <optgroup label="Lightspeed">
-                            <option value="animated lightSpeedIn">lightSpeedIn</option>
-                            <option value="animated lightSpeedOut">lightSpeedOut</option>
-                        </optgroup>
-
-                        <optgroup label="Rotating Entrances">
-                            <option value="animated rotateIn">rotateIn</option>
-                            <option value="animated rotateInDownLeft">rotateInDownLeft</option>
-                            <option value="animated rotateInDownRight">rotateInDownRight</option>
-                            <option value="animated rotateInUpLeft">rotateInUpLeft</option>
-                            <option value="animated rotateInUpRight">rotateInUpRight</option>
-                        </optgroup>
-
-                        <optgroup label="Rotating Exits">
-                            <option value="animated rotateOut">rotateOut</option>
-                            <option value="animated rotateOutDownLeft">rotateOutDownLeft</option>
-                            <option value="animated rotateOutDownRight">rotateOutDownRight</option>
-                            <option value="animated rotateOutUpLeft">rotateOutUpLeft</option>
-                            <option value="animated rotateOutUpRight">rotateOutUpRight</option>
-                        </optgroup>
-
-                        <optgroup label="Sliding Entrances">
-                            <option value="animated slideInUp">slideInUp</option>
-                            <option value="animated slideInDown">slideInDown</option>
-                            <option value="animated slideInLeft">slideInLeft</option>
-                            <option value="animated slideInRight">slideInRight</option>
-                        </optgroup>
-
-                        <optgroup label="Sliding Exits">
-                            <option value="animated slideOutUp">slideOutUp</option>
-                            <option value="animated slideOutDown">slideOutDown</option>
-                            <option value="animated slideOutLeft">slideOutLeft</option>
-                            <option value="animated slideOutRight">slideOutRight</option>
-                        </optgroup>
-
-                        <optgroup label="Zoom Entrances">
-                            <option value="animated zoomIn">zoomIn</option>
-                            <option value="animated zoomInDown">zoomInDown</option>
-                            <option value="animated zoomInLeft">zoomInLeft</option>
-                            <option value="animated zoomInRight">zoomInRight</option>
-                            <option value="animated zoomInUp">zoomInUp</option>
-                        </optgroup>
-
-                        <optgroup label="Zoom Exits">
-                            <option value="animated zoomOut">zoomOut</option>
-                            <option value="animated zoomOutDown">zoomOutDown</option>
-                            <option value="animated zoomOutLeft">zoomOutLeft</option>
-                            <option value="animated zoomOutRight">zoomOutRight</option>
-                            <option value="animated zoomOutUp">zoomOutUp</option>
-                        </optgroup>
-
-                        <optgroup label="Specials">
-                            <option value="animated hinge">hinge</option>
-                            <option value="animated jackInTheBox">jackInTheBox</option>
-                            <option value="animated rollIn">rollIn</option>
-                            <option value="animated rollOut">rollOut</option>
-                        </optgroup>
-                    </select>
+                <h4><img src={require('./images/pulldown.png')} onClick={this.shrink} /> {t('animation') + (index + 1)}<div className="floatRight" onClick={this.deleteAnimation}><img src={require('./images/deleteAnimation.png')} width={10} height={10} /></div></h4>
+                <div className="detail flex_row_between"><span className="label">方式</span>
+                    <Select
+                        name="form-field-name"
+                        value={value.className}
+                        onChange={this.onChange}
+                        clearable={false}
+                        searchable={false}
+                        options={[
+                            { value: '', label: 'Nothing' },
+                            { value: 'Attention Seekers', label: 'Attention Seekers', disabled: true },
+                            { value: 'animated bounce', label: 'bounce' },
+                            { value: 'animated flash', label: 'flash' },
+                            { value: 'animated pulse', label: 'pulse' },
+                            { value: 'animated rubberBand', label: 'rubberBand' },
+                            { value: 'animated shake', label: 'shake' },
+                            { value: 'animated swing', label: 'swing' },
+                            { value: 'animated tada', label: 'tada' },
+                            { value: 'animated wobble', label: 'wobble' },
+                            { value: 'animated jello', label: 'jello' },
+                            { value: 'Bouncing Entrances', label: 'Bouncing Entrances', disabled: true },
+                            { value: 'animated bounceIn', label: 'bounceIn' },
+                            { value: 'animated bounceInDown', label: 'bounceInDown' },
+                            { value: 'animated bounceInLeft', label: 'bounceInLeft' },
+                            { value: 'animated bounceInRight', label: 'bounceInRight' },
+                            { value: 'animated bounceInUp', label: 'bounceInUp' },
+                            { value: 'Bouncing Exits', label: 'Bouncing Exits', disabled: true },
+                            { value: 'animated bounceOut', label: 'bounceOut' },
+                            { value: 'animated bounceOutDown', label: 'bounceOutDown' },
+                            { value: 'animated bounceOutLeft', label: 'bounceOutLeft' },
+                            { value: 'animated bounceOutRight', label: 'bounceOutRight' },
+                            { value: 'animated bounceOutUp', label: 'bounceOutUp' },
+                            { value: 'Fading Entrances', label: 'Fading Entrances', disabled: true },
+                            { value: 'animated fadeIn', label: 'fadeIn' },
+                            { value: 'animated fadeInDown', label: 'fadeInDown' },
+                            { value: 'animated fadeInDownBig', label: 'fadeInDownBig' },
+                            { value: 'animated fadeInLeft', label: 'fadeInLeft' },
+                            { value: 'animated fadeInLeftBig', label: 'fadeInLeftBig' },
+                            { value: 'animated fadeInRight', label: 'fadeInRight' },
+                            { value: 'animated fadeInRightBig', label: 'fadeInRightBig' },
+                            { value: 'animated fadeInUp', label: 'fadeInUp' },
+                            { value: 'animated fadeInUpBig', label: 'fadeInUpBig' },
+                            { value: 'Fading Exits', label: 'Fading Exits', disabled: true },
+                            { value: 'animated fadeOut', label: 'fadeOut' },
+                            { value: 'animated fadeOutDown', label: 'fadeOutDown' },
+                            { value: 'animated fadeOutDownBig', label: 'fadeOutDownBig' },
+                            { value: 'animated fadeOutLeft', label: 'fadeOutLeft' },
+                            { value: 'animated fadeOutLeftBig', label: 'fadeOutLeftBig' },
+                            { value: 'animated fadeOutRight', label: 'fadeOutRight' },
+                            { value: 'animated fadeOutRightBig', label: 'fadeOutRightBig' },
+                            { value: 'animated fadeOutUp', label: 'fadeOutUp' },
+                            { value: 'animated fadeOutUpBig', label: 'fadeOutUpBig' },
+                            { value: 'Flippers', label: 'Flippers', disabled: true },
+                            { value: 'animated flip', label: 'flip' },
+                            { value: 'animated flipInX', label: 'flipInX' },
+                            { value: 'animated flipInY', label: 'flipInY' },
+                            { value: 'animated flipOutX', label: 'flipOutX' },
+                            { value: 'animated flipOutY', label: 'flipOutY' },
+                            { value: 'Lightspeed', label: 'Lightspeed', disabled: true },
+                            { value: 'animated lightSpeedIn', label: 'lightSpeedIn' },
+                            { value: 'animated lightSpeedOut', label: 'lightSpeedOut' },
+                            { value: 'Rotating Entrances', label: 'Rotating Entrances', disabled: true },
+                            { value: 'animated rotateIn', label: 'rotateIn' },
+                            { value: 'animated rotateInDownLeft', label: 'rotateInDownLeft' },
+                            { value: 'animated rotateInDownRight', label: 'rotateInDownRight' },
+                            { value: 'animated rotateInUpLeft', label: 'rotateInUpLeft' },
+                            { value: 'animated rotateInUpRight', label: 'rotateInUpRight' },
+                            { value: 'Rotating Exits', label: 'Rotating Exits', disabled: true },
+                            { value: 'animated rotateOut', label: 'rotateOut' },
+                            { value: 'animated rotateOutDownLeft', label: 'rotateOutDownLeft' },
+                            { value: 'animated rotateOutDownRight', label: 'rotateOutDownRight' },
+                            { value: 'animated rotateOutUpLeft', label: 'rotateOutUpLeft' },
+                            { value: 'animated rotateOutUpRight', label: 'rotateOutUpRight' },
+                            { value: 'Sliding Entrances', label: 'Sliding Entrances', disabled: true },
+                            { value: 'animated slideInUp', label: 'slideInUp' },
+                            { value: 'animated slideInDown', label: 'slideInDown' },
+                            { value: 'animated slideInLeft', label: 'slideInLeft' },
+                            { value: 'animated slideInRight', label: 'slideInRight' },
+                            { value: 'Sliding Exits', label: 'Sliding Exits', disabled: true },
+                            { value: 'animated slideOutUp', label: 'slideOutUp' },
+                            { value: 'animated slideOutDown', label: 'slideOutDown' },
+                            { value: 'animated slideOutLeft', label: 'slideOutLeft' },
+                            { value: 'animated slideOutRight', label: 'slideOutRight' },
+                            { value: 'Zoom Entrances', label: 'Zoom Entrances', disabled: true },
+                            { value: 'animated zoomIn', label: 'zoomIn' },
+                            { value: 'animated zoomInDown', label: 'zoomInDown' },
+                            { value: 'animated zoomInLeft', label: 'zoomInLeft' },
+                            { value: 'animated zoomInRight', label: 'zoomInRight' },
+                            { value: 'animated zoomInUp', label: 'zoomInUp' },
+                            { value: 'Zoom Exits', label: 'Zoom Exits', disabled: true },
+                            { value: 'animated zoomOut', label: 'zoomOut' },
+                            { value: 'animated zoomOutDown', label: 'zoomOutDown' },
+                            { value: 'animated zoomOutLeft', label: 'zoomOutLeft' },
+                            { value: 'animated zoomOutRight', label: 'zoomOutRight' },
+                            { value: 'animated zoomOutUp', label: 'zoomOutUp' },
+                            { value: 'Specials', label: 'Specials', disabled: true },
+                            { value: 'animated hinge', label: 'hinge' },
+                            { value: 'animated jackInTheBox', label: 'jackInTheBox' },
+                            { value: 'animated rollIn', label: 'rollIn' },
+                            { value: 'animated rollOut', label: 'rollOut' },
+                        ]}
+                    />
                 </div>
                 <div><span className="label">{t('animation_delay')}</span><InputNumber value={parseFloat(value.animationDelay).toFixed(1)} min={0} step={0.1} onChange={this.changeDelay} /></div>
                 <div><span className="label">{t('animation_time')}</span><InputNumber value={parseFloat(value.animationDuration).toFixed(1)} min={0} step={0.1} onChange={this.changeDuration} /></div>

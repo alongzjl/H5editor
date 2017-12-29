@@ -20,6 +20,7 @@
             <if test="conditionMap.thisyear!=null">AND YEAR(create_date)=YEAR(NOW())</if>
             <if test="conditionMap.start_date!=null">AND create_date &gt;= #{conditionMap.start_date}</if>
             <if test="conditionMap.end_date!=null">AND create_date &lt;= #{conditionMap.end_date}</if>
+            <if test="conditionMap.material_id!=null">AND material_id = #{conditionMap.material_id}</if>
         </where>
         <if test="orderName != null">ORDER BY course.${orderName} ${orderDir}</if>
         <if test="start != null and pageSize != null">LIMIT #{start},#{pageSize}</if>
@@ -39,6 +40,7 @@
             <if test="conditionMap.thismonth!=null">AND date_format(create_date,'%Y-%m')=date_format(now(),'%Y-%m')</if>
             <if test="conditionMap.start_date!=null">AND create_date &gt;= #{conditionMap.start_date}</if>
             <if test="conditionMap.end_date!=null">AND create_date &lt;= #{conditionMap.end_date}</if>
+            <if test="conditionMap.material_id!=null">AND material_id = #{conditionMap.material_id}</if>
         </where>
     </select>
 
@@ -85,14 +87,14 @@
 
     <insert id="save" parameterType="Course" useGeneratedKeys="true" keyProperty="id">
         INSERT INTO course
-        (name,music_path, music_name, user_id, scan_count, apply_count, sign_count, create_date, cover, subtitle, state, is_delete, template_id, pages)
+        (name,music_path, music_name, user_id, scan_count, apply_count, sign_count, create_date, cover, subtitle, state, is_delete, template_id, material_id, pages)
         VALUES
-        (#{name}, #{musicPath}, #{musicName}, #{userId}, 0, 0, 0, now(), #{cover}, #{subtitle}, #{state}, 0, #{templateId}, #{pages})
+        (#{name}, #{musicPath}, #{musicName}, #{userId}, 0, 0, 0, now(), #{cover}, #{subtitle}, #{state}, 0, #{templateId}, #{materialId}, #{pages})
     </insert>
 
     <update id="updateContent" parameterType="Course">
         UPDATE course
-        SET music_path=#{musicPath}, name=#{name}, subtitle=#{subtitle},cover=#{cover}, state=#{state},music_name=#{musicName}, template_id=#{templateId}, pages=#{pages}
+        SET music_path=#{musicPath}, name=#{name}, subtitle=#{subtitle},cover=#{cover}, state=#{state},music_name=#{musicName}, template_id=#{templateId},material_id=#{materialId}, pages=#{pages}
         WHERE id=#{id}
     </update>
 
@@ -135,7 +137,8 @@
         create_date as createDate,
         scan_count as scanCount,
         apply_count as applyCount,
-        user_id as userId
+        user_id as userId,
+        material_id as materialId
         FROM course
         where state=1
     </select>

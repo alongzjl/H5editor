@@ -37,7 +37,6 @@ export default class SidebarContextMenu extends React.Component {
     };
 
     onShow = e => {
-    	console.log(e);
         this.setState({
             page: e.detail.data,
         });

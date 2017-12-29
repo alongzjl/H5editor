@@ -27,6 +27,15 @@ public class Course implements Serializable {
     private Integer templateId;
 
     private String pages;
+    private Integer materialId;
+
+    public Integer getMaterialId() {
+        return materialId;
+    }
+
+    public void setMaterialId(Integer materialId) {
+        this.materialId = materialId;
+    }
 
     public String getMusicName() {
         return musicName;
@@ -154,5 +163,24 @@ public class Course implements Serializable {
 
     public void setTemplateId(Integer templateId) {
         this.templateId = templateId;
+    }
+
+    public void copyPorities(Course model){
+        this.applyCount = model.getApplyCount();
+        this.cover = model.getCover();
+        this.createDate = model.getCreateDate();
+        this.isDelete = model.getDelete();
+        this.materialId = model.getMaterialId();
+        this.musicName = model.getMusicName();
+        this.name = model.getName();
+        this.musicPath = model.getMusicPath();
+        this.officialRecommend = model.getOfficialRecommend();
+        this.pages = model.getPages();
+        this.scanCount = model.getScanCount();
+        this.state = model.getState();
+        this.subtitle = model.getSubtitle();
+        this.userId = model.getUserId();
+        this.username = model.getUsername();
+        this.templateId = model.getTemplateId();
     }
 }

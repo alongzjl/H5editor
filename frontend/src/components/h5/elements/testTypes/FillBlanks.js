@@ -1,8 +1,9 @@
 import React from 'react';
+import Select from 'react-select';
 import Rnd from '../../../common/rnd/ReactRnd';
 import store from '../../../../store';
 import { changeFocus } from '../../../../actions/h5Actions';
-import { changeFillSelectList } from '../../../../actions/testActions';
+import { changeFillSelectList, checkQuestion } from '../../../../actions/testActions';
 import getPosition from '../getPosition';
 import './fillBlanks.less';
 
@@ -25,29 +26,30 @@ export default class FillBlanks extends React.Component {
     };
     changeUserAnswer = e => {
         this.setState({
-            userAnswer: e.target.value,
+            userAnswer: e.value,
         });
+        store.dispatch(checkQuestion(false));
     };
     render() {
-        const { value, focusId, viewing } = this.props;
-        if (viewing) { 
+        const { value, focusId, viewing, checking } = this.props;
+        if (viewing) {
             let selectList = value.selectList.replace(/／/ig, '/');
             selectList = selectList.split('/');
-            const error = this.state.userAnswer !== '' && this.state.userAnswer === selectList[value.answerIndex];
+            const correct = this.state.userAnswer === selectList[value.answerIndex];
+            let options = [{ value: '', label: '请选择答案' }];
+            options = options.concat(selectList.map(obj => ({ value: obj, label: obj })));
             return (
-                <select
-                    className={`fillBlankViewing ${error ? 'errorColor' : ''}`}
-                    style={{ ...value.style }}
-                    value={this.state.userAnswer}
-                    onChange={this.changeUserAnswer}
-                >
-                    <option value="">请选择答案</option>
-                    {
-                        selectList.map(obj => <option value={obj} key={obj}>
-                            {obj}
-                        </option>)
-                    }
-                </select>
+                <div style={{ ...value.style }} className={`${checking ? (correct ? '' : 'errorColor') : ''}`}>
+                    <Select
+                        name="form-field-name"
+                        value={this.state.userAnswer}
+                        style={{ color: `${checking ? (correct ? '' : 'red !important') : ''}` }}
+                        onChange={this.changeUserAnswer}
+                        clearable={false}
+                        searchable={false}
+                        options={options}
+                    />
+                </div>
             );
         }
         return (

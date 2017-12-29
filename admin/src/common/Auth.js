@@ -21,9 +21,9 @@ export default class Auth {
         sessionStorage.token = token;
         sessionStorage.user = Base64.decode(token.split('.')[1]);
         if (reload) {
-            location.href = '#/course';
+            location.href = '#/template';
         } else {
-            hashHistory.push('/course');
+            hashHistory.push('/template');
         }
     }
 }

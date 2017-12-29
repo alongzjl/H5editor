@@ -152,6 +152,18 @@ export function changeWordPinyin(pinyin) {
         pinyin,
     };
 }
+export function changeWordFace(fontFace) {
+    return {
+        type: types.WORD_FONT_FACE_CHANGE,
+        fontFace,
+    };
+}
+export function changeWordAccessKey(accessKey) {
+    return {
+        type: types.WORD_ACCESS_KEY_CHANGE,
+        accessKey,
+    };
+}
 export function changeWordSymbol(symbol, index) {
     return {
         type: types.WORD_SYMBOL_CHANGE,
@@ -277,6 +289,13 @@ export function addHighlight(element) {
 export function cancelHighlight() {
     return {
         type: types.HIGHLIGHT_CANCEL,
+        notRedoable: true,
+    };
+}
+
+export function refreshAnimation() {
+    return {
+        type: types.ANIMATION_REFRESH,
         notRedoable: true,
     };
 }

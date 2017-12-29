@@ -5,6 +5,6 @@ import React from 'react';
 
 export default function Highlight({ value }) {
     return (
-        <div style={value.style} />
+        <div style={{ ...value.style, zIndex: 101 }} />
     );
 }

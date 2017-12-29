@@ -3,6 +3,8 @@ import { connect } from 'react-redux';
 import { addLineQuestion, changeLineQuestionSort, autoChangeLineQuestionSort } from '../../../../actions/testActions';
 import './linePanel.less';
 import LineQuestionModal from '../../modal/testTypes/LineQuestionModal';
+import TestConfirmModal from '../../modal/testTypes/TestConfirmModal';
+import { addElements } from '../../../../actions/h5Actions';
 
 class LinePanel extends React.Component {
     state = {
@@ -31,14 +33,16 @@ class LinePanel extends React.Component {
 
 const mapDispatchToProps = dispatch => ({
     add(num) {
-        const line1 = new LineQuestionModal(num, '双击编辑文字', { left: '65px', top: '100px' }, 'left').plainObject();
-        const line2 = new LineQuestionModal(num, '长按插入图片', { left: '215px', top: '100px' }, 'right').plainObject();
+        const top = 100 + (50 * (num - 1));
+        const line1 = new LineQuestionModal(num, '双击编辑文字', { left: '65px', top: `${top}px` }, 'left').plainObject();
+        const line2 = new LineQuestionModal(num, '长按插入图片', { left: '215px', top: `${top}px` }, 'right').plainObject();
 
         line1.to = line2.id;
         line2.to = line1.id;
 
         dispatch(addLineQuestion(line1));
         dispatch(addLineQuestion(line2));
+        dispatch(addElements(new TestConfirmModal('line').plainObject()));
     },
     changeSort(sort) {
         dispatch(changeLineQuestionSort(sort));

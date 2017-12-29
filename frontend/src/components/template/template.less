@@ -19,6 +19,7 @@
         .left_container {
             width: 100%;
             height: 680px;
+            overflow-y: auto;
             .tempItem{
                 padding: 15px 0;
                 height:100px;
@@ -27,6 +28,7 @@
                     background: rgba(48,103,109,0.10);
                 }
                 .content{
+                    height:100px;
                     position: relative;
                     margin-left: 50px;
                     .nameAndTime{
@@ -43,7 +45,6 @@
                     overflow: hidden;
                     transform: scale(0.16,0.16);
                     transform-origin:top left;
-    
                     box-shadow: 0 2px 8px 0 rgba(0,0,0,0.20);
                 }
             }
@@ -51,14 +52,40 @@
         
     }
     .right{
-        width: e("calc(100% - 403px)");
-        height: 100%;
         background: @white;
         .part{
             width: 900px;
             height: 100%;
             margin-left: 111px;
             padding: 0.1px;
+            position:relative;
+            .man_template {
+                position:absolute;
+                top:0;
+                left:900px;
+                width:0;
+                height:100%;
+                background: #fff;
+                z-index: 20;
+                overflow: hidden;
+                .back {
+                   font-family: 'PingFangSC-Medium';
+                    font-size: 20px;
+                    color: rgba(44, 52, 64, 0.5);
+                    letter-spacing: 5px;
+                    width: 150px;
+                    height: 30px;
+                    line-height: 30px;
+                    cursor: pointer;
+                    margin-top:39px;
+                    background:url(./images/arrow@2x.png) no-repeat top left;
+                    background-size:20% 100%;
+                    padding-left:30px; 
+                } 
+                .searchItem {
+                    margin-bottom:106px;
+                }
+            }
             .searchItem{
                 width: 465px;
                 height: 40px;
@@ -90,27 +117,31 @@
                 width: 100%;
                 height: 50px;
             }
-            .course_template_my {
-                height:220px;
-                &>div {
-                    margin-right:20px;
-                    float:left;
-                    height:220px;
-                }
-            } 
+            .tem_hot {
+                margin-right:15px;
+                 color: rgba(44,52,64,0.50);
+                 &:hover {
+                     color: rgba(44,52,64, 1);
+                 }
+            }
             .tempName{
-                margin: 0 15px 0 0;
                 height: 40px;
                 line-height: 40px;
                 color: rgba(44,52,64,0.50);
-                &:hover {
-                    color: rgba(44,52,64, 1);
+                span {
+                    display:inline-block;
+                    float:right;
+                    width:50px;
+                    text-align: center;
+                    line-height: 40px;
+                    cursor:pointer;
                 }
             }
             .tempShowItem{
                 width: 80px;
                 height: 173px;
                 margin-right: 48px;
+                margin-bottom:51px;
                 p{
                     width: 100%;
                     height: 30px;
@@ -119,6 +150,7 @@
                     color: rgba(44,52,64,0.50);
                     overflow:hidden;
                     text-overflow:ellipsis;
+                    white-space: nowrap;
                 }
                 .preview {
                     width: 375px;
@@ -127,18 +159,77 @@
                     overflow: hidden;
                     transform: scale(0.20, 0.22);
                     transform-origin:2px 2px;
-                    box-shadow: 0 0 0 2px rgba(44,52,64,0.50);
-                    cursor: pointer;
+                    box-shadow: 0 2px 4px 0 rgba(0,0,0,0.20);
+                   position:relative;
                     &:hover{
-                        box-shadow: 0 0 0 2px #50CBE3;
+                        border: 10px solid #50CBE3;
+                        .shadow {
+                            display: block;
+                             
+                        }
                     }
-                    h1 {
-                        font-size:60px;
-                         transform: scale(5, 5);
-                        text-align: center;
-                        margin-top: 250px;
-                        color: rgba(44,52,64,0.50);
+                    .shadow {
+                        display: none;
+                       position:absolute;
+                       left:0;
+                        top:0;
+                        width:100%;
+                        height:100%;
+                        background: rgba(0,0,0,0.50);
+                        .setTem {
+                           background: url(./images/set_normal@2x.png) no-repeat top left;
+                           background-size:100% 100%;
+                            height: 80px; 
+                            width: 80px; 
+                            position: absolute;
+                            right: 0; 
+                            top: 10px;
+                            cursor: pointer;
+                            &>div {
+                               display: none;
+                              position:absolute;
+                               top:80px;
+                               right:-10px;
+                              h1 {
+                                   width:340px; 
+                                   border-radius: 0;
+                                  color: #505766;
+                                  margin:0; 
+                                  background: #FFFFFF;
+                                   &:hover {
+                                      color: #ffffff;
+                                      background: #00BCD3;
+                                  }
+                                  &:first-child {
+                                       border-radius: 20px 20px 0 0;
+                                  }
+                                  &:last-child {
+                                       border-radius: 0 0 20px 20px;
+                                  }
+                               }
+                            }
+                            &:hover div {
+                                display:block;
+                            }  
+                        }
+                        h1 {
+                            height:110px;
+                            width:276px;
+                            background: #00BCD3;
+                            box-shadow: 0 10px 20px 0 rgba(0,0,0,0.20);
+                            border-radius: 20px;
+                            font-family: 'PingFangSC-Regular';
+                            font-size: 45px;
+                            color: rgba(255,255,255,.7);
+                            letter-spacing: 10px;
+                            margin:460px auto 0;
+                            line-height:110px;
+                            text-align: center;
+                             cursor: pointer;
+                        }
+                        
                     }
+                  
                 }
             }
         }

@@ -8,6 +8,8 @@ import NoteModal from '../modal/NoteModal';
 import noty from '../../common/noty/noty';
 import './addBeiZhuDialog.less';
 import t from '../../i18n';
+import disableScroll from './disableScroll';
+import commonCss from '../commonCssNav';
 
 class AddBeiZhuDialog extends React.Component {
     constructor(props) {
@@ -44,7 +46,16 @@ class AddBeiZhuDialog extends React.Component {
     render() {
         const note = this.state.note;
         return (
-            <SkyLightStateless onCloseClicked={this.hide} onOverlayClicked={this.hide} isVisible={!this.props.hidden} title={t('note_title')}>
+            <SkyLightStateless
+                dialogStyles={{ ...commonCss.dialogStyles, paddingBottom: '40px' }}
+                titleStyle={commonCss.titleStyle}
+                closeButtonStyle={commonCss.closeButtonStyle}
+                onCloseClicked={this.hide}
+                onOverlayClicked={this.hide}
+                isVisible={!this.props.hidden}
+                title={t('note_title')}
+                {...disableScroll()}
+            >
                 <textarea className="bei_zhu" placeholder={t('note_placeholder')} onChange={this.change} value={note.text} />
                 <p className="last_beiZhu">{note.text.length}/300</p>
                 <ul className="audioBtn beiZhu_btn">

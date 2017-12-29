@@ -8,7 +8,7 @@ import SockJS from 'sockjs-client';
 import Stomp from 'stompjs';
 import 'swiper/dist/css/swiper.css';
 import store from '../../store';
-import { changeCourse } from '../../actions/h5Actions';
+import { changeCourse, refreshAnimation } from '../../actions/h5Actions';
 import Page from './elements/Page';
 import Fetch from '../../common/FetchIt';
 import API_URL from '../../common/url';
@@ -24,14 +24,26 @@ class Viewer extends React.Component {
         pages: [],
     };
     componentDidMount = () => {
-        this.loadData();
-    };
-
+    	 this.loadData(this.load_style); 
+    };  
+	load_style = (pages)=>{
+		const courseFontFamily = pages;
+    	let style_font = '';
+		courseFontFamily.length !== 0 ? courseFontFamily.forEach(item=>{
+			item.elements.forEach(value=>{
+				value.fontFace ? style_font += value.fontFace.fontFace : null
+			})
+		}) : null; 
+		const newStyle = document.createElement('style');
+		newStyle.appendChild(document.createTextNode(style_font));
+		document.head.appendChild(newStyle);
+	}
     connect = () => {
         const baseDomain = API_URL.domain.substring(0, API_URL.domain.indexOf('/', 8));
         const socket = new SockJS(`${baseDomain}/ws`);
         this.stompClient = Stomp.over(socket);
         this.stompClient.connect({}, frame => {
+            console.log(`Connected: ${frame}`);
             const type = this.props.params.type;
             if (type === 'c') {
                 this.stompClient.subscribe('/topic/flip', data => {
@@ -51,25 +63,36 @@ class Viewer extends React.Component {
         }
         console.log('Disconnected');
     };
-
-    loadData = () => {
+    
+    loadData = (fn) => {
         const id = this.props.params.id;
         if (!id) {
             const pages = window.pages;
             store.dispatch(changeCourse(0, pages));
             this.initSwiper();
         } else {
-            Fetch.get(`${API_URL.course.show}/${id}`).then(course => {
+            Fetch.get(`${API_URL.course.show}${id}`).then(course => {
                 const pages = JSON.parse(course.pages);
                 store.dispatch(changeCourse(course.id, pages));
                 this.initSwiper();
+                fn(pages);
             });
         }
     };
     initSwiper = () => {
         this.swiper = new Swiper('.swiper-container', {
             loop: false,
-        });
+            effect: 'coverflow', // 'slide' or 'fade' or 'cube' or 'coverflow' or 'flip'
+            autoplay:false, 
+            on:{
+            	 slideNextTransitionEnd: function(){
+				 refreshAn(); 
+				},
+				 slidePrevTransitionEnd: function(){
+			      refreshAn(); 
+			    },
+			 }
+         });
         const type = this.props.params.type;
         const id = this.props.params.id;
         if (type === 'b') {
@@ -98,5 +121,8 @@ const mapStateToProps = function (store) {
         pages: store.h5State.present.pages,
     };
 };
-
+const refreshAn = () => { 
+    store.dispatch(refreshAnimation());
+};
+    
 export default connect(mapStateToProps)(Viewer);

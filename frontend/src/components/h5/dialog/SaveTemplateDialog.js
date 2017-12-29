@@ -8,6 +8,8 @@ import Fetch from '../../../common/FetchIt';
 import API_URL from '../../../common/url';
 import t from '../../i18n';
 import './saveTemplateDialog.less';
+import disableScroll from './disableScroll';
+import commonCss from '../commonCssNav';
 
 export default class SaveTemplateDialog extends React.Component {
     state = {
@@ -41,23 +43,15 @@ export default class SaveTemplateDialog extends React.Component {
         });
     };
     render() {
-        const previewDialog = {
-            height: 'auto',
-            minHeight: '480px',
-            width: '720px',
-            margin: '0 auto',
-            boxShadow: '0 4px 10px 0 ',
-            borderRadius: '6px',
-            left: 0,
-            right: 0,
-            top: '100px',
-        };
         return (
             <SkyLight
-                dialogStyles={previewDialog}
+                dialogStyles={{ ...commonCss.dialogStyles, width: '720px' }}
+                titleStyle={commonCss.titleStyle}
+                closeButtonStyle={commonCss.closeButtonStyle}
                 hideOnOverlayClicked
                 ref={com => { this.previewModal = com; }}
                 title=""
+                {...disableScroll()}
             >
                 <div className="saveTemplateDialog">
                     <div className="flex_row_between">

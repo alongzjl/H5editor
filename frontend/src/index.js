@@ -39,7 +39,7 @@ ReactDOM.render(
         <Router history={hashHistory}>
             <Route path="/" component={App}>
              <IndexRoute component={Template}/>  
-				 				<Route path="builder" component={Builder} /> 
+				 <Route path="builder" component={Builder} /> 
                 <Route path="login" component={Login} /> 
                 <Route path="template" component={Template} /> 
             </Route>

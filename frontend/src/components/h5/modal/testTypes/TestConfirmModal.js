@@ -1,10 +1,10 @@
 import BaseModal from '../BaseModal';
 
 export default class TestConfirmModal extends BaseModal {
-    constructor() {
+    constructor(title) {
         super();
         this.name = 'TestConfirmModal';
-        this.title = '';
+        this.title = title;
         this.editable = false;
     }
 }

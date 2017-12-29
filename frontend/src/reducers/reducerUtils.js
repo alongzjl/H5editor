@@ -12,7 +12,7 @@ import regeneratorRuntime from 'regenerator-runtime';
  * @param valueIndex 如果是数据，传递这个值所在数组的索引
  * @returns {*}
  */
-export function doChangeElementValue(imState, elementId, key, value, valueIndex) {
+function getNewElementAndNewPage(imState, elementId, key, value, valueIndex) {
     const pages = imState.get('pages');
     const currentPage = pages.get(imState.get('currentPage'));
     const elements = currentPage.get('elements');
@@ -35,13 +35,44 @@ export function doChangeElementValue(imState, elementId, key, value, valueIndex)
         newElement = elements.get(index).set(key, value);
     }
     const newPage = currentPage.set('elements', elements.set(index, newElement));
+    return [newElement, newPage];
+}
+
+export function doChangeElementValue(imState, elementId, key, value, valueIndex) {
+    const pages = imState.get('pages');
+    const [newElement, newPage] = getNewElementAndNewPage(imState, elementId, key, value, valueIndex);
     const newState = imState.merge({ pages: pages.set(imState.get('currentPage'), newPage), focus: newElement });
+    return newState.toJS();
+}
+
+export function doChangeElementValueWithoutChangeFocus(imState, elementId, key, value, valueIndex) {
+    const pages = imState.get('pages');
+    const [newElement, newPage] = getNewElementAndNewPage(imState, elementId, key, value, valueIndex);
+    const newState = imState.set('pages', pages.set(imState.get('currentPage'), newPage));
     return newState.toJS();
 }
 
 export function changeElementValue(imState, key, value, valueIndex) {
     const elementId = imState.get('focus').get('id');
     return doChangeElementValue(imState, elementId, key, value, valueIndex);
+}
+
+export function changeMultiElementValue(imState, key, value) {
+    const pages = imState.get('pages');
+    const currentPage = pages.get(imState.get('currentPage'));
+    const elementId = imState.get('focus').get('id');
+    let newElement = null;
+    const newPage = currentPage.update('elements', elements => elements.map(element => {
+        if (element.get('id') === elementId) {
+            newElement = element.set(key, element.get(key).merge(value));
+            return newElement;
+        } else if (imState.get('selects').includes(element.get('id'))) {
+            return element.set(key, element.get(key).merge(value));
+        }
+        return element;
+    }));
+    const newState = imState.merge({ pages: pages.set(imState.get('currentPage'), newPage), focus: newElement });
+    return newState.toJS();
 }
 
 // 修改当前页面的值

@@ -2,7 +2,8 @@
     position: absolute;
     right: 0;
     top:4px;
-    min-height: calc(~"100%");
+    height: calc(~"100% - 4px");
+    overflow-y: auto; 
     width: 300px; 
     background: #FFFFFF;
     box-shadow: 0 2px 4px 0 rgba(0,0,0,0.10);
@@ -33,28 +34,9 @@
         }
         border-bottom: 2px solid #00BCD3;
     }
-} 
-//.testLists {
-//   li {
-//       p {
-//            height:78px;
-//           line-height: 78px;
-//           background: #FFFFFF;
-//           font-family: PingFangSC-Regular;
-//            font-size: 16px;
-//            color: #505766;
-//            letter-spacing: 0;
-//            cursor: pointer;
-//            border-bottom: 1px solid #F1F5F5;
-//        }
-//        .testDetails {
-//            height:350px;
-//        }
-//        .show {
-//            display: block;
-//        }
-//        .hide {
-//            display: none;
-//        }
-//   }
-//}
+}
+.noTitle{
+    .tabs-navigation{
+        display: none;
+    }
+}

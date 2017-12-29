@@ -14,6 +14,9 @@ export default class ShapeModal extends BaseModal {
             fillOpacity: 1,
             shadow: { r: 0, g: 0, b: 0, a: 0 },
             transform: 'rotate(0deg)',
+            position: 'absolute',
+            top: 0,
+            left: 0,
         };
         this.animations = [];
         this.action = {};

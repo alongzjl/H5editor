@@ -3,18 +3,22 @@
  */
 import React from 'react';
 import { ContextMenuTrigger } from 'react-contextmenu';
+import Draggable from 'react-draggable';
 import H5ContextMenu from './H5ContextMenu';
 import Page from '../elements/Page';
 import './pageContainer.less';
 import Sidebar from './Sidebar';
 import AddImageDialog from '../dialog/addImageDialog';
 import store from '../../../store';
-import { alignElements } from '../../../actions/h5Actions';
+import { alignElements, refreshAnimation } from '../../../actions/h5Actions';
 import t from '../../i18n';
 
 class PageContainer extends React.Component {
     showImage = () => {
         this.addImageModal.show();
+    };
+    refreshAnimation = () => {
+        store.dispatch(refreshAnimation());
     };
     render() {
         const { currentPage, pages, focusId, selects } = this.props;
@@ -32,6 +36,7 @@ class PageContainer extends React.Component {
                     </ContextMenuTrigger>
                     <Sidebar />
                     <MultipleSelect selects={selects} />
+                    <button onClick={this.refreshAnimation} className="refreshAnimation">预览页面</button>
                 </div>
                 <H5ContextMenu />
                 <AddImageDialog ref={com => { this.addImageModal = com; }} focus={{ id: focusId }} />
@@ -70,19 +75,21 @@ class MultipleSelect extends React.Component {
             return null;
         }
         return (
-            <div className="alignElement">
-                <h3>{t('align')}</h3>
-                <div className="flex_row_between">
-                    <img src={require('./images/align_left.png')} alt="" onClick={this.alignLeft} />
-                    <img src={require('./images/align_right.png')} alt="" onClick={this.alignRight} />
-                    <img src={require('./images/align_center.png')} alt="" onClick={this.alignCenter} />
-                    <img src={require('./images/align_top.png')} alt="" onClick={this.alignTop} />
-                    <img src={require('./images/align_botton.png')} alt="" onClick={this.alignBottom} />
-                    <img src={require('./images/align_middle.png')} alt="" onClick={this.alignMiddle} />
-                    <img src={require('./images/align_horizontal.png')} alt="" onClick={this.alignHorizontal} />
-                    <img src={require('./images/align_vertical.png')} alt="" onClick={this.alignVertical} />
+            <Draggable>
+                <div className="alignElement">
+                    <h3>{t('align')}</h3>
+                    <div className="flex_row_between">
+                        <img src={require('./images/align_left.png')} alt="" onClick={this.alignLeft} />
+                        <img src={require('./images/align_right.png')} alt="" onClick={this.alignRight} />
+                        <img src={require('./images/align_center.png')} alt="" onClick={this.alignCenter} />
+                        <img src={require('./images/align_top.png')} alt="" onClick={this.alignTop} />
+                        <img src={require('./images/align_botton.png')} alt="" onClick={this.alignBottom} />
+                        <img src={require('./images/align_middle.png')} alt="" onClick={this.alignMiddle} />
+                        <img src={require('./images/align_horizontal.png')} alt="" onClick={this.alignHorizontal} />
+                        <img src={require('./images/align_vertical.png')} alt="" onClick={this.alignVertical} />
+                    </div>
                 </div>
-            </div>
+            </Draggable>
         );
     }
 }

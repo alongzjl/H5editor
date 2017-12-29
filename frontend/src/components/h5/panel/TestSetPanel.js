@@ -28,7 +28,7 @@ export default class TestSetPanel extends React.Component {
                 this.chooseType(2);
             } else if (element.name === 'SortQuestionModal') {
                 this.chooseType(4);
-            } else if (element.name === 'WordModal' && element.answer !== undefined && element.answer !== -1) {
+            } else if (element.name === 'WordModal' && element.answer !== undefined && element.answer !== -1 && element.answer !== 'sort') {
                 this.chooseType(1);
             } else if (element.name === 'LineQuestionModal') {
                 this.chooseType(3);
@@ -44,6 +44,7 @@ export default class TestSetPanel extends React.Component {
         ];
         return (
             <div>
+                <div className="testSetPanelHead"> {this.state.type === 0 && t('question_select_title')}</div>
                 <ul className="testLists">
                     {
                         types.map(item => (

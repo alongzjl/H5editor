@@ -33,6 +33,7 @@ export const Triangle = ({ style, onSelected = () => {} }) => {
         <svg width={`${parseInt(style.width)}`} height={`${parseInt(style.height)}`} onClick={selectShape}>
             <polygon
                 strokeDasharray={style.strokeDasharray}
+                strokeLinejoin={style.strokeLinecap ? style.strokeLinecap : 'inherit'}
                 points={`${parseInt(style.width) / 2},0 ${parseInt(style.width)},${parseInt(style.height)} 0,${parseInt(style.height)}`}
                 fill={style.fill} stroke={style.stroke} strokeWidth={style.strokeWidth} fillOpacity={style.fillOpacity}
             />
@@ -51,6 +52,7 @@ export const Circle = ({ style, onSelected = () => {} }) => {
         <svg width={`${defaultLong}`} height={`${defaultLong}`} onClick={selectShape}>
             <circle
                 strokeDasharray={style.strokeDasharray}
+                strokeLinejoin={style.strokeLinecap}
                 cx={`${width / 2}`} cy={`${height / 2}`}
                 r={`${defaultLong / 2}`} fill={style.fill} stroke={style.stroke}
                 strokeWidth={style.strokeWidth}
@@ -60,7 +62,7 @@ export const Circle = ({ style, onSelected = () => {} }) => {
     );
 };
 
-export const Square = ({ style,  onSelected = () => {} }) => {
+export const Square = ({ style, onSelected = () => {} }) => {
     const selectShape = () => {
         onSelected('Square');
     };
@@ -71,6 +73,7 @@ export const Square = ({ style,  onSelected = () => {} }) => {
         <svg width={`${width}`} height={`${height}`} onClick={selectShape}>
             <rect
                 strokeDasharray={style.strokeDasharray}
+                strokeLinejoin={style.strokeLinecap}
                 width="100%" height="100%" fill={style.fill} stroke={style.stroke}
                 strokeWidth={style.strokeWidth} fillOpacity={style.fillOpacity}
             />
@@ -89,6 +92,7 @@ export const CircleSquare = ({ style, onSelected = () => {} }) => {
         <svg width={`${width}`} height={`${height}`} onClick={selectShape}>
             <rect
                 strokeDasharray={style.strokeDasharray}
+                strokeLinejoin={style.strokeLinecap}
                 rx={`${width / 10}`} ry={`${height / 10}`}
                 width="100%" height="100%" fill={style.fill} stroke={style.stroke}
                 strokeWidth={style.strokeWidth} fillOpacity={style.fillOpacity}
@@ -108,6 +112,7 @@ export const Polygon5 = ({ style, onSelected = () => {} }) => {
         <svg width={`${w}`} height={`${h}`} onClick={selectShape}>
             <polygon
                 strokeDasharray={style.strokeDasharray}
+                strokeLinejoin={style.strokeLinecap}
                 points={`${0.5 * w},0 ${w},${0.4 * h} ${0.8 * w},${h} ${0.2 * w},${h} 0,${0.4 * h}`}
                 fill={style.fill} stroke={style.stroke} strokeWidth={style.strokeWidth}
                 fillOpacity={style.fillOpacity}
@@ -126,6 +131,7 @@ export const Polygon8 = ({ style, onSelected = () => {} }) => {
         <svg width={`${w}`} height={`${h}`} onClick={selectShape}>
             <polygon
                 strokeDasharray={style.strokeDasharray}
+                strokeLinecap={style.strokeLinecap}
                 points={`${0.5 * w},0 ${0.85 * w},${0.15 * h} ${w},${0.5 * h} ${0.85 * w},${0.85 * h} ${0.5 * w},${h} ${0.15 * w},${0.85 * h} 0,${0.5 * h} ${0.15 * w},${0.15 * h}`}
                 fill={style.fill} stroke={style.stroke} strokeWidth={style.strokeWidth}
                 fillOpacity={style.fillOpacity}
@@ -144,6 +150,7 @@ export const Star = ({ style, onSelected = () => {} }) => {
         <svg width={`${w}`} height={`${h}`} onClick={selectShape}>
             <polygon
                 strokeDasharray={style.strokeDasharray}
+                strokeLinecap={style.strokeLinecap}
                 points={`${0.5 * w},0 ${0.65 * w},${0.35 * h} ${w},${0.4 * h} ${0.75 * w},${0.65 * h} ${0.8 * w},${h} ${0.5 * w},${0.85 * h} ${0.2 * w},${h} ${0.25 * w},${0.65 * h} 0,${0.4 * h} ${0.35 * w},${0.35 * h}`}
                 fill={style.fill} stroke={style.stroke} strokeWidth={style.strokeWidth}
                 fillOpacity={style.fillOpacity}
@@ -176,6 +183,7 @@ export const LineArrow = ({ style, onSelected = () => {} }) => {
             </defs>
             <line
                 strokeDasharray={style.strokeDasharray}
+                strokeLinecap={style.strokeLinecap}
                 x1="0" y1={h} x2={w - 5} y2="5" fill={style.fill} stroke={style.fill}
                 strokeWidth={style.strokeWidth ? style.strokeWidth : '1'} markerEnd="url(#arrow)"
                 fillOpacity={style.fillOpacity}

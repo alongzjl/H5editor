@@ -3,6 +3,7 @@ import Rnd from '../../common/rnd/ReactRnd';
 import store from '../../../store';
 import { changeFocus, selectMultiple } from '../../../actions/h5Actions';
 import './video.less';
+import getPosition from './getPosition';
 
 export default class Video extends React.Component {
     onClicked = e => {
@@ -38,6 +39,7 @@ export default class Video extends React.Component {
                 className={focusId === value.id ? 'focused' : ''}
                 style={value.style}
                 isDraggable
+                initial={getPosition(value)}
             >
                 <div
                     className={`${value.className} videoPlayer ${selectedClass}`}

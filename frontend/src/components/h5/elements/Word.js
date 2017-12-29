@@ -2,14 +2,14 @@
  * Created by sunlong on 2017/3/20.
  */
 import React from 'react';
-import pinyin from 'pinyin';
 import Rnd from '../../common/rnd/ReactRnd';
 import store from '../../../store';
 import Shapes from './shapes/Shapes';
 import Action from './Action';
 import './word.less';
-import { changeFocus, changeWordEditable, changeWordText, changeStyle, changeWordSymbol, selectMultiple } from '../../../actions/h5Actions';
-import { changeSortAnswerShow, changeSortQuestionStyle } from '../../../actions/testActions';
+import { changeFocus, changeWordEditable, changeWordText, changeStyle, changeWordSymbol, selectMultiple, changeWordPinyin } from '../../../actions/h5Actions';
+import { changeSortAnswerShow, changeSortQuestionStyle, checkQuestion } from '../../../actions/testActions';
+import { convert } from '../panel/WordPanel';
 
 function getStyle(value) {
     const animation = {
@@ -47,9 +47,11 @@ class Word extends React.Component {
         });
     };
     componentWillReceiveProps() { // 属性变化时，动画重新播放
-        this.setState({
-            index: 0,
-        });
+        if (this.state.index === this.props.value.animations.length) {
+            this.setState({
+                index: 0,
+            });
+        }
     }
     wordClicked = e => {
         if ((navigator.platform.indexOf('Mac') === 0 && e.metaKey) || (navigator.platform.indexOf('Mac') !== 0 && e.ctrlKey)) {
@@ -83,7 +85,9 @@ class Word extends React.Component {
         }
     };
     render() {
-        const { value, viewing, focusId, sort, selected } = this.props;
+        const { value, viewing, focusId, sort, selected, checking } = this.props;
+        value.pinyins = value.pinyins ? value.pinyins : [];
+
         let animation = {};
         if (value.animations && (value.animations.length > this.state.index)) {
             animation = value.animations[this.state.index];
@@ -95,7 +99,7 @@ class Word extends React.Component {
             animationIterationCount: animation.animationIterationCount,
         });
 
-        if (value.pinyin && !value.contenteditable) {
+        if (value.pinyins.length > 0) {
             return (
                 <PinYinWord
                     onClick={this.wordClicked}
@@ -123,19 +127,39 @@ class Word extends React.Component {
         }
 
         let isHaveSort = '';
-        sort.forEach(item => {
-            if (item.name === 'SortQuestionModal') {
+        if (value.answer !== undefined && value.answer !== '' && value.answer !== -1) {
+            if (value.answer === 'sort') {
                 isHaveSort = 'SortQuestionModal';
-            } else if (item.answer && item.answer !== -1) {
+            } else {
                 isHaveSort = 'ItemsChoose';
             }
-        });
+        }
+
         if (viewing && (isHaveSort === 'SortQuestionModal')) {
-            return <ItemsSort value={value} sort={sort} />;
+            return (
+                <ItemsSort
+                    value={value}
+                    sort={sort}
+                    onAnimationEnd={this.onAnimationEnd}
+                />
+            );
         } else if (viewing && (isHaveSort === 'ItemsChoose')) {
-            return <ItemsChoose value={value} />;
+            return (
+                <Action action={value.action}>
+                    <ItemsChoose value={value} checking={checking} onAnimationEnd={this.onAnimationEnd} />
+                </Action>
+            );
         } else if (viewing) {
-            return <Action action={value.action}><div className={value.style.className} style={{ ...value.style, height: 'auto', lineHeight: 'normal' }} dangerouslySetInnerHTML={{ __html: value.text }} /></Action>;
+            return (
+                <Action action={value.action}>
+                    <div
+                        className={value.style.className}
+                        style={{ ...value.style, height: 'auto', lineHeight: 'normal' }}
+                        dangerouslySetInnerHTML={{ __html: value.text }}
+                        onAnimationEnd={this.onAnimationEnd}
+                    />
+                </Action>
+            );
         }
         const selectedClass = selected ? 'selected' : '';
         return (
@@ -148,7 +172,7 @@ class Word extends React.Component {
                 initial={getPosition(value)}
             >
                 <div
-                    className={`${focusId === value.id ? value.style.className : ''} word_common ${selectedClass}`}
+                    className={`${(focusId === value.id || focusId === -1) ? value.style.className : ''} word_common ${selectedClass}`}
                     style={getStyle(value)}
                     contentEditable={value.contenteditable}
                     onBlur={this.handleBlur}
@@ -177,23 +201,35 @@ class ItemsSort extends React.Component {
         store.dispatch(changeSortQuestionStyle({ color: 'black' }));
     };
     render() {
-        const { value } = this.props;
-        return <div onClick={this.sortChoose} className="sort_word" style={{ ...value.style, height: 'auto' }}>{ value.text }</div>;
+        const { value, onAnimationEnd } = this.props;
+        return (
+            <div
+                onClick={this.sortChoose}
+                className={`sort_word ${value.style.className}`}
+                style={{ ...value.style, height: 'auto' }}
+                onAnimationEnd={onAnimationEnd}
+            >
+                { value.text }
+            </div>
+        );
     }
 }
 
 class ItemsChoose extends React.Component {
     state = {
         correct: undefined,
+        selected: '',
     };
     ItemsChooseClick = () => {
+    	console.log(this.props.value.answer);
         this.setState({
-            correct: this.props.value.answer === 1,
+            correct: this.props.value.answer  ?  1 : undefined,
+            selected: this.state.selected === '' ? 'optionSelected' : '',
         });
+        store.dispatch(checkQuestion(false));
     };
-
     render() {
-        const { value } = this.props;
+        const { value, checking, onAnimationEnd, focusId } = this.props;
         let text = value.text;
         let img = '';
         const imgStyle = {
@@ -203,7 +239,7 @@ class ItemsChoose extends React.Component {
             marginLeft: '-6px',
         };
         let color = value.style.color;
-        if (this.state.correct !== undefined) {
+        if (checking && this.state.selected !== '' && this.state.correct !== undefined) {
             text = text.length > 2 ? text.substring(2) : text;
             img = this.state.correct ? <img style={imgStyle} src={require('./images/correct.png')} /> : <img src={require('./images/wrong.png')} style={imgStyle} />;
             color = this.state.correct ? '#00bcd3' : '#e42e42';
@@ -213,16 +249,49 @@ class ItemsChoose extends React.Component {
             display: 'inline-block',
             color,
         };
-        return <div onClick={this.ItemsChooseClick} className="ItemsChoose" style={{ ...value.style, height: 'auto' }}>{img}<span style={spanStyle}>{ text }</span></div>;
+        return (
+            <div
+                onClick={this.ItemsChooseClick}
+                className={`ItemsChoose ${!checking ? this.state.selected : ''} ${value.style.className}`}
+                style={{ ...value.style, height: 'auto' }}
+                onAnimationEnd={onAnimationEnd}
+            >
+                {img}<span style={spanStyle}>{ text }</span>
+            </div>
+        );
     }
 }
 
-const Item = ({ pinyin, text }) => (
-    <div className="flex_column_start pinyinItem">
-        <div dangerouslySetInnerHTML={{ __html: pinyin }} />
-        <div dangerouslySetInnerHTML={{ __html: text }} />
-    </div>
-);
+class Item extends React.Component {
+    componentDidUpdate(prevProp, prevState) {
+        this.text.innerHTML = prevProp.text[0];
+    }
+    blur = (key, value) => {
+        if (key === 'text') {
+            this.props.onBlur(this.props.index, convert(value));
+        } else {
+            this.props.onBlur(this.props.index, { pinyin: value, text: this.props.text });
+        }
+    };
+    render() {
+        const { pinyin, text, contenteditable } = this.props;
+        return (
+            <div className="flex_column_start pinyinItem">
+                <div
+                    dangerouslySetInnerHTML={{ __html: pinyin }}
+                    contentEditable={contenteditable}
+                    onBlur={e => this.blur('pinyin', e.target.innerHTML)}
+                />
+                <div
+                    dangerouslySetInnerHTML={{ __html: text }}
+                    ref={com => this.text = com}
+                    contentEditable={contenteditable}
+                    onBlur={e => this.blur('text', e.target.innerHTML)}
+                />
+            </div>
+        );
+    }
+}
 
 const getClassName = textAlign => {
     let className = 'flex_row_start';
@@ -235,26 +304,13 @@ const getClassName = textAlign => {
 };
 
 class PinYinWord extends React.Component {
-    convert = text => {
-        text = text.replace(/<[^>]+>/g, '');
-        const pinyinContent = pinyin(text);
-        return pinyinContent.map(item => {
-            let value = '';
-            const textStr = text.substring(0, 1);
-            const testChinese = /^[\u4e00-\u9fa5]+$/;
-            if (testChinese.test(textStr)) {
-                value = textStr;
-                text = text.substring(1);
-            } else {
-                value = item[0];
-                text = text.substring(item[0].length);
-            }
-            return { pinyin: item[0], text: value };
-        });
+    handleBlur = (index, value) => {
+        const newPinyins = this.props.value.pinyins.slice(0, index).concat(value).concat(this.props.value.pinyins.slice(index + 1));
+        store.dispatch(changeWordEditable(this.props.value.id, false));
+        store.dispatch(changeWordPinyin(newPinyins));
     };
     render() {
         const { viewing, value, onClick, onDoubleClick, focusId, onAnimationEnd, selected } = this.props;
-        const pinyinTexts = this.convert(value.text);
 
         const className = getClassName(value.style.textAlign);
         if (viewing) {
@@ -265,7 +321,7 @@ class PinYinWord extends React.Component {
                     onAnimationEnd={onAnimationEnd}
                 >
                     {
-                        pinyinTexts.map((item, index) => <Item pinyin={item.pinyin} text={item.text} key={`item${index}`} />)
+                        value.pinyins.map((item, index) => <Item pinyin={item.pinyin} text={item.text} key={`item${index}`} />)
                     }
                 </div>
             );
@@ -287,7 +343,16 @@ class PinYinWord extends React.Component {
                     onAnimationEnd={onAnimationEnd}
                 >
                     {
-                        pinyinTexts.map((item, index) => <Item pinyin={item.pinyin} text={item.text} key={`item${index}`} />)
+                        value.pinyins.map((item, index) => (
+                            <Item
+                                pinyin={item.pinyin}
+                                text={item.text}
+                                key={`item${index}`}
+                                index={index}
+                                contenteditable={value.contenteditable}
+                                onBlur={this.handleBlur}
+                            />
+                        ))
                     }
                 </div>
             </Rnd>

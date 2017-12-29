@@ -7,6 +7,7 @@ export default class FillBlanksModal extends BaseModal {
         this.style = {
             width: '180px',
             height: '32px',
+            position: 'absolute',
             ...style,
         };
         this.num = num;

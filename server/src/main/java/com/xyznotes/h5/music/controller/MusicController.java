@@ -41,7 +41,6 @@ public class MusicController {
         Criteria criteria = new Criteria();
         criteria.page = page;
         criteria.pageSize = pageSize;
-        criteria.conditionMap.put("is_public", isPublic);
 
         if (categoryId!=null && categoryId != 0) {
             if (categoryId == -1) {
@@ -54,6 +53,8 @@ public class MusicController {
 
         if (!isPublic) {
             criteria.conditionMap.put("user_id", userToken.getId());
+        }else{
+            criteria.conditionMap.put("is_public", true);
         }
 
         return new Result<>(true, musicService.list(criteria));
@@ -66,9 +67,11 @@ public class MusicController {
     @ResponseBody
     public Result listAll(Boolean isPublic, Integer categoryId, String keyword, @RequestAttribute("userid") UserToken userToken) throws AppException {
         Criteria criteria = new Criteria();
-        criteria.conditionMap.put("is_public", isPublic);
+
         if (!isPublic) {
             criteria.conditionMap.put("user_id", userToken.getId());
+        }else{
+            criteria.conditionMap.put("is_public", true);
         }
         if (categoryId != 0) {
             if (categoryId == -1) {

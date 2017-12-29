@@ -7,6 +7,7 @@ import store from '../../../store';
 import Action from './Action';
 import { changeFocus, selectMultiple } from '../../../actions/h5Actions';
 import Shapes from './shapes/Shapes';
+import getPosition from './getPosition';
 
 class Shape extends React.Component {
     state = {
@@ -40,8 +41,8 @@ class Shape extends React.Component {
             animationDelay: animation.animationDelay,
             animationDuration: animation.animationDuration,
             animationIterationCount: animation.animationIterationCount,
-        }); 
-		const boxShadow = style.shadow ? `rgba(${style.shadow.r}, ${style.shadow.g}, ${style.shadow.b}, ${style.shadow.a}) 0px 8px 10px` : {};
+        });
+        const boxShadow = style.shadow ? `rgba(${style.shadow.r}, ${style.shadow.g}, ${style.shadow.b}, ${style.shadow.a}) 0px 8px 10px` : {};
         if (viewing) {
             return (
                 <Action action={value.action}>
@@ -56,6 +57,8 @@ class Shape extends React.Component {
                             animationDelay: animation.animationDelay,
                             animationDuration: animation.animationDuration,
                             animationIterationCount: animation.animationIterationCount,
+                            transform: style.transform,
+                            visibility: style.visibility,
                             boxShadow,
                         }}
                         onAnimationEnd={this.onAnimationEnd}
@@ -76,9 +79,10 @@ class Shape extends React.Component {
                 className={focusId === value.id ? 'focused' : ''}
                 isDraggable
                 style={style}
+                initial={getPosition(value)}
             >
                 <div
-                    className={focusId === value.id ? `${animation.className} ${selectedClass}` : selectedClass}
+                    className={(focusId === value.id || focusId === -1) ? `${animation.className} ${selectedClass}` : selectedClass}
                     style={{
                         animationDelay: animation.animationDelay,
                         animationDuration: animation.animationDuration,

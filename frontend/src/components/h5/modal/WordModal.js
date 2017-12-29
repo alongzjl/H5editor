@@ -8,17 +8,23 @@ export default class WordModal extends BaseModal {
         super();
         this.text = text;
         this.style = Object.assign({}, {
+            position: 'absolute',
             height: '26px',
-            fontSize: '14px',
-            width: '92px',
-            textAlign: 'center',
+            fontSize: '20px',
+            width: '120px',
+            textAlign: 'left',
+            top: 0,
+            left: 0,
+            transform: 'rotate(0deg)',
         }, style);
         this.name = 'WordModal';
-        this.pinyin = false;
+        this.pinyins = [];
         this.symbol = [];
         this.animations = [];
         this.contenteditable = false;
         this.action = {};
         this.answer = answer;
+        this.fontFace = ''; 
+        this.accessKey = 'acc87a2f8c8042b798071f8b61de1450'; 
     }
 }

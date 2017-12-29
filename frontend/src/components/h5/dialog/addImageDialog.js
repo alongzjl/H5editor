@@ -1,9 +1,12 @@
 import React from 'react';
 import SkyLight from 'react-skylight';
 import Pagination from 'rc-pagination';
+import 'react-dropzone-component/styles/filepicker.css';
+import 'react-dropzone-component/node_modules/dropzone/dist/dropzone.css';
 import 'rc-pagination/assets/index.css';
 import ImageModal from '../modal/ImageModal';
 import FileUploader from '../../common/fileUpload/fileUploader';
+import DragUpload from '../../common/fileUpload/DragUpload';
 import store from '../../../store';
 import { addElements, changeImage, changePageStyle } from '../../../actions/h5Actions';
 import './addImageDialog.less';
@@ -12,6 +15,8 @@ import Fetch from '../../../common/FetchIt';
 import API_URL from '../../../common/url';
 import Noty from '../../common/noty/noty';
 import t from '../../i18n';
+import disableScroll from './disableScroll';
+import commonCss from '../commonCssNav';
 
 export default class AddImageDialog extends React.Component {
     constructor(props) {
@@ -61,27 +66,15 @@ export default class AddImageDialog extends React.Component {
     };
 
     render() {
-        const addImageDialog = {// 添加图片弹窗样式
-            width: '780px',
-            height: 'auto',
-            color: '#505766',
-            zIndex: '101!important',
-            background: '#f9f9f9',
-            margin: '0 auto',
-            boxShadow: '0 4px 10px 0',
-            left: 0,
-            right: 0,
-            top: '50px',
-            borderRadius: '6px',
-        };
         return (
             <SkyLight
-                dialogStyles={addImageDialog}
+                dialogStyles={commonCss.dialogStyles}
+                titleStyle={commonCss.titleStyle}
+                closeButtonStyle={commonCss.closeButtonStyle}
                 hideOnOverlayClicked
-                ref={com => {
-                    this.imageModal = com;
-                }}
+                ref={com => { this.imageModal = com; }}
                 title="图片素材"
+                {...disableScroll()}
             >
                 <div className="addImageBody flex_row_start">
                     <div className="left flex_column_between">
@@ -205,19 +198,25 @@ class Images extends React.Component {
     render() {
         if (this.state.current === '本地上传') {
             return (
-                <div className="flex_row_center flex_vertical_bottom">
-                    <FileUploader
-                        options={{
-                            baseUrl: API_URL.image.upload,
-                            multiple: true,
-                            uploadSuccess: () => {
+                <div>
+                    <DragUpload
+                        acceptedFiles="image/*"
+                        changeSelect={() => this.props.changeSelect('contentLi', '我的图库')}
+                        postUrl={API_URL.image.upload}
+                    />
+                    <div className="flex_row_center flex_vertical_bottom">
+                        <FileUploader
+                            url={API_URL.image.upload}
+                            multiple
+                            onSuccess={() => {
                                 Noty.success(t('file_upload_success'));
                                 this.props.changeSelect('contentLi', '我的图库');
-                            },
-                        }}
-                    >
-                        <button ref="chooseAndUpload" className="uploadBtn">{t('file_select')}</button>
-                    </FileUploader>
+                            }}
+                            accept="image/*"
+                        >
+                            <button className="uploadBtn">{t('file_select')}</button>
+                        </FileUploader>
+                    </div>
                 </div>
             );
         }
@@ -287,22 +286,11 @@ export class PreviewDialog extends React.Component {
     };
 
     render() {
-        const previewDialog = {// 预览图片弹窗样式
-            height: 'auto',
-            minHeight: '400px',
-            margin: '0 auto',
-            color: '##505766',
-            left: 0,
-            right: 0,
-            top: '250px',
-            width: '780px',
-            background: '#F9F9F9',
-            boxShadow: '0 4px 10px 0 rgba(0,0,0,0.20)',
-            borderRadius: '6px',
-        };
         return (
             <SkyLight
-                dialogStyles={previewDialog}
+                dialogStyles={commonCss.dialogStyles}
+                titleStyle={commonCss.titleStyle}
+                closeButtonStyle={commonCss.closeButtonStyle}
                 hideOnOverlayClicked
                 ref={com => { this.previewModal = com; }}
                 title=""

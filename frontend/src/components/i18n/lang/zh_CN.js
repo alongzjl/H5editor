@@ -14,9 +14,10 @@ export default new Map([
     ['file_upload_success', '上传成功'],
     ['file_select', '选择文件'],
     ['file_use', '使用'],
+    ['file_uploading', '上传中'],
 
-    ['publish', '保存'],
-    ['publish_success', '提交审核成功，请耐心等待'],
+    ['publish', '完成'],
+    ['publish_success', '提交成功，请耐心等待'],
 
     /* 页面 */
     ['page_new', '新建页面'],
@@ -58,6 +59,7 @@ export default new Map([
     ['border_none', '无边框'],
     ['border_line', '线条'],
     ['border_dash', '点状线'],
+    ['border_radius', '圆角'],
     ['color', '颜色'],
     ['shadow', '投影'],
     ['style', '样式'],
@@ -101,7 +103,12 @@ export default new Map([
     ['video_tip', '把视频通用代码复制到组建即可使用'],
     ['video_support', '支持的视频'],
     ['video_code', '通用代码'],
+    ['video_qq', '腾讯视频'],
+    ['video_youtube', 'Youtube'],
+    ['video_tudou', '土豆'],
+    ['video_youku', '优酷'],
 
+    ['font_select', '默认'],
     ['font_hei', '黑体'],
     ['font_yahei', '微软雅黑'],
 
@@ -115,5 +122,6 @@ export default new Map([
     ['login_email_placeholder', '请输入邮箱'],
     ['login_password_placeholder', '请输入密码'],
     ['login', '登录'],
+    ['change_locale', '切换中英文会导致页面重新加载，您确定吗？'],
 
 ]);

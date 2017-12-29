@@ -3,27 +3,80 @@
  */
 import React from 'react';
 import { SketchPicker } from 'react-color';
+import pinyin from 'pinyin';
+import Select from 'react-select';
 import 'rc-slider/assets/index.css';
 import store from '../../../store';
-import { changeStyle, changeWordPinyin, toggleWordSymbol } from '../../../actions/h5Actions';
+import { changeStyle, changeWordPinyin, toggleWordSymbol, changeWordFace, changeWordAccessKey } from '../../../actions/h5Actions';
 import * as Shapes from '../elements/shapes/Shapes';
 import './fonts/iconfont.css';
 import './wordPanel.less';
 import t from '../../i18n';
+import youziku from 'youziku';
+
+const youzikuClient = new youziku.youzikuClient("0bafdccfe4251c51c3256b963087ebdf");
+
+export const convert = text2Convert => {
+    let text = text2Convert.replace(/<[^>]+>/g, '');
+    const pinyinContent = pinyin(text);
+    return pinyinContent.map(item => {
+        let value = '';
+        const textStr = text.substring(0, 1);
+        const testChinese = /^[\u4e00-\u9fa5]+$/;
+        if (testChinese.test(textStr)) {
+            value = textStr;
+            text = text.substring(1);
+        } else {
+            value = item[0];
+            text = text.substring(item[0].length);
+        }
+        return { pinyin: item[0], text: value };
+    });
+};
 
 export default class WordPanel extends React.Component {
     state = {
         buttonState: '',
+        fontFamily:''
     };
+    componentDidMount = () => {
+    	this.setState({
+    		fontFamily:this.props.focus.accessKey.accessKey
+    	})
+    }
     changeFont = e => {
+        document.getElementsByTagName('style')[0] ? document.head.removeChild(document.getElementsByTagName('style')[0]) : null;
+        const entity={
+            AccessKey:e.value,
+            Content:this.props.focus.text
+        };
+        const courseFontFamily = this.props.page;
+        this.setState({fontFamily:e.value});
+        youzikuClient.getFontFace(entity, function (result) {
+            store.dispatch(changeStyle({
+                fontFamily: result.FontFamily
+            }));
+            store.dispatch(changeWordFace({'fontFace':result.FontFace}));
+            store.dispatch(changeWordAccessKey({'accessKey':e.value}));
+            let style_font = '';
+            courseFontFamily.length !== 0 ? courseFontFamily.forEach(item=>{
+                item.elements.forEach(value=>{
+                    value.fontFace ? style_font += value.fontFace.fontFace : null
+                })
+            }) : null;
+            style_font += result.FontFace;
+            const newStyle = document.createElement('style');
+            newStyle.appendChild(document.createTextNode(style_font));
+            document.head.appendChild(newStyle);
+        })
         store.dispatch(changeStyle({
-            fontFamily: e.target.value,
+            height: 'auto',
         }));
     };
 
-    changeFontSize = e => {
+	changeFontSize = e => {
         store.dispatch(changeStyle({
-            fontSize: e.target.value,
+            fontSize: e.value,
         }));
         store.dispatch(changeStyle({
             height: 'auto',
@@ -34,12 +87,18 @@ export default class WordPanel extends React.Component {
         store.dispatch(changeStyle({
             color: color.hex,
         }));
+        this.setState({
+            buttonState: '',
+        });
     };
 
     changeBgColor = color => {
         store.dispatch(changeStyle({
             backgroundColor: color.hex,
         }));
+        this.setState({
+            buttonState: '',
+        });
     };
 
     changeTransparency = value => {
@@ -93,8 +152,12 @@ export default class WordPanel extends React.Component {
         }));
     };
     addPinyin = () => {
-        const pinyin = this.props.focus.pinyin;
-        store.dispatch(changeWordPinyin(!pinyin));
+        let pinyins = [];
+        if (!(this.props.focus.pinyins && this.props.focus.pinyins.length > 0)) {
+            pinyins = convert(this.props.focus.text);
+        }
+
+        store.dispatch(changeWordPinyin(pinyins));
     };
     addWordColor = () => {
         this.setState({
@@ -114,11 +177,6 @@ export default class WordPanel extends React.Component {
     selectSymbol = symbol => {
         store.dispatch(toggleWordSymbol(symbol));
     };
-    changeVisible = e => {
-        store.dispatch(changeStyle({
-            visibility: e.target.checked ? 'hidden' : 'visible',
-        }));
-    };
     render() {
         const style = Object.assign({}, {
             color: '#000000',
@@ -135,6 +193,33 @@ export default class WordPanel extends React.Component {
             height: '20px',
         };
         const currentSymbol = (this.props.focus.symbol && this.props.focus.symbol.length > 0) ? this.props.focus.symbol[0].symbol : '';
+        const font_family_types_CN = [
+			{ value: 'acc87a2f8c8042b798071f8b61de1450', label: '默认'},
+            { value: '6d975903393d4e2a8d4a664413d60e82', label: '经典中圆简' },
+            { value: 'bed20f8f2a4445f0943926486abe13ba', label: '宋体' },
+            { value: 'd1f33a279b944d4d9973401d2884e87b', label: '幼圆' },
+            { value: 'a88dbf2932ef464c90d22344c9669bbf', label: '钢笔行书' },
+         	{ value: '1cd22e50ed9f4ed0a44c4f29eb31bebf', label: '浪漫原体国际码' },
+          	{ value: '68ebcb79cbf94ad581f956f35e1df751', label: '经典隶变简' },
+           	{ value: '57881db416684effb4e4dcf005686752', label: '思源黑体Medium' },
+            { value: '49ae1c1ef0124962b2338c7184fa645b', label: '奶油小甜心' },
+            { value: 'bf1f8c8768fb463cb2d21ad1d7dc1845', label: '硬笔行楷简' },
+            { value: '4cead41a5e6e4699843017ef0a284c26', label: '毛笔行书' },
+            { value: '8a5c6387c3594d89ab0f82ad234a68d8', label: '汉鼎繁细黑' },
+            { value: '23ddeb3b59e34c9e82f7142f3122d8af', label: '超世纪中古印' },
+            { value: '073e825ddf754b8e9538e1dc2108294c', label: '天真娃娃体 ' },
+            { value: 'd993fa4001e64bdf9fda3b7950826544', label: '汉鼎简新艺体 ' },
+            { value: 'cae5fcb0edef4575b80157bc868e7ba5', label: '熊兔体 ' },
+            { value: '3355ed991c2c4704b6564d4cda019e49', label: '苹方黑体' },
+            { value: '112ce7f1489b4e009fe6588d2f7e93e8', label: '中国锐博体' },
+            { value: 'c8a6041ebe144062b383fb5d93b7f532', label: '毛笔隶书' },
+            { value: '9338b0275338419e9993bf9e82c3bdac', label: '新唐人簡篆体 ' },
+            { value: 'c1b24e1c8d234ca6a51c71ff13de3bb3', label: '胖胖美工国际码' },
+            { value: '5d375d7df0a24c4a9a9eef51b6dd813b', label: '美工忠狗字形' },
+            { value: '29529dc608cc4b36b5e86827670e9ae0', label: '中海报简' },
+            { value: 'c375779cf85b4b72ac5308b5d7e8c214', label: '拓仿黑体' },
+
+        ]
         return (
             <div className="wordPanel">
                 <ul className="WordAlign">
@@ -148,37 +233,47 @@ export default class WordPanel extends React.Component {
                     <li onClick={this.changeUnderline}><img src={require(`./images/underline${style.textDecoration === 'underline' ? '_selected' : ''}.png`)} /></li>
                     <li onClick={this.changeLineThrough}><img src={require(`./images/line-through${style.textDecoration === 'line-through' ? '_selected' : ''}.png`)} /></li>
                 </ul>
-                <select onChange={this.changeFont} className="wordFont" value={this.props.focus.style.fontFamily}>
-                    <option value="黑体">{t('font_hei')}</option>
-                    <option value="微软雅黑">{t('font_yahei')}</option>
-                    <option value="Serif">Serif</option>
-                </select>
-                <select onChange={this.changeFontSize} className="wordFont" value={this.props.focus.style.fontSize}>
-                    <option value="12px">12px</option>
-                    <option value="13px">13px</option>
-                    <option value="14px">14px</option>
-                    <option value="15px">15px</option>
-                    <option value="16px">16px</option>
-                    <option value="17px">17px</option>
-                    <option value="18px">18px</option>
-                    <option value="20px">20px</option>
-                    <option value="22px">22px</option>
-                    <option value="26px">26px</option>
-                    <option value="30px">30px</option>
-                    <option value="34px">34px</option>
-                    <option value="38px">38px</option>
-                    <option value="42px">42px</option>
-                    <option value="46px">46px</option>
-                    <option value="50px">50px</option>
-                    <option value="54px">54px</option>
-                    <option value="58px">58px</option>
-                    <option value="62px">62px</option>
-                    <option value="66px">66px</option>
-                    <option value="70px">70px</option>
-                    <option value="80px">80px</option>
-                    <option value="90px">90px</option>
-                </select>
-                <div className="visible">{style.visibility === 'hidden' ? <input type="checkbox" checked onChange={this.changeVisible} /> : <input type="checkbox" onChange={this.changeVisible} />} 隐藏</div>
+                <Select
+                    name="form-field-name1"
+                    value={this.state.fontFamily ? this.state.fontFamily : 'acc87a2f8c8042b798071f8b61de1450'}
+                   onChange={this.changeFont}
+                    clearable={false}
+                    searchable={false}
+                    className="fontSelect"
+                    options={font_family_types_CN}
+                />
+                <Select
+                    name="form-field-name"
+                    value={this.props.focus.style.fontSize}
+                    onChange={this.changeFontSize}
+                    clearable={false}
+                    searchable={false}
+                    options={[
+                        { value: '12px', label: '12px' },
+                        { value: '13px', label: '13px' },
+                        { value: '14px', label: '14px' },
+                        { value: '15px', label: '15px' },
+                        { value: '16px', label: '16px' },
+                        { value: '17px', label: '17px' },
+                        { value: '18px', label: '18px' },
+                        { value: '20px', label: '20px' },
+                        { value: '22px', label: '22px' },
+                        { value: '26px', label: '26px' },
+                        { value: '30px', label: '30px' },
+                        { value: '34px', label: '34px' },
+                        { value: '38px', label: '38px' },
+                        { value: '42px', label: '42px' },
+                        { value: '46px', label: '46px' },
+                        { value: '50px', label: '50px' },
+                        { value: '54px', label: '54px' },
+                        { value: '58px', label: '58px' },
+                        { value: '62px', label: '62px' },
+                        { value: '66px', label: '66px' },
+                        { value: '70px', label: '70px' },
+                        { value: '80px', label: '80px' },
+                        { value: '90px', label: '90px' },
+                    ]}
+                />
                 <div className="flex_row_start flex_vertical_middle wordFunction">
                     {this.props.focus.name === 'WordModal' && <button onClick={this.addPinyin} className={`addBtn addPinyin ${this.props.focus.pinyin ? 'addPinyinSelect' : ''}`} />}
                     <button onClick={this.addWordColor} className={`addBtn addWordColor ${this.state.buttonState === 'addWordColor' ? 'addWordColorSelect' : ''}`} />

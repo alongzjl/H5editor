@@ -9,6 +9,9 @@ export default class AudioModal extends BaseModal {
             width: '258px',
             height: '66px',
             margin: '0 auto',
+            position: 'absolute',
+            left: 0,
+            top: 0,
         };
     }
 }

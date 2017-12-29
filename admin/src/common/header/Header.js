@@ -26,7 +26,6 @@ class Header extends React.Component {
         return (
             <div className="header">
                 <ul className="menu">
-                    <li className={this.props.current === 'course' ? 'active' : ''}><Link to="/course">课程管理</Link></li>
                     <li className={this.props.current === 'template' ? 'active' : ''}><Link to="/template">模板管理</Link></li>
                     <li className={this.props.current === 'image' ? 'active' : ''}><Link to="/image">图片库管理</Link></li>
                     <li className={this.props.current === 'audio' ? 'active' : ''}><Link to="/audio">音频库管理</Link></li>

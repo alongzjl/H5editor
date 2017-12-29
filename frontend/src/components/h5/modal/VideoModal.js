@@ -8,6 +8,9 @@ export default class VideoModal extends BaseModal {
         this.style = {
             width: '375px',
             height: 'auto',
+            position: 'absolute',
+            top: 0,
+            left: 0,
         };
     }
 }

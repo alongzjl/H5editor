@@ -4,8 +4,10 @@
 import React from 'react';
 import 'rc-input-number/assets/index.css';
 import 'rc-slider/assets/index.css';
+import Select from 'react-select';
+import 'react-select/dist/react-select.css';
 import store from '../../../store';
-import { changeAction, addHighlight, cancelHighlight } from '../../../actions/h5Actions';
+import { changeAction, addHighlight, cancelHighlight, changeElementVisibility } from '../../../actions/h5Actions';
 import './actionPanel.less';
 import HighlightModal from '../modal/HighlightModal';
 import t from '../../i18n';
@@ -24,11 +26,14 @@ export default class AnimationPanel extends React.Component {
     };
 
     onClick = e => {
+        if (this.props.focus.action.name === '显示') {
+            store.dispatch(changeElementVisibility(e.target.value, { visibility: 'hidden' }));
+        }
         store.dispatch(changeAction(this.props.focus.id, Object.assign({}, this.props.focus.action, { target: e.target.value })));
     };
 
     onChange = e => {
-        store.dispatch(changeAction(this.props.focus.id, Object.assign({}, this.props.focus.action, { name: e.target.value })));
+        store.dispatch(changeAction(this.props.focus.id, Object.assign({}, this.props.focus.action, { name: e.value })));
     };
     changeValue = e => {
         store.dispatch(changeAction(this.props.focus.id, Object.assign({}, this.props.focus.action, { value: e.target.value })));
@@ -44,14 +49,21 @@ export default class AnimationPanel extends React.Component {
         const actionName = (focus.action && focus.action.name) ? focus.action.name : '无';
         return (
             <div className="actionPanel">
-                <div className="title">
+                <div className="title flex_row_between flex_vertical_middle">
                     {t('element_clicked')}
-                    <select onChange={this.onChange} value={actionName}>
-                        <option value="无">{t('element_clicked_none')}</option>
-                        <option value="显示">{t('element_clicked_show')}</option>
-                        <option value="隐藏">{t('element_clicked_hide')}</option>
-                        <option value="跳转">{t('element_clicked_link')}</option>
-                    </select>
+                    <Select
+                        name="form-field-name"
+                        value={actionName}
+                        onChange={this.onChange}
+                        clearable={false}
+                        searchable={false}
+                        options={[
+                            { value: '无', label: t('element_clicked_none') },
+                            { value: '显示', label: t('element_clicked_show') },
+                            { value: '隐藏', label: t('element_clicked_hide') },
+                            { value: '跳转', label: t('element_clicked_link') },
+                        ]}
+                    />
                 </div>
                 <div className={actionName !== '无' ? 'elements' : ''}>
                     {

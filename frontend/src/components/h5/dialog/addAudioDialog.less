@@ -75,26 +75,26 @@
             letter-spacing: 0;
             cursor:pointer;
             &:nth-child(odd) {
-                //background: url('./images/play_normal.png') no-repeat 12px 11px #F7FAFB;
                 background: #F7FAFB;
             }
             &:nth-child(even) {
-                //background: url('./images/play_normal.png') no-repeat 12px 11px #FFF;
                 background: #FFF;
             }
             &:hover {
                 color:#fff;
-                //background: url('./images/musicplay_selected.png') no-repeat 12px 11px #00BCD3;
                 background: #00BCD3;
             }
             .controlBtn{
                 width: 20px;
                 height: 20px;
                 margin: 0 10px;
-                //background-image: url('/images/play_selected.png');
                 background-repeat: no-repeat;
                 background-size: 100%;
             }
+        }
+        li.selected2{
+            color:#fff;
+            background: #00BCD3;
         }
     }
     .right .page {
@@ -154,4 +154,46 @@
     .right .page .chooseAudioBtn{
         top: 25px;
     }
+}
+.spinner {
+    width: 70px;
+    text-align: center;
+    float: right;
+    margin-top:5px
+}
+
+.spinner > div {
+    width: 18px;
+    height: 18px;
+    background-color: #00BCD3;
+
+    border-radius: 100%;
+    display: inline-block;
+    -webkit-animation: sk-bouncedelay 1.4s infinite ease-in-out both;
+    animation: sk-bouncedelay 1.4s infinite ease-in-out both;
+}
+
+.spinner .bounce1 {
+    -webkit-animation-delay: -0.32s;
+    animation-delay: -0.32s;
+}
+
+.spinner .bounce2 {
+    -webkit-animation-delay: -0.16s;
+    animation-delay: -0.16s;
+}
+
+@-webkit-keyframes sk-bouncedelay {
+    0%, 80%, 100% { -webkit-transform: scale(0) }
+    40% { -webkit-transform: scale(1.0) }
+}
+
+@keyframes sk-bouncedelay {
+    0%, 80%, 100% {
+        -webkit-transform: scale(0);
+        transform: scale(0);
+    } 40% {
+          -webkit-transform: scale(1.0);
+          transform: scale(1.0);
+      }
 }

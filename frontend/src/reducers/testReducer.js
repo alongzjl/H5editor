@@ -2,6 +2,7 @@ import * as types from '../actions/actionTypes';
 import {
     doChangeElementValue,
     changePageValue,
+    doChangeElementValueWithoutChangeFocus,
 } from './reducerUtils';
 
 // 重要： state 里面要保持都是immutablejs 对象
@@ -114,7 +115,7 @@ export default function (imState, action) {
         return changePageValue(imState, 'elements', action.questions);
     }
     if (action.type === types.TEST_FILL_SELECT_CHANGE) {
-        return doChangeElementValue(imState, action.id, 'selectList', action.selectList);
+        return doChangeElementValueWithoutChangeFocus(imState, action.id, 'selectList', action.selectList);
     }
     if (action.type === types.TEST_FILL_ANSWERINDEX_CHANGE) {
         return doChangeElementValue(imState, action.id, 'answerIndex', action.answerIndex);
@@ -123,6 +124,13 @@ export default function (imState, action) {
         return doChangeElementValue(imState, action.id, 'num', action.num);
     }
 
+    if (action.type === types.TEST_CHECK) {
+        const pages = imState.get('pages');
+        const currentPage = pages.get(imState.get('currentPage'));
+        const newPage = currentPage.set('checking', action.checking);
+        const newState = imState.merge({ pages: pages.set(imState.get('currentPage'), newPage) });
+        return newState.toJS();
+    }
     /*  排序相关*/
     if (action.type === types.TEST_SORT_ANSWER_CHANGE) {
         return doChangeElementValue(imState, action.id, 'answer', action.answer);

@@ -14,7 +14,7 @@ export default class Auth {
             hashHistory.push('/login');
         }else if(getQueryString('access_token')){
         	sessionStorage.setItem('access_token', getQueryString('access_token'));
-        } 
+        }
         
         return getQueryString('material_id');  
     }

@@ -1,15 +1,23 @@
 import React from 'react';
 import store from '../../../../store';
-import { changeSortQuestionStyle } from '../../../../actions/testActions';
+import { changeSortQuestionStyle, checkQuestion } from '../../../../actions/testActions';
 import './fillBlanks.less';
 
 export default class TestConfirm extends React.Component {
-    chooseRight = () => {
+    correctSort = () => {
         const sortList = this.props.sort;
         const sortQuestions = sortList.filter(item => item.name === 'SortQuestionModal');
         const correct = sortQuestions.every(item => item.answer !== '' && item.answer === item.answerShow);
         const color = correct ? 'green' : 'red';
         store.dispatch(changeSortQuestionStyle({ color }));
+    };
+    chooseRight = () => {
+        const title = this.props.value.title;
+        if (title === 'sort') {
+            this.correctSort();
+        } else {
+            store.dispatch(checkQuestion(true));
+        }
     };
     render() {
         const { viewing } = this.props;

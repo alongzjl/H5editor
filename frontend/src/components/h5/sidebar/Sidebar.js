@@ -8,24 +8,25 @@ import SidebarContextMenu from './SidebarContextMenu';
 import Page from '../elements/Page';
 import { renamePage, changePageEditable, changeCurrentPage, sortPage } from '../../../actions/h5Actions';
 import './sidebar.less';
-import t from '../../i18n';
 import store from '../../../store';
 
 function PagePreview({ page }) {
     return (
         <div className="preview">
-            <Page page={page} viewing isTeacher />
+            <Page page={{ ...page, checking: false }} viewing isTeacher />
         </div>
     );
 }
 
 function Row({ page, pageNo, currentPage }) {
-    const title = page.title ? page.title : `${t('page_no1')} ${pageNo + 1} ${t('page_no2')}`;
+    const title = page.title ? page.title : '';
     const changeTitle = e => {
         store.dispatch(renamePage(page.id, e.target.value));
     };
-    const onRename = () => {
+    const onRename = e => {
         store.dispatch(changePageEditable(page.id));
+        e.preventDefault();
+        e.stopPropagation();
     };
     const onChangeCurrentPage = () => {
         store.dispatch(changeCurrentPage(pageNo));
@@ -34,8 +35,8 @@ function Row({ page, pageNo, currentPage }) {
         <ContextMenuTrigger id="sidebarContextMenu" collect={() => page} holdToDisplay={-1}>
             {
                 page.editable
-                    ? <div className={`row ${currentPage === pageNo ? 'current' : ''}`}><input onBlur={changeTitle} defaultValue={title} /><PagePreview page={page} /></div>
-                : <div className={`row ${currentPage === pageNo ? 'current' : ''}`} onDoubleClick={onRename} onClick={onChangeCurrentPage}>{title}<PagePreview page={page} /></div>
+                    ? <div className={`row ${currentPage === pageNo ? 'current' : ''}`}><div className={`pageNo ${currentPage === pageNo ? 'pageNoFocus' : ''}`}>{pageNo + 1}</div><input onBlur={changeTitle} defaultValue={title} /><PagePreview page={page} /></div>
+                    : <div className={`row ${currentPage === pageNo ? 'current' : ''}`} onDoubleClick={onRename} onClick={onChangeCurrentPage}><div className={`pageNo ${currentPage === pageNo ? 'pageNoFocus' : ''}`}>{pageNo + 1}</div>{title}<PagePreview page={page} /></div>
             }
         </ContextMenuTrigger>
     );
@@ -58,7 +59,6 @@ class Sidebar extends React.Component {
         }
     };
     onSortMove = () => {
-    	console.log(document.selection,window.getSelection());
         if (document.selection) {
             document.selection.empty();
         } else {

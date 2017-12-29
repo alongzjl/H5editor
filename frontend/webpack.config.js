@@ -4,7 +4,29 @@
 const path = require('path');
 const ExtractTextPlugin = require('extract-text-webpack-plugin');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
+const UglifyJsPlugin = require('uglifyjs-webpack-plugin');
 
+function plugins() {
+    const arr = [
+        new ExtractTextPlugin({ filename: 'css/[id].css' }),
+        new HtmlWebpackPlugin({
+            chunks: ['front'],
+            filename: 'index.html',
+            template: path.join(__dirname, '/index-tmpl.html'),
+        }),
+        new HtmlWebpackPlugin({
+            chunks: ['viewer'],
+            filename: 'viewer.html',
+            template: path.join(__dirname, '/viewer-tmpl.html'),
+        }),
+    ];
+    if (process.env.NODE_ENV === 'production') {
+        arr.push(new UglifyJsPlugin({
+            sourceMap: true,
+        }));
+    }
+    return arr;
+}
 module.exports = {
     entry: {
         front: ['./src/index.js'],
@@ -30,22 +52,10 @@ module.exports = {
             use: ['file-loader?name=fonts/[name].[ext]'],
         }],
     },
-    plugins: [
-        new ExtractTextPlugin({ filename: 'css/[id].css' }),
-        new HtmlWebpackPlugin({
-            chunks: ['front'],
-            filename: 'index.html',
-            template: path.join(__dirname, '/index-tmpl.html'),
-        }),
-        new HtmlWebpackPlugin({
-            chunks: ['viewer'],
-            filename: 'viewer.html',
-            template: path.join(__dirname, '/viewer-tmpl.html'),
-        }),
-    ],
+    plugins: plugins(),
     externals: { // 全局引用
     },
-    devtool: '#source-map',
+    devtool: '#hidden-source-map',
     node: {
         net: 'empty',
     },

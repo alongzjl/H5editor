@@ -3,6 +3,7 @@
  */
 import React from 'react';
 import { Base64 } from 'js-base64';
+import Select from 'react-select';
 import './header.less';
 import WordModal from '../modal/WordModal';
 import PageModal from '../modal/PageModal';
@@ -65,8 +66,10 @@ class Header extends React.Component {
         }
     }
     changeLocale = e => {
-        localStorage.setItem('locale', e.target.value); 
-        window.location.reload();
+        if (confirm(t('change_locale'))) {
+            localStorage.setItem('locale', e.value);
+            window.location.reload();
+        }
     };
     render() {
         const imgList = [{
@@ -106,10 +109,17 @@ class Header extends React.Component {
                 <div className="logo">
                     <img src={require('./images/popon.png')} />
                     <div className="userInfo">
-                        <select onChange={this.changeLocale} defaultValue={locale}>
-                            <option value="en_US">en</option>
-                            <option value="zh_CN">cn</option>
-                        </select>
+                        <Select
+                            name="form-field-name"
+                            value={locale}
+                            onChange={this.changeLocale}
+                            clearable={false}
+                            searchable={false}
+                            options={[
+                                { value: 'en_US', label: 'en' },
+                                { value: 'zh_CN', label: 'cn' },
+                            ]}
+                        />
                         <img src={this.state.user.avatar} />
                     </div>
                 </div>

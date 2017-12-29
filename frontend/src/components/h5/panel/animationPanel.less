@@ -77,4 +77,27 @@
         outline:none;
         cursor:pointer;
     }
+    .Select-control{
+        width: 177px;
+        margin: 0;
+    }
+    .Select-menu .Select-option{
+        text-align: left;
+        border-bottom: none;
+    }
+    .Select-menu-outer {
+        .Select-option {
+            padding-left: 2em;
+        }
+        .Select-option.is-disabled {
+            cursor: default;
+            font-weight: bold;
+            padding-left: 1em;
+            border-bottom: 1px dashed #505766;
+        }
+        .Select-option.is-disabled:hover{
+            background: none;
+            color: inherit;
+        }
+    }
 }

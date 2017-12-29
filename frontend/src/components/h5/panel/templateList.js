@@ -17,7 +17,12 @@ import t from '../../i18n';
  * @constructor
  */
 function TemplatePage({ index, template, onShowMore }) {
-    const pages = template.pages ? JSON.parse(template.pages) : [template];
+    let pages = [];
+    try {
+        pages = template.pages ? JSON.parse(template.pages) : [template];
+    } catch (e) {
+        console.log(template);
+    }
     const showNote = () => {
         if (pages.length === 1) {
             const n = new Noty({
@@ -56,14 +61,17 @@ class TemplateList extends React.Component {
         page: 1,
         showMore: false,
     };
+    constructor(props) {
+		super(props);
+		this.along = 'along';
+	}
     componentDidMount() {
-    	if(this.props.token){
-    		sessionStorage.setItem('access_token',this.props.token);
-    		setTimeout(()=>{ this.loadData()},5); 
-    	}
-     }
+    	console.log(this.props);
+    	this.props.token ? sessionStorage.setItem('access_token',this.props.token) : null;
+        this.loadData(); 
+    }
     loadData = () => {
-    	 Fetch.get(`${API_URL.template.list}?page=${this.state.page}&isPublic=${this.props.isPublic}`).then(data => {
+        Fetch.get(`${API_URL.template.list}?page=${this.state.page}&isPublic=${this.props.isPublic}`).then(data => {
             this.setState({
                 templates: data.content,
                 total: data.totalElements,

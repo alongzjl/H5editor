@@ -1,13 +1,16 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import { addChoose, addChooseItems, changeSortAnswer } from '../../../../actions/testActions';
-import { changeFocus, delElementId } from '../../../../actions/h5Actions';
+import { addElements, changeFocus, delElementId } from '../../../../actions/h5Actions';
 import WordModal from '../../modal/WordModal';
 import Noty from '../../../common/noty/noty';
 import './ChooseItem.less';
 import t from '../../../i18n';
 import store from '../../../../store';
 import TestModal from '../../modal/TestModal';
+import TestConfirmModal from '../../modal/testTypes/TestConfirmModal';
+import Select from 'react-select';
+
 
 class ChooseItem extends React.Component {
     state = {
@@ -39,7 +42,7 @@ class ChooseItem extends React.Component {
     };
     answerSelect = (e, index) => {
         // 下拉选择，当前值为正确答案，isAnswer为true
-        const id = e.target.value;
+        const id = e.value;
         if (this.state.answerArr[index] !== id) {
             this.setState({
                 answerArr: this.state.answerArr.map((item, i) => index === i ? id : item),
@@ -64,27 +67,33 @@ class ChooseItem extends React.Component {
     };
     render() {
         const arr = this.props.page.elements.filter(element => element.name === 'WordModal' && (element.answer !== undefined && element.answer !== -1));
-        const options = this.props.page.elements.filter(element => element.name === 'WordModal' && element.answer > -1);
+        let fillOptions = this.props.page.elements.filter(element => element.name === 'WordModal' && element.answer > -1);
+        fillOptions = fillOptions.map(item => ({ value: item.id, label: item.text }));
         return (
             <div className="itemsBox">
                 <div onClick={this.add} className="addChoose">插入选择题</div>
-                <div onClick={() => { this.props.addItemsClick(options.length); }} className="addChooseItem">添加选项</div>
+                <div onClick={() => { this.props.addItemsClick(fillOptions.length); }} className="addChooseItem">添加选项</div>
                 <p className="addSubItem">正确答案：
                     <span onClick={this.subItem} className="subItem">-</span>
                     <span onClick={this.addItem} className="addItem">+</span>
                 </p>
-                <div className="answerList">
-                    {
-                        this.state.answerArr.map((item, key) =>
-                            <select key={key} onChange={e => this.answerSelect(e, key)} className="answerSelect">
-                                <option>请选择正确答案</option>
-                                {
-                                    options.map((val, index) => <option value={val.id} key={index}>{val.text}</option>)
-                                }
-                            </select>,
-                        )
-                    }
-                </div>
+
+                {
+                    this.state.answerArr.map((item, key) =>
+                        <div key={key}>
+                            <Select
+                                name="form-field-name1"
+                                onChange={e => this.answerSelect(e, key)}
+                                clearable={false}
+                                searchable={false}
+                                placeholder="请选择"
+                                value={this.state.answerArr[key]}
+                                className="answerSelect"
+                                options={fillOptions}
+                            />
+                        </div>)
+                }
+
                 {
                     arr.map((val, key) => <p key={key} className="answerItem">{val.text}<span onClick={() => { this.delSpan(val.id); }} className="delSpan" /></p>)
                 }
@@ -116,15 +125,17 @@ const mapDispatchToProps = dispatch => ({
         let content = '';
         let top = 210;
 
+        const color = '#7B818F';
         const choose = new WordModal('编辑您的题目，下方的选项可以根据您的需求增加以及删除', {
             left: '32px',
             top: '140px',
-            width: '340px',
+            width: '310px',
             height: '52px',
             textAlign: 'left',
             position: 'absolute',
             fontSize: '16px',
-        }, -2).plainObject();
+            color,
+        }).plainObject();
         dispatch(addChoose(choose));
 
         this.select.forEach((val, key) => {
@@ -132,14 +143,16 @@ const mapDispatchToProps = dispatch => ({
             top += 40;
             const item = new WordModal(content, {
                 left: '32px',
-                width: '340px',
+                width: '310px',
                 top: `${top}px`,
                 textAlign: 'left',
                 position: 'absolute',
                 fontSize: '16px',
+                color,
             }, val.answer).plainObject();
             dispatch(addChooseItems(item));
         });
+        store.dispatch(addElements(new TestConfirmModal('choose').plainObject()));
         dispatch(changeFocus(new TestModal().plainObject()));
     },
     addItemsClick(num) {
@@ -148,14 +161,16 @@ const mapDispatchToProps = dispatch => ({
             item: ' 编辑答案',
             answer: 0,
         };
+        const color = '#7B818F';
         const content = `${this.subscript[num]}. ${obj.item}`;
         const item = new WordModal(content, {
             left: '32px',
-            width: '340px',
+            width: '310px',
             top: `${210 + (num + 1) * 40}px`,
             textAlign: 'left',
             position: 'absolute',
             fontSize: '16px',
+            color,
         }, obj.answer).plainObject();
         dispatch(addChooseItems(item));
         dispatch(changeFocus(new TestModal().plainObject()));

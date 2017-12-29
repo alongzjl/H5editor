@@ -13,11 +13,15 @@ buildscript {
 apply plugin: 'java'
 apply plugin: 'idea'
 apply plugin: 'org.springframework.boot'
-//apply plugin: 'war'
+//打包成war配置
 
+//apply plugin: 'war'
+//
 //war {
 //    baseName = 'h5'
 //}
+
+//打包成jar
 
 jar {
     baseName = 'h5'

@@ -5,6 +5,7 @@ import store from '../../../store';
 import { addElements, changeShape, changeStyle } from '../../../actions/h5Actions';
 import * as Shapes from '../elements/shapes/Shapes';
 import ShapeModal from '../modal/ShapeModal';
+import Select from 'react-select';
 import './shapePanel.less';
 import t from '../../i18n';
 
@@ -31,19 +32,19 @@ const ShapeList = ({ onSelected }) => {
                 <Shapes.Square style={style} onSelected={clickShape} />
             </div>
             <div>
+                <Shapes.Star style={style} onSelected={clickShape} />
+            </div>
+            <div>
                 <Shapes.CircleSquare style={style} onSelected={clickShape} />
+            </div>
+            <div>
+                <Shapes.LineArrow style={style} onSelected={clickShape} />
             </div>
             <div>
                 <Shapes.Polygon8 style={style} onSelected={clickShape} />
             </div>
             <div>
                 <Shapes.Polygon5 style={style} onSelected={clickShape} />
-            </div>
-            <div>
-                <Shapes.Star style={style} onSelected={clickShape} />
-            </div>
-            <div>
-                <Shapes.LineArrow style={style} onSelected={clickShape} />
             </div>
         </div>
     );
@@ -59,11 +60,14 @@ class ShapeStyle extends React.Component {
         };
     }
 
-    changeColor = color => {
+    changeColor = (color = 'none') => {
         const val = color.hex ? color.hex : color;
         store.dispatch(changeStyle({
             fill: val,
         }));
+        this.setState({
+            fillColorTool: false,
+        });
     };
     handleFillTool = () => {
         this.setState({
@@ -91,18 +95,18 @@ class ShapeStyle extends React.Component {
         }));
     };
     changeBorder = e => {
-        if (e.target.value === 'border') {
+        if (e.value === 'border') {
             store.dispatch(changeStyle({
                 stroke: '#000',
                 strokeDasharray: 'none',
                 strokeWidth: 1,
             }));
-        } else if (e.target.value === 'dash') {
+        } else if (e.value === 'dash') {
             store.dispatch(changeStyle({
                 stroke: '#000',
                 strokeDasharray: '5,5',
                 strokeWidth: 1,
-            }));
+            })); 
         } else {
             store.dispatch(changeStyle({
                 stroke: 'none',
@@ -112,23 +116,26 @@ class ShapeStyle extends React.Component {
     };
     changeBorderWidth = e => {
         store.dispatch(changeStyle({
-            strokeWidth: parseInt(e.target.value),
+            strokeWidth: parseInt(e.value),
         }));
     };
-    changeBorderColor = color => {
+    changeBorderColor = (color = 'none') => {
         const val = color.hex ? color.hex : color;
         store.dispatch(changeStyle({
             stroke: val,
+        }));
+        this.setState({
+            borderColorTool: false,
+        });
+    };
+    changeLineCap = e => {
+        store.dispatch(changeStyle({
+            strokeLinecap: e.target.value,
         }));
     };
     changeRotate = rotate => {
         store.dispatch(changeStyle({
             transform: `rotate(${rotate}deg)`,
-        }));
-    };
-    changeVisible = e => {
-        store.dispatch(changeStyle({
-            visibility: e.target.checked ? 'hidden' : 'visible',
         }));
     };
     changeShadowOpacity = opc => {
@@ -151,6 +158,9 @@ class ShapeStyle extends React.Component {
                 a: this.props.style.shadow.a,
             },
         }));
+        this.setState({
+            shadowColor: false,
+        });
     };
     handleShadowColor = () => {
         this.setState({
@@ -159,23 +169,28 @@ class ShapeStyle extends React.Component {
     };
     render() {
         const { style } = this.props;
+        const shadow = style.shadow ? style.shadow : { r: 0, g: 0, b: 0, a: 0 };
+        const border_types = [{value:'none',label:t('border_none')},{value:'border',label:t('border_line')},{value:'dash',label:t('border_dash')}];
+        const width_types = [{value:1,label:1},{value:2,label:2},{value:3,label:3},{value:4,label:4},{value:5,label:5},{value:6,label:6},{value:7,label:7},{value:8,label:8},{value:9,label:9}];
         return (
-            <div>
-                <div className="flex_row_start flex_vertical_middle fs14 color blackColor">
+            <div style={{position:'relative'}}>
+                <div className="flex_row_between flex_vertical_middle fs14 color blackColor">
                     {t('shape_fill')}
-                    <span style={{ backgroundColor: style.fill }} />
-                    <button
-                        className="colorBtn flex_row_center flex_vertical_middle"
-                        onClick={this.handleFillTool}
-                    >
-                        <img alt="" src={require('./images/color.png')} />
-                    </button>
+                    <div className="flex_row_start flex_vertical_middle">
+                        <span style={{ backgroundColor: style.fill }} />
+                        <button
+                            className="colorBtn flex_row_center flex_vertical_middle"
+                            onClick={this.handleFillTool}
+                        >
+                            <img alt="" src={require('./images/color.png')} />
+                        </button>
+                    </div>
                     <ColorItem onChange={this.changeColor} />
                 </div>
                 {
                     this.state.fillColorTool ?
-                        <SketchPicker onChangeComplete={this.changeColor} color={style.fill} /> : null
-                }
+						<div style={{position:'absolute',top:'130px',left:0,zIndex:20}}><SketchPicker onChangeComplete={this.changeColor} color={style.fill} /></div> : null
+				}
                 <div className="flex_row_between flex_vertical_middle line fs14 blackColor">
                     <div className="width flex_row_around flex_vertical_middle">
                         {t('width')}
@@ -193,43 +208,42 @@ class ShapeStyle extends React.Component {
                     </div>
                 </div>
                 <div className="flex_row_between flex_vertical_middle line fs14 blackColor opacity">
-                    {t('opacity')}：
+                    {t('opacity')}
                     <Slider onAfterChange={this.changeOpacity} min={0} max={1} step={0.1} />
                     <span>{parseInt(style.fillOpacity * 100)}%</span>
                 </div>
                 <div className="flex_row_between flex_vertical_middle line fs14 blackColor opacity">
-                    {t('rotation')}：
+                    {t('rotation')}
                     <Slider
                         onChange={this.changeRotate} min={-180} max={180} step={1}
                         value={parseInt(style.transform.substring(7))}
                     />
                     <span>{parseInt(style.transform.substring(7))}</span>
                 </div>
-                <div className="flex_row_start flex_vertical_middle line fs14 blackColor">
-                    {t('border')}：
-                    <select value={style.stroke === 'none' ? 'none' : (style.strokeDasharray === 'none' ? 'border' : 'dash')} onChange={this.changeBorder}>
-                        <option value="none">{t('border_none')}</option>
-                        <option value="border">{t('border_line')}</option>
-                        <option value="dash">{t('border_dash')}</option>
-                    </select>
+                <div className="flex_row_between flex_vertical_middle line fs14 blackColor">
+                    {t('border')}
+                     <Select
+		        	 	name="form-field-name1"
+		                onChange={this.changeBorder}
+		                value={style.stroke === 'none' ? 'none' : (style.strokeDasharray === 'none' ? 'border' : 'dash')}
+		                clearable={false}
+		                searchable={false}
+		               options={border_types}
+		            />
                 </div>
-                {
+               {
                     style.stroke !== 'none' ?
-                        <div className="line fs14 blackColor border">
-                            {t('width')}：<select value={style.strokeWidth} onChange={this.changeBorderWidth}>
-                                <option value={1}>1</option>
-                                <option value={2}>2</option>
-                                <option value={3}>3</option>
-                                <option value={4}>4</option>
-                                <option value={5}>5</option>
-                            </select>px
-                        </div> : null
-                }
-                {
-                    style.stroke !== 'none' ?
-                        <div className="flex_row_start flex_vertical_middle line fs14 blackColor border">
-                            {t('color')}：
+                        <div className="flex_row_end flex_vertical_middle line fs14 blackColor border">
                             <div className="flex_row_start flex_vertical_middle">
+                            	{t('width')}
+	                            <Select
+					        	 	name="form-field-name1"
+					                onChange={this.changeBorderWidth}
+					                value={style.strokeWidth}
+					                clearable={false}
+					                searchable={false}
+					               options={width_types}
+					            />px
                                 <div className="colorDiv" style={{ backgroundColor: style.stroke }} />
                                 <button
                                     className="colorBtn flex_row_center flex_vertical_middle"
@@ -243,17 +257,16 @@ class ShapeStyle extends React.Component {
                 }
                 {
                     this.state.borderColorTool ?
-                        <SketchPicker onChangeComplete={this.changeBorderColor} color={style.stroke} /> : null
+                        <div style={{position:'absolute',top:'380px',left:0,zIndex:20}}><SketchPicker onChangeComplete={this.changeBorderColor} color={style.stroke} /></div> : null
                 }
 
-                <div className="visible">{style.visibility === 'hidden' ? <input type="checkbox" checked onChange={this.changeVisible} /> : <input type="checkbox" onChange={this.changeVisible} />} 隐藏</div>
                 <div className="flex_row_between flex_vertical_middle line fs14 blackColor opacity">
-                    {t('shadow')}：
-                    <Slider onAfterChange={this.changeShadowOpacity} min={0} max={1} step={0.1} defaultValue={style.shadow.a} />
-                    <span>{parseInt(style.shadow.a * 100)}%</span>
+                    {t('shadow')}
+                    <Slider onAfterChange={this.changeShadowOpacity} min={0} max={1} step={0.1} defaultValue={shadow.a} />
+                    <span>{parseInt(shadow.a * 100)}%</span>
                 </div>
                 <div className="flex_row_end flex_vertical_middle fs14 color blackColor">
-                    <span style={{ backgroundColor: `rgba(${style.shadow.r}, ${style.shadow.g}, ${style.shadow.b}, 1)` }} />
+                    <span style={{ backgroundColor: `rgba(${shadow.r}, ${shadow.g}, ${shadow.b}, 1)` }} />
                     <button
                         className="colorBtn flex_row_center flex_vertical_middle"
                         onClick={this.handleShadowColor}
@@ -262,19 +275,21 @@ class ShapeStyle extends React.Component {
                     </button>
                 </div>
                 {
-                    this.state.shadowColor ?
-                        <SketchPicker onChangeComplete={this.changeShadowColor} color={style.shadow} /> : null
+                    this.state.shadowColor ? style.stroke !== 'none' ? 
+                        <div style={{position:'absolute',top:'170px',left:0,zIdex:20}}><SketchPicker onChangeComplete={this.changeShadowColor} color={style.shadow} /></div> : 
+                        <div style={{position:'absolute',top:'420px',left:0,zIdex:20}}><SketchPicker onChangeComplete={this.changeShadowColor} color={style.shadow} /></div>: null
                 }
             </div>
         );
     }
 }
 const ColorItem = ({ onChange }) => {
-    const defaultColorList = ['#ffffff', '#00BCD3', '#B7DFCB', '#5C5D5E', '#B6C4DC', '#7CA2D2', '#FAF8C1', '#D6ABE9', '#B4D4B1', '#EF6B56', '#EB9E6A', '#2D2A1E', '#F2D700', '#EAA73A'];
+    const defaultColorList = ['#00BCD3', '#B7DFCB', '#5C5D5E', '#B6C4DC', '#7CA2D2', '#FAF8C1', '#D6ABE9', '#B4D4B1', '#EF6B56', '#EB9E6A', '#2D2A1E', '#F2D700', '#EAA73A'];
     return (
         <div className="defaultColor">
+            <button className="colorItem" onClick={() => onChange()}><img src={require('./images/nocolor.png')} width={26} height={26} /></button>
             {
-                defaultColorList.map(color => <button className="colorItem" style={{ backgroundColor: color }} onClick={() => onChange(color)} />)
+                defaultColorList.map(color => <button key={color} className="colorItem" style={{ backgroundColor: color }} onClick={() => onChange(color)} />)
             }
         </div>
     );

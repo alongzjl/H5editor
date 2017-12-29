@@ -48,31 +48,29 @@
         height:36px;
         width:130px;
         float:left;
-        select {
-            background: rgba(255,255,255,0.10);
-            border: 1px solid #505766;
-            border-radius: 6px;
-            outline: none;
-            height:28px;
+        position:relative;
+        .Select-control {
             width:85px;
-            margin:4px;
-            padding: 0 0 0 10px;
-            option {
-                width:150px; 
-                height:36px;
-                line-height:36px;
-                text-align: center;
-                border-bottom: 1px solid #EDEDED;
-            }
+            height:28px;
         }
-        span {
+        .Select-menu .Select-option{
+            text-align: left;
+            border-bottom: none;
+        }
+        .Select-menu-outer{
+            width: 83px;
+            left: 30px;
+        }
+       .sort_span {
+                position: absolute;
+                top: 10px;
+                right: -5px;
                 display: inline-block;
                 height: 12px;
                 width: 12px;
                 border-radius: 50%;
                 background: #9CA3B1;
                 color: #fff;
-                margin: 12px 5px;
                 line-height: 12px;
                 cursor: pointer;
                 text-align: center;

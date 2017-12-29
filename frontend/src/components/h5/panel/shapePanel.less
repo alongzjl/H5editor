@@ -46,15 +46,20 @@
                 text-align: center;
             }
         }
-        select{
-            width: 137px;
-            height: 28px;
+        .Select-control {
+            width:137px;
+            height:28px;
             border: solid 1px @black;
-            border-radius: 6px;
-            font-size: 14px;
-            color: @black;
-            background: @white;
         }
+        .Select-menu .Select-option{
+            text-align: left;
+            border-bottom: none;
+        }
+        .Select-menu-outer{
+            width: 137px;
+            left: 30px;
+        }
+        
     }
     .opacity{
         .rc-slider{
@@ -66,12 +71,27 @@
         }
     }
     .border{
+        .Select-control {
+            width:50px;
+            height:28px;
+            border: solid 1px @black;
+            margin:0 5px 0 0;
+        }
+        .Select-menu .Select-option{
+            text-align: left;
+            border-bottom: none;
+        }
+        .Select-menu-outer{
+            width: 50px;
+            left: 0;
+        }
         .colorDiv{
             width: 100px;
             height: 28px;
             border: solid 1px #CBD0DA;
             border-radius: 4px 0 0 4px;
             border-right: none;
+            margin-left:10px
         }
         .colorBtn{
             width: 45px;

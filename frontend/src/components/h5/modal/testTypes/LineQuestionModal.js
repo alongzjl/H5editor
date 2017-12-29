@@ -9,6 +9,7 @@ export default class LineQuestionModal extends BaseModal {
         this.src = undefined;
         this.num = num;
         this.position = position;
+        this.animations = [];
         this.style = {
             height: '26px',
             lineHeight: '26px',
@@ -17,6 +18,7 @@ export default class LineQuestionModal extends BaseModal {
             textAlign: 'center',
             opacity: 1,
             transform: 'rotate(0deg)',
+            position: 'absolute',
             border: 'none',
             ...style,
         };

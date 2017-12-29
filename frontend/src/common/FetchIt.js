@@ -15,7 +15,7 @@ export default class Fetch {
                 }
             } else {
                 if (result.msg === '登录已过期,请重新登录!' || result.msg === 'access_token不正确，请退出后重试') {
-                   // location.href = '#/login';
+                   location.href = '#/login';
                 }
                 throw new Error(result.msg);
             }

@@ -7,14 +7,15 @@ import store from '../../../store';
 import API_URL from '../../../common/url';
 import Action from './Action';
 import { changeFocus, selectMultiple } from '../../../actions/h5Actions';
+import getPosition from './getPosition';
 
 export default class Image extends React.Component {
     state = {
         index: 0,
     };
     onClicked = e => {
-        e.stopPropagation();
         if ((navigator.platform.indexOf('Mac') === 0 && e.metaKey) || (navigator.platform.indexOf('Mac') !== 0 && e.ctrlKey)) {
+            e.stopPropagation();
             store.dispatch(selectMultiple(this.props.value.id));
             return;
         }
@@ -64,10 +65,11 @@ export default class Image extends React.Component {
                 className={focusId === value.id ? 'focused' : ''}
                 isDraggable
                 style={style}
+                initial={getPosition(value)}
             >
                 <img
                     src={API_URL.upload + value.src}
-                    className={focusId === value.id ? `${animation.className} ${selectedClass}` : selectedClass}
+                    className={(focusId === value.id || focusId === -1) ? `${animation.className} ${selectedClass}` : selectedClass}
                     style={{
                         width: value.style.width,
                         height: value.style.height,
@@ -75,6 +77,7 @@ export default class Image extends React.Component {
                         border: value.style.border,
                         borderWidth: value.style.borderWidth,
                         borderColor: value.style.borderColor,
+                        borderRadius: value.style.borderRadius,
                         animationDelay: animation.animationDelay,
                         animationDuration: animation.animationDuration,
                         animationIterationCount: animation.animationIterationCount,

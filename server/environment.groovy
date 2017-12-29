@@ -36,9 +36,9 @@ environments {
     test {
         jdbc {
            driver = "com.mysql.jdbc.Driver"
-           url = "jdbc:mysql://116.62.245.1:3306/h5?useUnicode=true&characterEncoding=utf-8&allowMultiQueries=true"
+           url = "jdbc:mysql://192.168.1.41:3306/h5?useUnicode=true&characterEncoding=utf-8&allowMultiQueries=true"
            username = "root"
-           password = "popPassword"
+           password = "123"
         }
 
         pool {
@@ -53,13 +53,13 @@ environments {
         }
 
         project{
-            domain = "http://editor.gopopon.com/upload/"
-            uploadFolder = "/usr/share/nginx/xyznotes/upload"
-            htmlFolder = "/root/www/front/"
+            domain = "http://192.168.1.82:9080"
+            uploadFolder = "/usr/www/front/upload/"
+            htmlFolder = "/apps/frontend/"
         }
 
         server{
-            port = 9090
+            port = 9080
         }
 
         remoteApi{

@@ -42,7 +42,6 @@ public class ImageController {
         Criteria criteria = new Criteria();
         criteria.page = page;
         criteria.pageSize = pageSize;
-        criteria.conditionMap.put("is_public", isPublic);
 
         criteria.orderName = "created_date";
         criteria.orderName = Criteria.Order.DESC;
@@ -53,6 +52,8 @@ public class ImageController {
 
         if (!isPublic) {
             criteria.conditionMap.put("user_id", userToken.getId());
+        }else{
+            criteria.conditionMap.put("is_public", true);
         }
 
         if (StringUtils.isNotBlank(keyword)) {

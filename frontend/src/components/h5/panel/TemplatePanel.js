@@ -7,6 +7,10 @@ import './templatePanel.less';
 import t from '../../i18n';
 
 export default class TemplatePanel extends React.Component {
+	
+	handleTemp(){
+		console.log(123456);
+	}
     render() {
         return (
             <div className="template">
@@ -19,3 +23,11 @@ export default class TemplatePanel extends React.Component {
         );
     }
 }
+
+class Along extends TemplateList {
+	constructor(props) {
+		super(props);
+		this.aa = 'adfsf';
+	}
+}
+console.log(new Along())

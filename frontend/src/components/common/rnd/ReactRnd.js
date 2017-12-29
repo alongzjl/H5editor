@@ -126,13 +126,8 @@ export default class ReactRnd extends Component {
             zIndex: props.zIndex,
             rotate: 0,
         };
-        store.dispatch(changeStyle({
-            position: 'absolute',
-            left: `${props.initial.x}px`,
-            top: `${props.initial.y}px`,
-            transform: 'rotate(0deg)',
-        }));
         this.isResizing = false;
+        this.isDragging = false;
         this.onDragStart = this.onDragStart.bind(this);
         this.onDrag = this.onDrag.bind(this);
         this.onDragStop = this.onDragStop.bind(this);
@@ -171,15 +166,15 @@ export default class ReactRnd extends Component {
             x: this.state.x,
             y: this.state.y,
         });
-        store.dispatch(changeStyle({
-            width: `${styleSize.width}px`,
-            height: `${styleSize.height}px`,
-        }));
     }
 
     onResizeStop(dir, styleSize, clientSize, delta) {
         this.setState({ isDraggable: true });
         this.isResizing = false;
+        store.dispatch(changeStyle({
+            width: `${styleSize.width}px`,
+            height: `${styleSize.height}px`,
+        }));
         this.props.onResizeStop(dir, styleSize, clientSize, delta, {
             x: this.state.x,
             y: this.state.y,
@@ -192,6 +187,7 @@ export default class ReactRnd extends Component {
     }
 
     onDrag(e, ui) {
+        this.isDragging = true;
         if (this.isResizing) return;
         const allowX = this.props.moveAxis === 'x';
         const allowY = this.props.moveAxis === 'y';
@@ -202,16 +198,22 @@ export default class ReactRnd extends Component {
             x,
             y,
         });
+        this.props.onDrag(e, ui);
+    }
+
+    onDragStop(e, ui) {
+        if (this.isResizing || !this.isDragging) return;
+        const allowX = this.props.moveAxis === 'x';
+        const allowY = this.props.moveAxis === 'y';
+        const allowBoth = this.props.moveAxis === 'both';
+        const x = allowX || allowBoth ? ui.x : this.state.x;
+        const y = allowY || allowBoth ? ui.y : this.state.y;
         store.dispatch(changeStyle({
             position: 'absolute',
             left: `${x}px`,
             top: `${y}px`,
         }));
-        this.props.onDrag(e, ui);
-    }
-
-    onDragStop(e, ui) {
-        if (this.isResizing) return;
+        this.isDragging = false;
         this.props.onDragStop(e, ui);
     }
     onRotate(current) {

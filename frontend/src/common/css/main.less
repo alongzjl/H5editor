@@ -36,3 +36,54 @@ select{
 input{
     border: none;
 }
+div.sketch-picker{
+    width: 250px !important;
+}
+
+.Select-control{
+    width: 138px;
+    height: 28px;
+    margin-left: 30px;
+    border: 1px solid #505766;
+    border-radius: 6px;
+    .Select-value, .Select-input{
+        height: 28px;
+    }
+    .Select-value, .Select-placeholder{
+        line-height: 28px!important;
+    }
+}
+.Select.is-open > .Select-control {
+    border-bottom-right-radius: 6px;
+    border-bottom-left-radius: 6px;
+}
+.Select-menu-outer{
+    background: #FFFFFF;
+    box-shadow: 0 4px 10px 0 rgba(0,0,0,0.20);
+    border: inherit;
+    margin-top: 8px;
+    width: 250px;
+    right: 0;
+}
+.Select-menu .Select-option{
+    height: 32px;
+    background-color: #fff;
+    text-align: center;
+    margin: 0 auto;
+    border-bottom: 1px solid #EDEDED;
+    width: 88%;
+    font-family: PingFangSC-Regular;
+    font-size: 14px;
+    color: #505766;
+    letter-spacing: 1.17px;
+}
+.Select-option:last-child {
+    border-bottom: none;
+}
+.Select-option:hover{
+    background: rgba(76,208,224,0.10);
+    color: #00BCD3;
+}
+span.rc-upload{
+    outline: none;
+}

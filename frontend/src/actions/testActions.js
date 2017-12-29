@@ -86,3 +86,11 @@ export function changeSortQuestionStyle(style) {
         notRedoable: true,
     };
 }
+
+export function checkQuestion(checking) {
+    return {
+        type: types.TEST_CHECK,
+        checking,
+        notRedoable: true,
+    };
+}

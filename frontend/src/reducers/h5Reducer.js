@@ -8,6 +8,7 @@ import {
     changePageValue,
     newIds,
     sortElements,
+    changeMultiElementValue,
 } from './reducerUtils';
 
 const initialState = {
@@ -18,22 +19,22 @@ const initialState = {
     pages: [],
     currentPage: 0,
     focus: {},
-    selects: [],
+    selects: []
 };
 
 // 重要： state 里面要保持都是immutablejs 对象
 export default function (state = initialState, action) {
-    const imState = Immutable.fromJS(state);
+	const imState = Immutable.fromJS(state);
     if (action.type === types.PAGE_ADD) {
         const pages = imState.get('pages');
-        const newPages = pages.push(action.page);
-        return imState.merge({ pages: newPages, currentPage: imState.get('pages').size }).toJS();
+        const newPages = pages.insert(imState.get('currentPage') + 1, action.page);
+        return imState.merge({ pages: newPages, currentPage: imState.get('currentPage') + 1 }).toJS();
     }
-
     if (action.type === types.PAGE_DELETE) {
         const pages = imState.get('pages');
+        const pageNo = pages.findIndex(item => item.get('id') === action.id);
         const newPages = pages.filter(item => item.get('id') !== action.id);
-        return imState.merge({ pages: newPages, currentPage: imState.get('pages').size }).toJS();
+        return imState.merge({ pages: newPages, currentPage: (pageNo - 1 < 0 ? 0 : pageNo - 1) }).toJS();
     }
 
     if (action.type === types.PAGE_COPY) {
@@ -71,7 +72,7 @@ export default function (state = initialState, action) {
             if (item.get('id') === action.id) {
                 return item.set('editable', true);
             }
-            return item;
+            return item.set('editable', false);
         });
         return imState.set('pages', newPages).toJS();
     }
@@ -124,9 +125,9 @@ export default function (state = initialState, action) {
     }
 
     if (action.type === types.STYLE_CHANGE) {
-        return changeElementValue(imState, 'style', action.style);
+        return changeMultiElementValue(imState, 'style', action.style);
     }
-
+	
     if (action.type === types.ANIMATION_CHANGE) {
         return changeElementValue(imState, 'animations', action.animation, action.index);
     }
@@ -139,6 +140,10 @@ export default function (state = initialState, action) {
         return changeElementValue(imState, 'animations', null, action.index);
     }
 
+    if (action.type === types.ANIMATION_REFRESH) {
+        return imState.merge({ focus: { id: -1 }, selects: [] }).toJS();
+    }
+
     if (action.type === types.WORD_EDITABLE_CHANGE) {
         return doChangeElementValue(imState, action.id, 'contenteditable', action.editable);
     }
@@ -148,8 +153,28 @@ export default function (state = initialState, action) {
         return doChangeElementValue(newState, action.id, 'text', action.text);
     }
     if (action.type === types.WORD_PINYIN_CHANGE) {
-        return changeElementValue(imState, 'pinyin', action.pinyin);
+        const pages = imState.get('pages');
+        const currentPage = pages.get(imState.get('currentPage'));
+        const elements = currentPage.get('elements');
+        const elementId = imState.get('focus').get('id');
+        const index = elements.findIndex(element => element.get('id') === elementId);
+        if (index === -1) {
+            return imState.toJS();
+        }
+        const newElement = elements.get(index).set('pinyins', action.pinyin);
+        const newPage = currentPage.set('elements', elements.set(index, newElement));
+        const newState = imState.set('pages', pages.set(imState.get('currentPage'), newPage));
+        return newState.toJS();
     }
+    
+	if(action.type === types.WORD_FONT_FACE_CHANGE){
+		return changeElementValue(imState, 'fontFace', action.fontFace);
+	}
+	
+	if(action.type === types.WORD_ACCESS_KEY_CHANGE){
+		return changeElementValue(imState, 'accessKey', action.accessKey);
+	}
+	 
     if (action.type === types.WORD_SYMBOL_CHANGE) {
         return changeElementValue(imState, 'symbol', action.symbol, action.index);
     }
@@ -316,9 +341,7 @@ export default function (state = initialState, action) {
     if (action.type === types.HIGHLIGHT_CANCEL) {
         const pages = imState.get('pages');
         const currentPage = pages.get(imState.get('currentPage'));
-        const newPage = currentPage.update('elements', list => list.filter(item => {
-            return item.get('name') !== 'HighlightModal';
-        }));
+        const newPage = currentPage.update('elements', list => list.filter(item => item.get('name') !== 'HighlightModal'));
         const newState = imState.set('pages', pages.set(imState.get('currentPage'), newPage));
         return newState.toJS();
     }
@@ -334,6 +357,9 @@ function alignLeft(elements) {
             minLeft = left;
         }
     });
+    if (elements.size === 1) {
+        minLeft = 0;
+    }
     return elements.map(element => element.set('style', element.get('style').set('left', minLeft)));
 }
 
@@ -346,6 +372,9 @@ function alignRight(elements) {
             maxLeft = left + width;
         }
     });
+    if (elements.size === 1) {
+        maxLeft = 375;
+    }
     return elements.map(element => {
         const width = parseInt(element.get('style').get('width'));
         return element.set('style', element.get('style').set('left', maxLeft - width));
@@ -361,6 +390,9 @@ function alignCenter(elements) {
             maxLeft = left + width;
         }
     });
+    if (elements.size === 1) {
+        maxLeft = 375;
+    }
     return elements.map(element => {
         const width = parseInt(element.get('style').get('width'));
         return element.set('style', element.get('style').set('left', (maxLeft - width) / 2));
@@ -375,6 +407,9 @@ function alignTop(elements) {
             minTop = top;
         }
     });
+    if (elements.size === 1) {
+        minTop = 0;
+    }
     return elements.map(element => element.set('style', element.get('style').set('top', minTop)));
 }
 
@@ -387,6 +422,9 @@ function alignMiddle(elements) {
             maxTop = top + height;
         }
     });
+    if (elements.size === 1) {
+        maxTop = 667;
+    }
     return elements.map(element => {
         const height = parseInt(element.get('style').get('height'));
         return element.set('style', element.get('style').set('top', (maxTop - height) / 2));
@@ -402,6 +440,9 @@ function alignBottom(elements) {
             maxTop = top + height;
         }
     });
+    if (elements.size === 1) {
+        maxTop = 667;
+    }
     return elements.map(element => {
         const height = parseInt(element.get('style').get('height'));
         return element.set('style', element.get('style').set('top', maxTop - height));

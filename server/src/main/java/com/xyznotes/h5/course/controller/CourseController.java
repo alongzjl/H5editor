@@ -6,6 +6,7 @@ import com.xyznotes.h5.common.Result;
 import com.xyznotes.h5.common.SortBean;
 import com.xyznotes.h5.common.exception.AppException;
 import com.xyznotes.h5.common.security.interceptor.Auth;
+import com.xyznotes.h5.common.security.interceptor.SecurityInterceptor;
 import com.xyznotes.h5.course.dto.CourseData;
 import com.xyznotes.h5.course.dto.CourseDataDto;
 import com.xyznotes.h5.course.model.Course;
@@ -14,6 +15,8 @@ import com.xyznotes.h5.user.model.UserToken;
 import org.apache.commons.io.FileUtils;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.data.domain.Page;
 import org.springframework.http.MediaType;
@@ -25,6 +28,7 @@ import org.zeroturnaround.zip.ZipUtil;
 import javax.annotation.Resource;
 import java.io.File;
 import java.io.IOException;
+import java.net.URLEncoder;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
@@ -40,6 +44,7 @@ public class CourseController {
     @Resource
     private Config config;
     private final RestTemplate template = new RestTemplate();
+    private static Logger logger = LoggerFactory.getLogger(SecurityInterceptor.class);
 
     /**
      * 查看课程列表
@@ -50,6 +55,7 @@ public class CourseController {
     public Result index(
             @RequestParam(defaultValue = "1") int page,
             @RequestParam(defaultValue = "20") int pageSize,
+            @RequestParam String materialId,
             SortBean sortBean,
             String name,
             @RequestAttribute("userid") UserToken userToken) throws AppException {
@@ -60,6 +66,9 @@ public class CourseController {
         Criteria criteria = new Criteria(page, pageSize, sortBean.getSortName(), sortBean.getSortDir());
         criteria.conditionMap.put("user_id", userToken.getId());
         criteria.conditionMap.put("name", name);
+        if(materialId != null && !"".equals(materialId.trim())){
+            criteria.conditionMap.put("material_id",materialId);
+        }
 
         Page<Course> activities = courseService.list(criteria);
 
@@ -118,17 +127,37 @@ public class CourseController {
      */
     @RequestMapping(value = "/course", method = RequestMethod.POST)
     @ResponseBody
-    @Auth("anon")
-    public Result create(@RequestBody Course course) throws Exception {
-        course.setUserId(1);
-        if (course.getId() != null) {
-            courseService.update(course);
-            String url = config.getDomain() + "/viewer.html#/" + course.getId() + "/b";
-            template.getForObject(config.getRemoteApiDomain() + "wordoor_content_api/v1/material/callback?course_id=" + course.getId() + "&url=" + url,null);
+    @Auth
+    public Result create(@RequestBody Course course,@RequestAttribute("userid") UserToken userToken) throws Exception {
+        course.setUserId(userToken.getId());
+        if (course.getMaterialId() != null) {
+            Course model = null;
+            Criteria criteria = new Criteria();
+            criteria.conditionMap.put("material_id", course.getMaterialId());
+            criteria.page = 1;
+            criteria.pageSize = 10;
+            logger.info(criteria.conditionMap.toString());
+            List<Course> models = courseService.listAll(criteria);
+            if(!models.isEmpty()){
+                model = models.get(0);
+                model.copyPorities(course);
+                courseService.update(model);
+            }else{
+                model = new Course();
+                model.copyPorities(course);
+                courseService.save(model);
+            }
+            course.setId(model.getId());
+            String url = config.getDomain() + "/viewer.html#/" + model.getId() + "/c";
+            String url_encode = URLEncoder.encode(url,"utf-8");
+            template.getForObject(config.getRemoteApiDomain() + "/wordoor_content_api/v1/material/callback?course_id=" + model.getMaterialId() + "&type=1&url=" + url_encode,Object.class);
         } else {
-            courseService.save(course);
+            if(course.getId() != null){
+                courseService.update(course);
+            }else{
+                courseService.save(course);
+            }
         }
-
         return new Result<>(true, course.getId());
     }
 

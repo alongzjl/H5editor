@@ -9,6 +9,9 @@ import API_URL from '../../../common/url';
 import { changeImage, changePageStyle } from '../../../actions/h5Actions';
 import './cropperDialog.less';
 import t from '../../i18n';
+import disableScroll from './disableScroll';
+import commonCss from '../commonCssNav';
+
 
 export default class CropperDialog extends React.Component {
     state = {
@@ -52,21 +55,25 @@ export default class CropperDialog extends React.Component {
         if (this.props.type === 'backImage') {
             image = this.props.focus.style.backgroundImage ? this.props.focus.style.backgroundImage.substring(4, this.props.focus.style.backgroundImage.length - 1) : '';
         } else {
-            image = API_URL.domain + image;
+            image = API_URL.upload + image;
         }
         return (
             <div className="cropDialog">
                 <SkyLight
                     hideOnOverlayClicked
+                    dialogStyles={commonCss.dialogStyles}
+                    titleStyle={commonCss.titleStyle}
+                    closeButtonStyle={commonCss.closeButtonStyle}
                     ref={com => { this.cropperModal = com; }}
                     title={t('image_clip')}
+                    {...disableScroll()}
                 >
                     <div>
                         {
                             image ? <Cropper
                                 ref={com => this.cropper = com}
                                 src={image}
-                                style={{ height: 380 }}
+                                style={{ height: 380,marginTop:20 }}
                                 guides={false}
                             /> : null
                         }

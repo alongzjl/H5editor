@@ -7,6 +7,7 @@ import store from '../../../store';
 import API_URL from '../../../common/url';
 import { changeFocus, selectMultiple } from '../../../actions/h5Actions';
 import './audio.less';
+import getPosition from './getPosition';
 
 export default class Audio extends React.Component {
     state = {
@@ -81,8 +82,14 @@ export default class Audio extends React.Component {
                 onDragStart={this.onClicked}
                 className={focusId === value.id ? 'focused' : ''}
                 style={value.style}
+                initial={getPosition(value)}
             >
-                <img onMouseDown={this.disableDrag} src={require('../dialog/images/audio_dom.png')} className={selectedClass} style={{ width: '100%', height: '100%' }} />
+                <img
+                    onMouseDown={this.disableDrag}
+                    src={require('../dialog/images/audio_dom.png')}
+                    className={selectedClass}
+                    style={{ width: value.style.width, height: value.style.height }}
+                />
             </Rnd>
         );
     }

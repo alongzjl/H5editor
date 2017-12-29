@@ -21,6 +21,8 @@ import { changeFocus } from '../../../actions/h5Actions';
 import './page.less';
 import LineQuestion from './testTypes/LineQuestion';
 import Highlight from './Highlight';
+import TestModal from "../modal/TestModal";
+import {checkQuestion} from "../../../actions/testActions";
 
 /**
  * @param viewing 是否正在浏览
@@ -29,6 +31,15 @@ class Page extends React.Component {
     handleClick = e => {
         const { page = { elements: [], style: {} }, viewing = false } = this.props;
         if (!viewing && e.target === e.currentTarget) { // 防止捕获其它onclick事件
+            for (const element of page.elements) {
+                if (element.name === 'FillBlanksModal' || element.name === 'SortQuestionModal' || element.name === 'LineQuestionModal') {
+                    store.dispatch(changeFocus(new TestModal().plainObject()));
+                    return;
+                } else if (element.name === 'WordModal' && element.answer !== undefined && element.answer !== -1) {
+                    store.dispatch(changeFocus(new TestModal().plainObject()));
+                    return;
+                }
+            }
             store.dispatch(changeFocus({ ...page }));
         }
     };
@@ -36,15 +47,14 @@ class Page extends React.Component {
         this.drawer.drawLine(element);
     };
     render() {
-        const { page = { elements: [], style: {} }, focusId, viewing = false, showImage, selects = [], isTeacher } = this.props;
+        const { page = { elements: [], style: {}, checking: false }, focusId, viewing = false, showImage, selects = [], isTeacher } = this.props;
         return (
-
             <div style={page.style} onClick={this.handleClick}>
                 {
                     page.elements.map(element => {
                         const selected = selects.includes(element.id);
                         switch (element.name) {
-                        case 'WordModal': return <Word key={element.id} value={element} focusId={focusId} viewing={viewing} sort={page.elements} selected={selected} />;
+                        case 'WordModal': return <Word key={element.id} value={element} focusId={focusId} viewing={viewing} sort={page.elements} selected={selected} checking={page.checking} />;
                         case 'InputModal': return <Input key={element.id} value={element} focusId={focusId} viewing={viewing} />;
                         case 'ButtonModal': return <Button key={element.id} value={element} focusId={focusId} viewing={viewing} />;
                         case 'ImageModal': return <Image key={element.id} value={element} focusId={focusId} viewing={viewing} selected={selected} />;
@@ -53,8 +63,8 @@ class Page extends React.Component {
                         case 'ShapeModal': return <Shape key={element.id} value={element} focusId={focusId} viewing={viewing} selected={selected} />;
                         case 'NoteModal': return (isTeacher || !viewing) ? <Note key={element.id} value={element} focusId={focusId} viewing={viewing} /> : null;
                         case 'SortQuestionModal' : return <Sort key={element.id} value={element} focusId={focusId} viewing={viewing} />;
-                        case 'TestConfirmModal' : return <TestConfirm key={element.id} viewing={viewing} sort={page.elements} />;
-                        case 'FillBlanksModal' : return <FillBlanks key={element.id} value={element} focusId={focusId} viewing={viewing} />;
+                        case 'TestConfirmModal' : return <TestConfirm key={element.id} viewing={viewing} value={element} sort={page.elements} />;
+                        case 'FillBlanksModal' : return <FillBlanks key={element.id} value={element} focusId={focusId} viewing={viewing} checking={page.checking} />;
                         case 'HighlightModal' : return <Highlight key={element.id} value={element} />;
                         case 'LineQuestionModal' : {
                             const to = page.elements.find(item => item.id === element.to);
@@ -65,7 +75,7 @@ class Page extends React.Component {
                     })
                 }
                 {
-                    !viewing ? <div id="line" /> : <LineContainer ref={com => this.drawer = com} lineQuestions={page.elements.filter(element => element.name === 'LineQuestionModal')} />
+                    !viewing ? <div id="line" /> : <LineContainer ref={com => this.drawer = com} lineQuestions={page.elements.filter(element => element.name === 'LineQuestionModal')} checking={page.checking} />
                 }
             </div>
         );
@@ -101,6 +111,7 @@ class LineContainer extends React.Component {
             start: null,
             points: newPoints.concat([[this.state.start, to]]),
         });
+        store.dispatch(checkQuestion(false));
     };
     getPoint = point => {
         const [from, to] = point;
@@ -119,7 +130,7 @@ class LineContainer extends React.Component {
         if (this.props.lineQuestions.length === 0) {
             return null;
         } else if (this.props.lineQuestions.length / 2 === this.state.points.length) {
-            if (!this.correct()) {
+            if (!this.correct() && this.props.checking) {
                 color = 'red';
             }
         }

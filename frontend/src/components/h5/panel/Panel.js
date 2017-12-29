@@ -36,11 +36,11 @@ export default class Panel extends React.Component {
         }
     }
     render() {
-        const { focus, currentPage } = this.props;
+        const { focus, currentPage,pages } = this.props;
         const panels = [];
-        switch (focus.name) {
+        switch (focus.name) { 
         case 'WordModal': {
-            panels.push(<Tabs.Panel title={t('style')} key="style"><WordPanel focus={focus} /></Tabs.Panel>);
+            panels.push(<Tabs.Panel title={t('style')} key="style"><WordPanel focus={focus} page={pages} /></Tabs.Panel>);
             panels.push(<Tabs.Panel title={t('animation')} key="animation"><AnimationPanel focus={focus} /></Tabs.Panel>);
             panels.push(<Tabs.Panel title={t('action')} key="action"><ActionPanel focus={focus} page={currentPage} /></Tabs.Panel>);
             break;
@@ -61,8 +61,10 @@ export default class Panel extends React.Component {
             if (focus.src) {
                 panels.push(<Tabs.Panel title={t('style')} key="style"><ImagePanel focus={focus} /></Tabs.Panel>);
             } else {
-                panels.push(<Tabs.Panel title={t('style')} key="style"><WordPanel focus={focus} /></Tabs.Panel>);
+                panels.push(<Tabs.Panel title={t('style')} key="style"><WordPanel focus={focus} page={pages} /></Tabs.Panel>);
             }
+            panels.push(<Tabs.Panel title={t('animation')} key="animation"><AnimationPanel focus={focus} /></Tabs.Panel>);
+            panels.push(<Tabs.Panel title={t('action')} key="action"><ActionPanel focus={focus} page={currentPage} /></Tabs.Panel>);
             break;
         }
         case 'ImageModal': {
@@ -87,8 +89,8 @@ export default class Panel extends React.Component {
             break;
         }
         default:
-            panels.push(<Tabs.Panel title={t('template_library')} key="template"><TemplatePanel isPublic token={this.props.token}/></Tabs.Panel>);
-            panels.push(<Tabs.Panel title={t('template_mine')} key="myTemplate"><TemplatePanel isPublic={false} /></Tabs.Panel>);
+            panels.push(<Tabs.Panel title={t('template_library')} key="template"><TemplatePanel isPublic token={this.props.token} /></Tabs.Panel>);
+            panels.push(<Tabs.Panel title={t('template_mine')} key="myTemplate"><TemplatePanel isPublic={false} token={this.props.token} /></Tabs.Panel>);
             break;
         }
         if (panels.length === 0) {

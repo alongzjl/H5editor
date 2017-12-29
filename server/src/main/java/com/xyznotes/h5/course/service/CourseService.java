@@ -32,10 +32,10 @@ public class CourseService {
     public Page<Course> list(Criteria criteria) throws AppException {
         long totalCount = courseMapper.count(criteria);
         List<Course> courses = courseMapper.list(criteria);
-        for (Course course : courses){
-            User user = userService.find(course.getUserId());
-            course.setUsername(user.getUsername());
-        }
+//        for (Course course : courses){
+//            User user = userService.find(course.getUserId());
+//            course.setUsername(user.getUsername());
+//        }
         return new PageImpl<>(courses, new PageRequest(criteria.page - 1, criteria.pageSize), totalCount);
     }
 

@@ -2,6 +2,7 @@ import React from 'react';
 import SkyLight from 'react-skylight';
 import AudioModal from '../modal/AudioModal';
 import FileUploader from '../../common/fileUpload/fileUploader';
+import DragUpload from '../../common/fileUpload/DragUpload';
 import store from '../../../store';
 import { addElements } from '../../../actions/h5Actions';
 import Fetch from '../../../common/FetchIt';
@@ -10,6 +11,8 @@ import Category from './Category';
 import './addAudioDialog.less';
 import Noty from '../../common/noty/noty';
 import t from '../../i18n';
+import disableScroll from './disableScroll';
+import commonCss from '../commonCssNav';
 
 export default class AddAudioDialog extends React.Component {
     state = {
@@ -62,27 +65,16 @@ export default class AddAudioDialog extends React.Component {
         });
     };
     render() {
-        const addAudioDialog = {// 添加音频弹窗样式
-            width: '780px',
-            height: 'auto',
-            color: '#505766',
-            zIndex: '101!important',
-            background: '#f9f9f9',
-            margin: '0 auto',
-            boxShadow: '0 4px 10px 0',
-            left: 0,
-            right: 0,
-            top: '100px',
-            borderRadius: '6px',
-        };
-
         return (
             <div>
                 <SkyLight
-                    dialogStyles={addAudioDialog}
+                    dialogStyles={{ ...commonCss.dialogStyles, paddingBottom: '40px' }}
+                    titleStyle={commonCss.titleStyle}
+                    closeButtonStyle={commonCss.closeButtonStyle}
                     hideOnOverlayClicked
                     ref={com => { this.audioModal = com; }}
                     title="音频素材"
+                    {...disableScroll()}
                 >
                     <div className="addImageBody audioDialog flex_row_start">
                         <div className="left flex_column_between">
@@ -120,6 +112,7 @@ export default class AddAudioDialog extends React.Component {
                                 current={this.state.contentLi}
                                 changeSelect={this.select}
                                 categoryId={this.state.categoryId}
+                                selects={this.state.audios}
                             />
                             <ul className="page">
                                 {
@@ -210,24 +203,47 @@ class Audios extends React.Component {
     onCategoryChange = category => {
         this.setState({ categoryId: category.id }, this.loadData);
     };
+    selected(id) {
+        const index = this.props.selects.findIndex(item => item.id === id);
+        return index !== -1;
+    }
     render() {
         const { onChoose } = this.props;
         if (this.state.current === '本地上传') {
             return (
-                <div className="flex_row_center audio_list">
-                    <FileUploader
-                        options={{
-                            baseUrl: API_URL.audio.upload,
-                            multiple: true,
-                            accept: 'audio/*',
-                            uploadSuccess: () => {
+                <div>
+                    <DragUpload
+                        acceptedFiles="audio/*"
+                        changeSelect={() => this.props.changeSelect('contentLi', '我的音频')}
+                        postUrl={API_URL.audio.upload}
+                    />
+                    <div className="flex_row_center audio_list2">
+                        <FileUploader
+                            url={API_URL.audio.upload}
+                            multiple
+                            onStart={() => { this.setState({ uploading: true }); }}
+                            onSuccess={() => {
+                                this.setState({ uploading: false });
                                 Noty.success(t('file_upload_success'));
                                 this.props.changeSelect('contentLi', '我的音频');
-                            },
-                        }}
-                    >
-                        <button ref="chooseAndUpload" className="uploadBtn">{t('file_select')}</button>
-                    </FileUploader>
+                            }}
+                            onError={() => { this.setState({ uploading: false }); }}
+                            accept="audio/*"
+                        >
+                            <button className="uploadBtn" disabled={this.state.uploading}>
+                                {
+                                    this.state.uploading ? t('file_uploading') : t('file_select')
+                                }
+                                {
+                                    this.state.uploading && <div className="spinner">
+                                        <div className="bounce1"></div>
+                                        <div className="bounce2"></div>
+                                        <div className="bounce3"></div>
+                                    </div>
+                                }
+                            </button>
+                        </FileUploader>
+                    </div>
                 </div>
             );
         }
@@ -252,25 +268,30 @@ class Audios extends React.Component {
                 }
                 <ul className="audio_list">
                     {
-                        this.state.audios.map((item, index) => <li
-                            onMouseEnter={() => this.handleOver(index)}
-                            onMouseLeave={() => this.handleOver(null)}
-                            onClick={() => onChoose(item)}
-                            key={item.id}
-                            className="flex_row_start flex_vertical_middle"
-                        >
-                            <button
-                                style={{ backgroundImage: `url(${
-                                    this.state.hover === index ?
-                                    `${this.state.play === index ? butSrc.playSelected : butSrc.pauseSelected}` :
-                                    `${this.state.play === index ? butSrc.play : butSrc.pause}`})`,
-                                }}
-                                className="controlBtn"
-                                onClick={args => this.previewPlay(item, index, args)}
-                            />
-                            <audio id={`audio${item.id}`} src={API_URL.domain + item.musicPath} onEnded={() => this.handlePlayState(null)} />
-                            {item.musicName}
-                        </li>,
+                        this.state.audios.map((item, index) => {
+                            const selected = this.selected(item.id);
+                            return (
+                                <li
+                                    onMouseEnter={() => this.handleOver(index)}
+                                    onMouseLeave={() => this.handleOver(null)}
+                                    onClick={() => onChoose(item)}
+                                    key={item.id}
+                                    className={`flex_row_start flex_vertical_middle ${selected ? 'selected2' : ''}`}
+                                >
+                                    <button
+                                        style={{ backgroundImage: `url(${
+                                                (this.state.hover === index || selected) ?
+                                                        `${this.state.play === index ? butSrc.playSelected : butSrc.pauseSelected}` :
+                                                        `${this.state.play === index ? butSrc.play : butSrc.pause}`})`,
+                                        }}
+                                        className="controlBtn"
+                                        onClick={args => this.previewPlay(item, index, args)}
+                                    />
+                                    <audio id={`audio${item.id}`} src={API_URL.domain + item.musicPath} onEnded={() => this.handlePlayState(null)} />
+                                    {item.musicName}
+                                </li>
+                            );
+                        },
                         )
                     }
                 </ul>
@@ -303,21 +324,11 @@ class PreviewDialog extends React.Component {
         });
     };
     render() {
-        const previewDialog = {// 添加外链弹窗样式
-            height: 'auto',
-            minHeight: '320px',
-            width: '780px',
-            margin: '0 auto',
-            left: 0,
-            right: 0,
-            top: '200px',
-            background: '#F9F9F9',
-            boxShadow: '0 4px 10px 0 rgba(0,0,0,0.20)',
-            borderRadius: '6px',
-        };
         return (
             <SkyLight
-                dialogStyles={previewDialog}
+                dialogStyles={{ ...commonCss.dialogStyles, paddingBottom: '40px' }}
+                titleStyle={commonCss.titleStyle}
+                closeButtonStyle={commonCss.closeButtonStyle}
                 hideOnOverlayClicked
                 ref={com => { this.previewModal = com; }}
                 title="音频素材"
