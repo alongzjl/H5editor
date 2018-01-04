@@ -113,7 +113,7 @@ class AudioForm extends React.Component {
                             <Upload
                                 name="file"
                                 multiple
-                                action={`${API_URL.upload}/music`}
+                                action={`${API_URL.upload}music`}
                                 accept="audio/*"
                                 data={{ access_token: sessionStorage.token }}
                             >

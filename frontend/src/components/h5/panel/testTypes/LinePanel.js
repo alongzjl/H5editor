@@ -21,10 +21,12 @@ class LinePanel extends React.Component {
         return (
             <div className="linePanel">
                 <button className="insertBtn fs14" onClick={() => { this.props.add((this.props.size / 2) + 1); }}>插入对象</button>
-                <button className="insertBtn fs14" onClick={() => this.props.autoOrder(sort)}>随机排布</button>
-                <div>
-                    <img src={require(`../images/column_order${sort === 'column' ? '_highlight' : ''}.png`)} alt="" onClick={() => this.changeSort('column')} />
-                    <img src={require(`../images/row_order${sort === 'row' ? '_highlight' : ''}.png`)} alt="" onClick={() => this.changeSort('row')} />
+                <div style={{ visibility: this.props.size > 0 ? 'visible' : 'hidden' }}>
+                    <button className="insertBtn fs14" onClick={() => this.props.autoOrder(sort)}>随机排布</button>
+                    <div>
+                        <img src={require(`../images/column_order${sort === 'column' ? '_highlight' : ''}.png`)} alt="" onClick={() => this.changeSort('column')} />
+                        <img src={require(`../images/row_order${sort === 'row' ? '_highlight' : ''}.png`)} alt="" onClick={() => this.changeSort('row')} />
+                    </div>
                 </div>
             </div>
         );
@@ -42,7 +44,8 @@ const mapDispatchToProps = dispatch => ({
 
         dispatch(addLineQuestion(line1));
         dispatch(addLineQuestion(line2));
-        dispatch(addElements(new TestConfirmModal('line').plainObject()));
+        num === 1 ? dispatch(addElements(new TestConfirmModal('line').plainObject())) : null;
+        
     },
     changeSort(sort) {
         dispatch(changeLineQuestionSort(sort));

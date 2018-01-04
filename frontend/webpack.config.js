@@ -5,26 +5,29 @@ const path = require('path');
 const ExtractTextPlugin = require('extract-text-webpack-plugin');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const UglifyJsPlugin = require('uglifyjs-webpack-plugin');
+const webpack = require('webpack');
 
 function plugins() {
-    const arr = [
-        new ExtractTextPlugin({ filename: 'css/[id].css' }),
-        new HtmlWebpackPlugin({
-            chunks: ['front'],
-            filename: 'index.html',
-            template: path.join(__dirname, '/index-tmpl.html'),
-        }),
-        new HtmlWebpackPlugin({
-            chunks: ['viewer'],
-            filename: 'viewer.html',
-            template: path.join(__dirname, '/viewer-tmpl.html'),
-        }),
-    ];
+    const arr = [];
     if (process.env.NODE_ENV === 'production') {
+        arr.push(new webpack.DefinePlugin({
+            'process.env.NODE_ENV': JSON.stringify('production'),
+        }));
         arr.push(new UglifyJsPlugin({
             sourceMap: true,
         }));
     }
+    arr.push(new ExtractTextPlugin({ filename: 'css/[id].css' }))
+    arr.push(new HtmlWebpackPlugin({
+        chunks: ['front'],
+        filename: 'index.html',
+        template: path.join(__dirname, '/index-tmpl.html'),
+    }));
+    arr.push(new HtmlWebpackPlugin({
+        chunks: ['viewer'],
+        filename: 'viewer.html',
+        template: path.join(__dirname, '/viewer-tmpl.html'),
+    }));
     return arr;
 }
 module.exports = {

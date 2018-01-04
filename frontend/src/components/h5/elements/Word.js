@@ -221,12 +221,13 @@ class ItemsChoose extends React.Component {
         selected: '',
     };
     ItemsChooseClick = () => {
-    	console.log(this.props.value.answer);
-        this.setState({
-            correct: this.props.value.answer  ?  1 : undefined,
-            selected: this.state.selected === '' ? 'optionSelected' : '',
+    	const correct  = this.props.value.answer === 1 ? true : false;
+    	const selected = this.state.selected === '' ? 'optionSelected' : '';
+    	this.setState({
+            correct: correct,
+            selected: selected
         });
-        store.dispatch(checkQuestion(false));
+        store.dispatch(checkQuestion(true));
     };
     render() {
         const { value, checking, onAnimationEnd, focusId } = this.props;

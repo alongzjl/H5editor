@@ -287,7 +287,7 @@ class Audios extends React.Component {
                                         className="controlBtn"
                                         onClick={args => this.previewPlay(item, index, args)}
                                     />
-                                    <audio id={`audio${item.id}`} src={API_URL.domain + item.musicPath} onEnded={() => this.handlePlayState(null)} />
+                                    <audio id={`audio${item.id}`} src={API_URL.upload + item.musicPath} onEnded={() => this.handlePlayState(null)} />
                                     {item.musicName}
                                 </li>
                             );

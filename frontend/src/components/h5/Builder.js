@@ -3,21 +3,19 @@
  */
 import React from 'react';
 import { connect } from 'react-redux';
-import { withRouter } from 'react-router';
+import { withRouter, hashHistory } from 'react-router';
 import { ActionCreators } from 'redux-undo';
 import Panel from './panel/Panel';
 import Header from './header/Header';
-import { hashHistory } from 'react-router';
 import store from '../../store';
 import PageContainer from './pageContainer/PageContainer';
-import { addPage, changeCourse, changeTemplate, delElement } from '../../actions/h5Actions';
+import { initPage, changeCourse, changeTemplate, delElement } from '../../actions/h5Actions';
 import PageModal from './modal/PageModal';
 import Sidebar from './sidebar/Sidebar';
 import Fetch from '../../common/FetchIt';
 import API_URL from '../../common/url';
-import noty from '../common/noty/noty';
 import PreviewDialog from './dialog/PreviewDialogAlong';
-import SaveTemplateDialog from './dialog/SaveTemplateDialog'; 
+import SaveTemplateDialog from './dialog/SaveTemplateDialog';
 import Auth from '../../common/Auth';
 import t from '../i18n';
 import './builder.less';
@@ -25,46 +23,46 @@ import './builder.less';
 class Builder extends React.Component {
 
     componentDidMount = () => {
-    	this.props.location.query.from !== 'wordoor_edit' ? new Auth().check() : null;
-    	if (this.props.location.query.templateId) {
-        this.loadTemplate(this.props.location.query.templateId);
-    } else if (this.props.location.query.material_id) {
-        	 this.loadCourse(this.props.location.query.material_id);
-    } else {
-        this.addPage();
-    }
+        this.props.location.query.from !== 'wordoor_edit' ? new Auth().check() : null;
+        if (this.props.location.query.templateId) {
+            this.loadTemplate(this.props.location.query.templateId);
+        } else if (this.props.location.query.material_id) {
+            this.loadCourse(this.props.location.query.material_id);
+        } else {
+            this.addPage();
+        }
         store.dispatch(ActionCreators.clearHistory());
         // this.props.router.setRouteLeaveHook(this.props.route, this.routerWillLeave);
-     };
-	
-	load_style = (pages)=>{
-		let style_font = ''; 
+    };
+
+    load_style = pages => {
+        let style_font = '';
         const courseFontFamily = pages;
-		courseFontFamily.length !== 0 ? courseFontFamily.forEach(item=>{
-			item.elements.forEach(value=>{
-				value.fontFace ? style_font += value.fontFace.fontFace : null
-			})
-		}) : null; 
-		const newStyle = document.createElement('style');
-		newStyle.appendChild(document.createTextNode(style_font));
-		document.head.appendChild(newStyle);
-	};
-	
+        courseFontFamily.length !== 0 ? courseFontFamily.forEach(item => {
+            item.elements.forEach(value => {
+                value.fontFace ? style_font += value.fontFace.fontFace : null;
+            });
+        }) : null;
+        const newStyle = document.createElement('style');
+        newStyle.appendChild(document.createTextNode(style_font));
+        document.head.appendChild(newStyle);
+    };
+
     loadTemplate = templateId => {
         Fetch.get(`${API_URL.template.show}${templateId}`).then(data => {
             store.dispatch(changeTemplate(data.id, data.name, JSON.parse(data.pages)));
             this.load_style(JSON.parse(data.pages));
-        }); 
+        });
     };
 
     loadCourse = courseId => {
-    	Fetch.get(`${API_URL.course.list}?materialId=${courseId}&page=1`).then(data => {
-        	data.content.length ? (store.dispatch(changeCourse(data.content[0].id, JSON.parse(data.content[0].pages))) ,this.load_style(JSON.parse(data.content[0].pages))) : this.addPage();
-     });
+        Fetch.get(`${API_URL.course.list}?materialId=${courseId}&page=1`).then(data => {
+            data.content.length ? (store.dispatch(changeCourse(data.content[0].id, JSON.parse(data.content[0].pages))), this.load_style(JSON.parse(data.content[0].pages))) : this.addPage();
+        });
     };
 
     addPage = () => {
-        store.dispatch(addPage(new PageModal().plainObject()));
+        store.dispatch(initPage(new PageModal().plainObject()));
     };
 
    /* routerWillLeave = nextLocation => {
@@ -75,57 +73,58 @@ class Builder extends React.Component {
     };  */
 
     publish = () => {
-    	const c_id = parseInt(this.props.location.query.material_id);
-    	const templateId = parseInt(this.props.location.query.templateId);
-    	const name = templateId ? this.props.location.query.name : `模板${new Date().getTime()}`;
-    	let published = false;
-    	if (this.props.location.query.from == 'admin') {
-    		published = true;
-    		Fetch.postJSON(API_URL.template.save, { id: templateId, name, pages: JSON.stringify(this.props.pages), published }).then(data => {
-	           if (confirm('确定保存并返回模板列表页面!')) {
-		            window.location.href = `${API_URL.domain}admin/index.html#/template`;
-		            return false;
-		        }
-	        });
-    	} else if (this.props.location.query.from == 'wordoor_add') {
-    		Fetch.postJSON(API_URL.template.save, { id: templateId, name, pages: JSON.stringify(this.props.pages), published }).then(data => {
-	           if (confirm('确定保存并返回模板列表页面!')) {
-	           		hashHistory.push('/template');
-		            return false;
-		        }
-	        });
-    	} else if (this.props.location.query.from == 'wordoor_edit') {
-    		Fetch.postJSON(API_URL.course.save, { materialId: c_id, id: '', name: `课程${new Date().getTime()}`, templateId, pages: JSON.stringify(this.props.pages), published }).then(data => {
-          		if (confirm('确定保存并返回课程页面')) {
-		            window.location.href = `${API_URL.wordoor}wordoorFront/indexEdit.html`;
-		            return false;
-		        }
-        	});
-    	} else {
-    		Fetch.postJSON(API_URL.template.save, { id: '', name, pages: JSON.stringify(this.props.pages), published }).then(data => {
-	           if (confirm('确定保存并返回模板列表页面!')) {
-	           		hashHistory.push('/template');
-		            return false;
-		        }
-	        });
-    	}
+        const c_id = parseInt(this.props.location.query.material_id);
+        const templateId = parseInt(this.props.location.query.templateId);
+        const name = templateId ? this.props.location.query.name : `模板${new Date().getTime()}`;
+        let published = false;
+        if (this.props.location.query.from == 'admin') {
+            published = true;
+            Fetch.postJSON(API_URL.template.save, { id: templateId, name, pages: JSON.stringify(this.props.pages), published }).then(data => {
+                if (confirm('确定保存并返回模板列表页面!')) {
+                    window.location.href = `${API_URL.domain}admin/index.html#/template`;
+                    return false;
+                }
+            });
+        } else if (this.props.location.query.from == 'wordoor_add') {
+            Fetch.postJSON(API_URL.template.save, { id: templateId, name, pages: JSON.stringify(this.props.pages), published }).then(data => {
+                if (confirm('确定保存并返回模板列表页面!')) {
+                    hashHistory.push('/template');
+                    return false;
+                }
+            });
+        } else if (this.props.location.query.from == 'wordoor_edit') {
+            Fetch.postJSON(API_URL.course.save, { materialId: c_id, id: '', name: `课程${new Date().getTime()}`, templateId, pages: JSON.stringify(this.props.pages), published }).then(data => {
+                if (confirm('确定保存并返回课程页面')) {
+                    window.location.href = `${API_URL.wordoor}wordoorFront/indexEdit.html`;
+                    return false;
+                }
+            });
+        } else {
+            Fetch.postJSON(API_URL.template.save, { id: '', name, pages: JSON.stringify(this.props.pages), published }).then(data => {
+                if (confirm('确定保存并返回模板列表页面!')) {
+                    hashHistory.push('/template');
+                    return false;
+                }
+            });
+        }
     };
 
     disableBackSpace = e => {
-        if (e.which === 8 &&
+    	 var currKey=0,e=e||event; 
+    	 currKey=e.keyCode||e.which||e.charCode;//支持IE、FF
+        if (currKey === 8 &&
             !this.props.focus.contenteditable &&
             e.target.nodeName !== 'INPUT' &&
-            e.target.nodeName !== 'TEXTAREA' &&
-            (e.target.nodeName !== 'DIV' && !this.props.focus.contenteditable)
+            e.target.nodeName !== 'TEXTAREA' 
         ) {
-            console.log('disabled backspace');
+            store.dispatch(delElement());
             e.stopPropagation();
             e.preventDefault();
             return false;
         }
-        if (e.which === 46) { // 按下删除
+        if (currKey === 46) { // 按下删除
             store.dispatch(delElement());
-        }
+        } 
         return true;
     };
 
@@ -140,7 +139,7 @@ class Builder extends React.Component {
                 <div className="builder">
                     <Sidebar pages={this.props.pages} currentPage={this.props.currentPage} />
                     <PageContainer pages={this.props.pages} focusId={this.props.focus.id} currentPage={this.props.currentPage} selects={this.props.selects} />
-                    <Panel focus={this.props.focus} currentPage={this.props.pages[this.props.currentPage]} pages={this.props.pages} token={this.props.location.query.access_token}/>
+                    <Panel focus={this.props.focus} currentPage={this.props.pages[this.props.currentPage]} pages={this.props.pages} token={this.props.location.query.access_token} />
                     <PreviewDialog ref={com => { this.pageModal = com; }} pages={this.props.pages} />
                     <SaveTemplateDialog
                         ref={com => { this.saveTemplateDialog = com; }}

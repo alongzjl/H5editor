@@ -139,7 +139,7 @@ export default class ImagePanel extends React.Component {
                 <div className="flex_row_between flex_vertical_middle line fs14 blackColor opacity">
                     {t('opacity')}
                     <Slider onAfterChange={this.changeOpacity} min={0} max={1} step={0.1} />
-                    <span>{Number.parseInt(style.opacity * 100)}%</span>
+                    <span>{Number.parseInt((1 - style.opacity) * 100)}%</span>
                 </div>
                 <div className="flex_row_between flex_vertical_middle line fs14 blackColor opacity">
                     {t('rotation')}

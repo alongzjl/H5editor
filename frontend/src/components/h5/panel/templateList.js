@@ -1,5 +1,4 @@
 import React from 'react';
-import Pagination from 'rc-pagination';
 import Noty from 'noty';
 import 'noty/lib/noty.css';
 import store from '../../../store';
@@ -61,17 +60,12 @@ class TemplateList extends React.Component {
         page: 1,
         showMore: false,
     };
-    constructor(props) {
-		super(props);
-		this.along = 'along';
-	}
     componentDidMount() {
-    	console.log(this.props);
-    	this.props.token ? sessionStorage.setItem('access_token',this.props.token) : null;
-        this.loadData(); 
-    }
+    	this.props.token ? sessionStorage.setItem('access_token', this.props.token) : null ;
+        this.loadData();
+    }  
     loadData = () => {
-        Fetch.get(`${API_URL.template.list}?page=${this.state.page}&isPublic=${this.props.isPublic}`).then(data => {
+        Fetch.get(`${API_URL.template.list}?page=${this.state.page}&pageSize=999&isPublic=${this.props.isPublic}`).then(data => {
             this.setState({
                 templates: data.content,
                 total: data.totalElements,
@@ -102,9 +96,7 @@ class TemplateList extends React.Component {
                     }
                 </div>
                 {
-                    !this.state.showMore
-                        ? <Pagination onChange={this.changePage} total={this.state.total} pageSize={9} simple current={this.state.page} />
-                        : <button onClick={this.back} className="back">{t('back')}</button>
+                    this.state.showMore && <button onClick={this.back} className="back">{t('back')}</button>
                 }
             </div>
         );

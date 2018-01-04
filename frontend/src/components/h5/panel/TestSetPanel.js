@@ -44,7 +44,7 @@ export default class TestSetPanel extends React.Component {
         ];
         return (
             <div>
-                <div className="testSetPanelHead"> {this.state.type === 0 && t('question_select_title')}</div>
+                <div className="testSetPanelHead"> {t('question_select_title')}</div>
                 <ul className="testLists">
                     {
                         types.map(item => (

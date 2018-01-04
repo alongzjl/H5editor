@@ -96,10 +96,11 @@ export default class Panel extends React.Component {
         if (panels.length === 0) {
             return null;
         }
+        const testTab = focus.name == 'TestModal' || focus.name=='FillBlanksModal' || focus.name=='SortQuestionModal' || focus.name=='LineQuestionModal' ? 'testTab' : '';
         return (
             <div>
-                <Tabs className="panel" tabActive={this.state.index} onAfterChange={this.changeTab}>
-                    {
+                <Tabs className={`panel ${testTab}`}  tabActive={this.state.index} onAfterChange={this.changeTab}>
+                    {  
                         panels.map(panel => panel)
                     }
                 </Tabs>

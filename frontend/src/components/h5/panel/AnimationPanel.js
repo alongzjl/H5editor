@@ -183,7 +183,6 @@ class AnimationSetting extends React.Component {
                             { value: 'animated zoomOutUp', label: 'zoomOutUp' },
                             { value: 'Specials', label: 'Specials', disabled: true },
                             { value: 'animated hinge', label: 'hinge' },
-                            { value: 'animated jackInTheBox', label: 'jackInTheBox' },
                             { value: 'animated rollIn', label: 'rollIn' },
                             { value: 'animated rollOut', label: 'rollOut' },
                         ]}

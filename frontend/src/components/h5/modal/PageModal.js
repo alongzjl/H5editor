@@ -8,7 +8,7 @@ export default class PageModal extends BaseModal {
         super();
         this.elements = [];
         this.name = 'PageModal';
-        this.style = { width: '100%', height: '100%', position: 'relative' };
+        this.style = { width: '100%', height: '100%', position: 'relative', backgroundColor: '#fff' };
         this.title = '';
         this.editable = false;
     }

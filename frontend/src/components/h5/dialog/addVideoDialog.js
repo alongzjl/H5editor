@@ -64,14 +64,14 @@ class VideoDanger extends React.Component {
     render() {
         return (
             <SkyLight
-                dialogStyles={{ ...commonCss.dialogStyles, top: '10%', textAlign: 'center', background: '#ffffff' }}
+                dialogStyles={{ ...commonCss.dialogStyles, top: '10%', textAlign: 'center', background: '#ffffff' ,height:'80%'}}
                 titleStyle={commonCss.titleStyle}
                 closeButtonStyle={commonCss.closeButtonStyle}
                 hideOnOverlayClicked
                 ref={com => { this.videoModalDanger = com; }}
             >
-                <img src={require('./images/video_danger.png')} />
-            </SkyLight>
+            	<div style={{height:'90%',overflowY:'auto'}}><img src={require('./images/video_danger.png')} /></div>
+            </SkyLight> 
         );
     }
 }

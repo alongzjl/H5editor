@@ -108,6 +108,43 @@ class Header extends React.Component {
             <div className="h5Header">
                 <div className="logo">
                     <img src={require('./images/popon.png')} />
+                </div>
+                <div className="type_wordoor">
+                    <ul className="mang_type">
+                        <li onClick={this.addPages} onMouseEnter={() => this.mouseOver(0)} onMouseLeave={() => this.mouseLeave(0)} title='新建课程'>
+                            <img src={require(`${this.state.current !== 0 ? imgList[0].normal : imgList[0].highlight}`)} />
+                        </li>
+                        <li onClick={this.props.onSaveTemplate} onMouseEnter={() => this.mouseOver(1)} onMouseLeave={() => this.mouseLeave(1)} title='保存课程模板'>
+                            <img src={require(`${this.state.current !== 1 ? imgList[1].normal : imgList[1].highlight}`)} />
+                        </li>
+                        <li onClick={this.props.onPreview} onMouseEnter={() => this.mouseOver(2)} onMouseLeave={() => this.mouseLeave(2)} title='预览课程'>
+                            <img src={require(`${this.state.current !== 2 ? imgList[2].normal : imgList[2].highlight}`)} />
+                        </li>
+                        <li>|</li>
+                        <li onClick={this.addWord} onMouseEnter={() => this.mouseOver(3)} onMouseLeave={() => this.mouseLeave(3)} title='添加文本'>
+                            <img src={require(`${this.state.current !== 3 ? imgList[3].normal : imgList[3].highlight}`)} />
+                        </li>
+                        <li onClick={this.addTest} onMouseEnter={() => this.mouseOver(4)} onMouseLeave={() => this.mouseLeave(4)} title='添加试题'>
+                            <img src={require(`${this.state.current !== 4 ? imgList[4].normal : imgList[4].highlight}`)} />
+                        </li>
+                        <li onClick={this.addShape} onMouseEnter={() => this.mouseOver(5)} onMouseLeave={() => this.mouseLeave(5)} title='添加图形'>
+                            <img src={require(`${this.state.current !== 5 ? imgList[5].normal : imgList[5].highlight}`)} />
+                        </li>
+                        <li onClick={() => { this.addImageModal.show(); }} onMouseEnter={() => this.mouseOver(6)} onMouseLeave={() => this.mouseLeave(6)} title='添加图片'>
+                            <img src={require(`${this.state.current !== 6 ? imgList[6].normal : imgList[6].highlight}`)} />
+                        </li>
+                        <li onClick={() => { this.addAudioModal.show(); }} onMouseEnter={() => this.mouseOver(7)} onMouseLeave={() => this.mouseLeave(7)} title='添加音频'>
+                            <img src={require(`${this.state.current !== 7 ? imgList[7].normal : imgList[7].highlight}`)} />
+                        </li>
+                        <li onClick={() => { this.addVideoModal.show(); }} onMouseEnter={() => this.mouseOver(8)} onMouseLeave={() => this.mouseLeave(8)} title='添加视频'>
+                            <img src={require(`${this.state.current !== 8 ? imgList[8].normal : imgList[8].highlight}`)} />
+                        </li>
+                        <li onClick={() => { store.dispatch(hideNoteModal(false)); }} onMouseEnter={() => this.mouseOver(9)} onMouseLeave={() => this.mouseLeave(9)} title='添加备注，只有教练身份可见'>
+                            <img src={require(`${this.state.current !== 9 ? imgList[9].normal : imgList[9].highlight}`)} />
+                        </li>
+                    </ul>
+                </div>
+                <div className="verifyCourse">
                     <div className="userInfo">
                         <Select
                             name="form-field-name"
@@ -122,43 +159,8 @@ class Header extends React.Component {
                         />
                         <img src={this.state.user.avatar} />
                     </div>
+                    <div className="finishCourse" onClick={this.props.onPublish}>{t('publish')}</div>
                 </div>
-                <div className="type_wordoor">
-                    <ul className="mang_type">
-                        <li onClick={this.addPages} onMouseEnter={() => this.mouseOver(0)} onMouseLeave={() => this.mouseLeave(0)}>
-                            <img src={require(`${this.state.current !== 0 ? imgList[0].normal : imgList[0].highlight}`)} />
-                        </li>
-                        <li onClick={this.props.onSaveTemplate} onMouseEnter={() => this.mouseOver(1)} onMouseLeave={() => this.mouseLeave(1)}>
-                            <img src={require(`${this.state.current !== 1 ? imgList[1].normal : imgList[1].highlight}`)} />
-                        </li>
-                        <li onClick={this.props.onPreview} onMouseEnter={() => this.mouseOver(2)} onMouseLeave={() => this.mouseLeave(2)}>
-                            <img src={require(`${this.state.current !== 2 ? imgList[2].normal : imgList[2].highlight}`)} />
-                        </li>
-                        <li>|</li>
-                        <li onClick={this.addWord} onMouseEnter={() => this.mouseOver(3)} onMouseLeave={() => this.mouseLeave(3)}>
-                            <img src={require(`${this.state.current !== 3 ? imgList[3].normal : imgList[3].highlight}`)} />
-                        </li>
-                        <li onClick={this.addTest} onMouseEnter={() => this.mouseOver(4)} onMouseLeave={() => this.mouseLeave(4)}>
-                            <img src={require(`${this.state.current !== 4 ? imgList[4].normal : imgList[4].highlight}`)} />
-                        </li>
-                        <li onClick={this.addShape} onMouseEnter={() => this.mouseOver(5)} onMouseLeave={() => this.mouseLeave(5)}>
-                            <img src={require(`${this.state.current !== 5 ? imgList[5].normal : imgList[5].highlight}`)} />
-                        </li>
-                        <li onClick={() => { this.addImageModal.show(); }} onMouseEnter={() => this.mouseOver(6)} onMouseLeave={() => this.mouseLeave(6)}>
-                            <img src={require(`${this.state.current !== 6 ? imgList[6].normal : imgList[6].highlight}`)} />
-                        </li>
-                        <li onClick={() => { this.addAudioModal.show(); }} onMouseEnter={() => this.mouseOver(7)} onMouseLeave={() => this.mouseLeave(7)}>
-                            <img src={require(`${this.state.current !== 7 ? imgList[7].normal : imgList[7].highlight}`)} />
-                        </li>
-                        <li onClick={() => { this.addVideoModal.show(); }} onMouseEnter={() => this.mouseOver(8)} onMouseLeave={() => this.mouseLeave(8)}>
-                            <img src={require(`${this.state.current !== 8 ? imgList[8].normal : imgList[8].highlight}`)} />
-                        </li>
-                        <li onClick={() => { store.dispatch(hideNoteModal(false)); }} onMouseEnter={() => this.mouseOver(9)} onMouseLeave={() => this.mouseLeave(9)}>
-                            <img src={require(`${this.state.current !== 9 ? imgList[9].normal : imgList[9].highlight}`)} />
-                        </li>
-                    </ul>
-                </div>
-                <div className="verifyCourse" onClick={this.props.onPublish}>{t('publish')}</div>
                 <AddAudioDialog ref={com => { this.addAudioModal = com; }} />
                 <AddVideoDialog ref={com => { this.addVideoModal = com; }} />
                 <AddBeiZhuDialog />

@@ -71,7 +71,7 @@ export default class Audio extends React.Component {
                             </div>
                         </div>
                     </div>
-                    <audio src={API_URL.domain + value.src} ref={com => { this.audio = com; }} />
+                    <audio src={API_URL.upload + value.src} ref={com => { this.audio = com; }} />
                 </div>
             );
         }

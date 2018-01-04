@@ -20,7 +20,7 @@ class AddBeiZhuDialog extends React.Component {
     }
     componentWillReceiveProps(nextProps) {
         this.setState({
-            note: nextProps.focus.name === 'NoteModal' ? nextProps.focus : { text: '' },
+            note: nextProps.focus&&nextProps.focus.name === 'NoteModal' ? nextProps.focus : { text: '' },
         });
     }
     hide = () => {

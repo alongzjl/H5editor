@@ -13,70 +13,71 @@ import TestModal from "../../modal/TestModal";
 class Sort extends React.Component {
 
     state = {
-        size: this.props.page.elements.filter(element => element.name === 'SortQuestionModal'),
+        question_size: 0,
+        answer_size:0,
         style_word: { height: '50px', width: '50px', textAlign: 'center', lineHeight: '50px', boxShadow: '2px 2px 4px rgba(0,0,0,.5)', borderRadius: '5px' },
         defaultTop: 150,
         defaultLeft: 50,
     };
-    componentWillReceiveProps() { // 属性变化时
-        this.setState({
-            size: this.props.page.elements.filter(element => element.name === 'SortQuestionModal'),
-        });
-    }
+   
     /* 添加填空*/
     addQuestion = () => {
-        const index = this.state.size.length;
-        if (index === 0) {
+    	const index = this.state.question_size;
+    	const left = this.state.defaultLeft;
+    	const top = this.state.defaultTop;
+         if (index === 0) {
             store.dispatch(addElements(new SortQuestionModal({
-                left: `${this.state.defaultLeft}px`,
-                top: `${this.state.defaultTop}px`,
+                left: `${left}px`,
+                top: `${top}px`,
             }, 1).plainObject()));
             store.dispatch(addElements(new SortQuestionModal({
-                left: `${this.state.defaultLeft + 100}px`,
-                top: `${this.state.defaultTop}px`,
+                left: `${left + 100}px`,
+                top: `${top}px`,
             }, 2).plainObject()));
             store.dispatch(addElements(new SortQuestionModal({
-                left: `${this.state.defaultLeft + 200}px`,
-                top: `${this.state.defaultTop}px`,
+                left: `${left + 200}px`,
+                top: `${top}px`,
             }, 3).plainObject()));
             store.dispatch(addElements(new WordModal('选项1', {
-                left: `${this.state.defaultLeft}px`,
+                left: `${left}px`,
                 fontSize: '14px',
-                top: `${this.state.defaultTop + 100}px`,
+                top: `${top + 100}px`,
                 ...this.state.style_word,
             }, 'sort').plainObject()));
             store.dispatch(addElements(new WordModal('选项2', {
-                left: `${this.state.defaultLeft + 100}px`,
+                left: `${left + 100}px`,
                 fontSize: '14px',
-                top: `${this.state.defaultTop + 100}px`,
+                top: `${top + 100}px`,
                 ...this.state.style_word,
             }, 'sort').plainObject()));
             store.dispatch(addElements(new WordModal('选项3', {
-                left: `${this.state.defaultLeft + 200}px`,
+                left: `${left + 200}px`,
                 fontSize: '14px',
-                top: `${this.state.defaultTop + 100}px`,
+                top: `${top + 100}px`,
                 ...this.state.style_word,
             }, 'sort').plainObject()));
-
-            store.dispatch(addElements(new TestConfirmModal('sort').plainObject()));
+			store.dispatch(addElements(new TestConfirmModal('sort').plainObject()));
+			this.setState({question_size:index+3,answer_size:this.state.answer_size+3});
         } else {
             store.dispatch(addElements(new SortQuestionModal({
-                left: `${this.state.defaultLeft}px`,
-                top: `${this.state.defaultTop + 80}px`,
-            }, index + 1).plainObject()));
+                left: `${left+100*(index%3)}px`,
+                top: `${top + 80*(Math.ceil((index+1)/3)-1)}px`,
+            }, index+1).plainObject()));
+            this.setState({question_size:index+1});
         }
         store.dispatch(changeFocus(new TestModal().plainObject()));
     };
     /* 添加答案*/
     addAnswer = () => {
-        const index = this.state.size.length;
+        const index = this.state.answer_size;
         store.dispatch(addElements(new WordModal(`选项${index + 1}`, {
-            left: `${this.state.defaultLeft}px`,
+            left: `${this.state.defaultLeft+100*(index%3)}px`,
             fontSize: '14px',
-            top: `${this.state.defaultTop + 160}px`,
+            top: `${this.state.defaultTop +160+ 60*(Math.floor(index/3)-1)}px`,
             ...this.state.style_word,
         }, 'sort').plainObject()));
         store.dispatch(changeFocus(new TestModal().plainObject()));
+         this.setState({answer_size:index+1});
     };
     /* 删除*/
     deleteThis = (index, id) => {
@@ -102,12 +103,13 @@ class Sort extends React.Component {
     };
     render() {
         const answers = this.props.page.elements.filter(element => element.name === 'WordModal');
+        const questions = this.props.page.elements.filter(element => element.name === 'SortQuestionModal');
         return (<div>
             <div className="join_test" onClick={this.addQuestion}>插入填空</div>
             <div className="join_test" onClick={this.addAnswer}>插入答案</div>
-            <div className="join_test" onClick={this.sortNumber}>打乱排序</div>
+            <div className="join_test" onClick={this.sortNumber} style={{visibility:this.state.answer_size>0?'visible':'hidden'}}>打乱排序</div>
             {
-                this.state.size.map(item => <RightAnswer key={item.num} index={item.num} deleteThis={() => { this.deleteThis(item.num, item.id); }} answers={answers} sortId={item.id} />)
+               questions.map(item => <RightAnswer key={item.num} index={item.num} deleteThis={() => { this.deleteThis(item.num, item.id); }} answers={answers} sortId={item.id} />)
             }
         </div>);
     }

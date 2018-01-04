@@ -210,7 +210,7 @@ class ShapeStyle extends React.Component {
                 <div className="flex_row_between flex_vertical_middle line fs14 blackColor opacity">
                     {t('opacity')}
                     <Slider onAfterChange={this.changeOpacity} min={0} max={1} step={0.1} />
-                    <span>{parseInt(style.fillOpacity * 100)}%</span>
+                    <span>{parseInt(100 - (style.fillOpacity * 100))}%</span>
                 </div>
                 <div className="flex_row_between flex_vertical_middle line fs14 blackColor opacity">
                     {t('rotation')}

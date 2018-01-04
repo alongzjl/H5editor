@@ -41,7 +41,7 @@ export default class WordPanel extends React.Component {
     };
     componentDidMount = () => {
     	this.setState({
-    		fontFamily:this.props.focus.accessKey.accessKey
+    		fontFamily:this.props.focus.accessKey ? this.props.focus.accessKey.accessKey : 'acc87a2f8c8042b798071f8b61de1450'
     	})
     }
     changeFont = e => {
@@ -176,6 +176,9 @@ export default class WordPanel extends React.Component {
     };
     selectSymbol = symbol => {
         store.dispatch(toggleWordSymbol(symbol));
+        this.setState({
+            buttonState: 'false',
+        });
     };
     render() {
         const style = Object.assign({}, {

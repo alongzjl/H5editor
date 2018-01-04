@@ -5,7 +5,7 @@
     "main": "index.js",
     "scripts": {
         "build:dev-server": "webpack-dev-server --inline --progress --colors",
-        "build": "NODE_ENV=production webpack"
+        "build": "rm -r dist && NODE_ENV=production webpack"
     },
     "dependencies": {
         "@xkeshi/image-compressor": "^0.5.2",

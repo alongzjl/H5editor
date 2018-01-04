@@ -16,6 +16,13 @@ class ChooseItem extends React.Component {
     state = {
         answerArr: [''],
     };
+    componentDidMount() {
+    	let answer_show_arr = this.props.page.elements.filter(element => element.name === 'WordModal' && element.answer === 1);
+    	answer_show_arr = answer_show_arr.map(item=>{return item.id});
+    	answer_show_arr.length > 0 ? (this.setState({
+    		answerArr:answer_show_arr
+    	})) : null;
+    };
     addItem = () => {
         // 向当前选择题中插入一条正确答案
         const array = this.state.answerArr;
@@ -73,27 +80,28 @@ class ChooseItem extends React.Component {
             <div className="itemsBox">
                 <div onClick={this.add} className="addChoose">插入选择题</div>
                 <div onClick={() => { this.props.addItemsClick(fillOptions.length); }} className="addChooseItem">添加选项</div>
-                <p className="addSubItem">正确答案：
-                    <span onClick={this.subItem} className="subItem">-</span>
-                    <span onClick={this.addItem} className="addItem">+</span>
-                </p>
+                <div style={{ visibility: arr.length > 0 ? 'visible' : 'hidden' }}>
+                    <p className="addSubItem">正确答案：
+                        <span onClick={this.subItem} className="subItem">-</span>
+                        <span onClick={this.addItem} className="addItem">+</span>
+                    </p>
 
-                {
-                    this.state.answerArr.map((item, key) =>
-                        <div key={key}>
-                            <Select
-                                name="form-field-name1"
-                                onChange={e => this.answerSelect(e, key)}
-                                clearable={false}
-                                searchable={false}
-                                placeholder="请选择"
-                                value={this.state.answerArr[key]}
-                                className="answerSelect"
-                                options={fillOptions}
-                            />
-                        </div>)
-                }
-
+                    {
+                        this.state.answerArr.map((item, key) =>
+                            <div key={key}>
+                                <Select
+                                    name="form-field-name1"
+                                    onChange={e => this.answerSelect(e, key)}
+                                    clearable={false}
+                                    searchable={false}
+                                    placeholder="请选择"
+                                    value={this.state.answerArr[key]}
+                                    className="answerSelect"
+                                    options={fillOptions}
+                                />
+                            </div>)
+                    }
+                </div>
                 {
                     arr.map((val, key) => <p key={key} className="answerItem">{val.text}<span onClick={() => { this.delSpan(val.id); }} className="delSpan" /></p>)
                 }

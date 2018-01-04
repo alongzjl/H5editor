@@ -36,7 +36,7 @@ function Row({ page, pageNo, currentPage }) {
             {
                 page.editable
                     ? <div className={`row ${currentPage === pageNo ? 'current' : ''}`}><div className={`pageNo ${currentPage === pageNo ? 'pageNoFocus' : ''}`}>{pageNo + 1}</div><input onBlur={changeTitle} defaultValue={title} /><PagePreview page={page} /></div>
-                    : <div className={`row ${currentPage === pageNo ? 'current' : ''}`} onDoubleClick={onRename} onClick={onChangeCurrentPage}><div className={`pageNo ${currentPage === pageNo ? 'pageNoFocus' : ''}`}>{pageNo + 1}</div>{title}<PagePreview page={page} /></div>
+                    : <div className={`row ${currentPage === pageNo ? 'current' : ''}`} onDoubleClick={onRename} onClick={onChangeCurrentPage}><div className={`pageNo ${currentPage === pageNo ? 'pageNoFocus' : ''}`}>{pageNo + 1}</div><p className="pageTitle" title={title}>{title}</p><PagePreview page={page} /></div>
             }
         </ContextMenuTrigger>
     );

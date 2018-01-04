@@ -19,16 +19,17 @@ const initialState = {
     pages: [],
     currentPage: 0,
     focus: {},
-    selects: []
+    selects: [],
 };
 
 // 重要： state 里面要保持都是immutablejs 对象
 export default function (state = initialState, action) {
-	const imState = Immutable.fromJS(state);
+    const imState = Immutable.fromJS(state);
     if (action.type === types.PAGE_ADD) {
         const pages = imState.get('pages');
+        const currentPage = imState.get('currentPage') + 1;
         const newPages = pages.insert(imState.get('currentPage') + 1, action.page);
-        return imState.merge({ pages: newPages, currentPage: imState.get('currentPage') + 1 }).toJS();
+        return imState.merge({ pages: newPages, currentPage }).toJS();
     }
     if (action.type === types.PAGE_DELETE) {
         const pages = imState.get('pages');
@@ -66,6 +67,10 @@ export default function (state = initialState, action) {
         return imState.set('pages', newPages).toJS();
     }
 
+    if (action.type === types.PAGE_INIT) {
+        return imState.merge({ pages: [action.page], selects: [], currentPage: 0 }).toJS();
+    }
+
     if (action.type === types.PAGE_EDITABLE_CHANGE) {
         const pages = imState.get('pages');
         const newPages = pages.map(item => {
@@ -94,7 +99,8 @@ export default function (state = initialState, action) {
                 ids = [action.id];
             }
         }
-        const newElements = currentPage.get('elements').filter(element => !ids.includes(element.get('id')));
+        let newElements = currentPage.get('elements').filter(element => !ids.includes(element.get('id')));
+        newElements = newElements.filter(element => !imState.get('selects').includes(element.get('id')));
         const newPage = currentPage.set('elements', newElements);
         return imState.set('pages', pages.set(imState.get('currentPage'), newPage)).toJS();
     }
@@ -127,7 +133,7 @@ export default function (state = initialState, action) {
     if (action.type === types.STYLE_CHANGE) {
         return changeMultiElementValue(imState, 'style', action.style);
     }
-	
+
     if (action.type === types.ANIMATION_CHANGE) {
         return changeElementValue(imState, 'animations', action.animation, action.index);
     }
@@ -166,15 +172,15 @@ export default function (state = initialState, action) {
         const newState = imState.set('pages', pages.set(imState.get('currentPage'), newPage));
         return newState.toJS();
     }
-    
-	if(action.type === types.WORD_FONT_FACE_CHANGE){
-		return changeElementValue(imState, 'fontFace', action.fontFace);
-	}
-	
-	if(action.type === types.WORD_ACCESS_KEY_CHANGE){
-		return changeElementValue(imState, 'accessKey', action.accessKey);
-	}
-	 
+
+    if (action.type === types.WORD_FONT_FACE_CHANGE) {
+        return changeElementValue(imState, 'fontFace', action.fontFace);
+    }
+
+    if (action.type === types.WORD_ACCESS_KEY_CHANGE) {
+        return changeElementValue(imState, 'accessKey', action.accessKey);
+    }
+
     if (action.type === types.WORD_SYMBOL_CHANGE) {
         return changeElementValue(imState, 'symbol', action.symbol, action.index);
     }
@@ -260,14 +266,14 @@ export default function (state = initialState, action) {
 
     if (action.type === types.TEMPLATE_CHANGE) {
         if (action.pages) {
-            return imState.merge({ templateId: action.templateId, templateName: action.name, pages: action.pages }).toJS();
+            return imState.merge({ templateId: action.templateId, templateName: action.name, pages: action.pages, currentPage: 0 }).toJS();
         }
         return imState.merge({ templateId: action.templateId, templateName: action.name }).toJS();
     }
 
     if (action.type === types.COURSE_CHANGE) {
         if (action.pages) {
-            return imState.merge({ courseId: action.courseId, pages: action.pages, templateId: action.templateId }).toJS();
+            return imState.merge({ courseId: action.courseId, pages: action.pages, templateId: action.templateId, currentPage: 0 }).toJS();
         }
         return imState.set('courseId', action.courseId).toJS();
     }

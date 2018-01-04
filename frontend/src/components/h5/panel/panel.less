@@ -1,3 +1,7 @@
+.testTab .tabs-menu {
+    display:none;
+}
+
 .panel{
     position: absolute;
     right: 0;
@@ -7,6 +11,7 @@
     width: 300px; 
     background: #FFFFFF;
     box-shadow: 0 2px 4px 0 rgba(0,0,0,0.10);
+    z-index: 200;
     .tabs-menu-item {
         height:51px;
         line-height:51px;
@@ -28,11 +33,19 @@
     .tabs-menu{
         margin: 0 auto;
     }
-    .tabs-menu-item:hover, .is-active{
+    .is-active{
         a {
             color: #00BCD3;
+            border-bottom: 2px solid #00BCD3;
         }
-        border-bottom: 2px solid #00BCD3;
+    }
+    .tabs-menu-item:hover{
+        border-bottom: none;
+    }
+    .tabs-menu-item{
+        a:hover{
+            border-bottom: 2px solid #00BCD3;
+        }
     }
 }
 .noTitle{

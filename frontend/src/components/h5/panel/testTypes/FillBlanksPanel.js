@@ -17,13 +17,13 @@ class FillBlanks extends React.Component {
         if (size === 0) {
             const color = '#7B818F';
             store.dispatch(addElements([
-                new WordModal('点击插入填空', { left: '50px', top: `${defaultTop + 5}px`, position: 'absolute', color, fontSize: '14px' }).plainObject(),
+                new WordModal('点击插入填空', { left: '50px', top: `${defaultTop + 5}px`, position: 'absolute', color:`${color}`, fontSize: '14px' }).plainObject(),
                 new FillBlanksModal({ left: '145px', top: `${defaultTop}px` }, 1, '可／增加').plainObject(),
                 new FillBlanksModal({ left: '50px', top: `${defaultTop + 50}px` }, 2, '根据／需求').plainObject(),
-                new WordModal('增减文字填空', { left: '230px', top: `${defaultTop + 5 + 50}px`, position: 'absolute', color, fontSize: '14px' }).plainObject(),
+                new WordModal('增减文字填空', { left: '230px', top: `${defaultTop + 5 + 50}px`, position: 'absolute',  color:`${color}`, fontSize: '14px' }).plainObject(),
                 new FillBlanksModal({ left: '50px', top: `${defaultTop + 100}px` }, 3, '改变／文字').plainObject(),
             ]));
-            store.dispatch(addElements(new WordModal('位置及大小', { left: '230px', top: `${defaultTop + 5 + 100}px`, position: 'absolute', color, fontSize: '14px' }).plainObject()));
+            store.dispatch(addElements(new WordModal('位置及大小', { left: '230px', top: `${defaultTop + 5 + 100}px`, position: 'absolute',  color:`${color}`, fontSize: '14px' }).plainObject()));
             store.dispatch(addElements(new TestConfirmModal('blank').plainObject()));
             store.dispatch(changeFocus(new TestModal().plainObject()));
         } else {

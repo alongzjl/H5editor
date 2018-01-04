@@ -15,6 +15,14 @@ import API_URL from '../../common/url';
 
 import './viewer.less';
 
+function getQueryString(name) {
+    const reg = new RegExp(`(^|&)${name}=([^&]*)(&|$)`, 'i');
+    const r = window.location.search.substr(1).match(reg);
+    if (r != null) return unescape(r[2]); return null;
+    
+}
+
+
 class Viewer extends React.Component {
     constructor() {
         super();
@@ -22,6 +30,8 @@ class Viewer extends React.Component {
     }
     state = {
         pages: [],
+        id:getQueryString('id'),
+        type:getQueryString('type')
     };
     componentDidMount = () => {
     	 this.loadData(this.load_style); 
@@ -44,10 +54,10 @@ class Viewer extends React.Component {
         this.stompClient = Stomp.over(socket);
         this.stompClient.connect({}, frame => {
             console.log(`Connected: ${frame}`);
-            const type = this.props.params.type;
+            const type = this.state.type;
             if (type === 'c') {
                 this.stompClient.subscribe('/topic/flip', data => {
-                    const id = this.props.params.id;
+                    const id = this.state.id;
                     const message = JSON.parse(data.body);
                     if (message.data && id == message.data.id) {
                         this.swiper.slideTo(message.data.page);
@@ -65,7 +75,7 @@ class Viewer extends React.Component {
     };
     
     loadData = (fn) => {
-        const id = this.props.params.id;
+        const id = this.state.id;
         if (!id) {
             const pages = window.pages;
             store.dispatch(changeCourse(0, pages));
@@ -93,8 +103,8 @@ class Viewer extends React.Component {
 			    },
 			 }
          });
-        const type = this.props.params.type;
-        const id = this.props.params.id;
+        const type = this.state.type;
+        const id = this.state.id;
         if (type === 'b') {
             this.swiper.on('slideChange', () => {
                 this.stompClient.send('/message/page/flip', {}, JSON.stringify({ name: 'flip page', data: { id, page: this.swiper.activeIndex } }));
@@ -109,7 +119,7 @@ class Viewer extends React.Component {
             <div className="swiper-container">
                 <div className="swiper-wrapper">
                     {
-                        this.props.pages.map((page, index) => <div className="swiper-slide" key={page.id}><Page page={page} viewing isTeacher={this.props.params.type === 'b'} /></div>)
+                        this.props.pages.map((page, index) => <div className="swiper-slide" key={page.id}><Page page={page} viewing isTeacher={this.state.type === 'b'} /></div>)
                     }
                 </div>
             </div>

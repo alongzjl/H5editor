@@ -7,6 +7,7 @@ export const PAGE_EDITABLE_CHANGE = Symbol('PAGE_EDITABLE_CHANGE');
 export const PAGE_COPY = Symbol('PAGE_COPY');
 export const PAGE_SORT = Symbol('PAGE_SORT');
 export const PAGE_REPLACE = Symbol('PAGE_REPLACE');
+export const PAGE_INIT = Symbol('PAGE_INIT');
 
 // current page
 export const CURRENTPAGE_CHANGE = Symbol('CURRENTPAGE_CHANGE');

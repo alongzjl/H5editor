@@ -33,7 +33,7 @@ export default class CropperDialog extends React.Component {
                             store.dispatch(changeImage(imageSrc));
                         } else if (_this.props.type === 'backImage') {
                             store.dispatch(changePageStyle({
-                                backgroundImage: `url(${imageSrc})`,
+                                backgroundImage: `url(${API_URL.upload + imageSrc})`,
                                 backgroundRepeat: 'no-repeat',
                                 backgroundSize: '100%',
                             }));

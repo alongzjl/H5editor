@@ -8,6 +8,14 @@ export function addPage(page, notRedoable = false) {
     };
 }
 
+export function initPage(page, notRedoable = false) {
+    return {
+        type: types.PAGE_INIT,
+        page,
+        notRedoable,
+    };
+}
+
 export function delPage(id) {
     return {
         type: types.PAGE_DELETE,

@@ -21,8 +21,8 @@ import { changeFocus } from '../../../actions/h5Actions';
 import './page.less';
 import LineQuestion from './testTypes/LineQuestion';
 import Highlight from './Highlight';
-import TestModal from "../modal/TestModal";
-import {checkQuestion} from "../../../actions/testActions";
+import TestModal from '../modal/TestModal';
+import { checkQuestion } from '../../../actions/testActions';
 
 /**
  * @param viewing 是否正在浏览
@@ -38,6 +38,19 @@ class Page extends React.Component {
                 } else if (element.name === 'WordModal' && element.answer !== undefined && element.answer !== -1) {
                     store.dispatch(changeFocus(new TestModal().plainObject()));
                     return;
+                } else if (element.name === 'ShapeModal') {
+                    store.dispatch(changeFocus({
+                        id: 0,
+                        name: 'ShapeModal',
+                        style: {
+                            width: '100px',
+                            height: '100px',
+                            fill: '#00BCD3',
+                            stroke: 'none',
+                            strokeWidth: 0,
+                        },
+                    }));
+                    return;
                 }
             }
             store.dispatch(changeFocus({ ...page }));
@@ -50,6 +63,9 @@ class Page extends React.Component {
         const { page = { elements: [], style: {}, checking: false }, focusId, viewing = false, showImage, selects = [], isTeacher } = this.props;
         return (
             <div style={page.style} onClick={this.handleClick}>
+            	 {
+                    !viewing ? <div id="line" /> : <LineContainer ref={com => this.drawer = com} lineQuestions={page.elements.filter(element => element.name === 'LineQuestionModal')} checking={page.checking} />
+                }
                 {
                     page.elements.map(element => {
                         const selected = selects.includes(element.id);
@@ -74,10 +90,7 @@ class Page extends React.Component {
                         }
                     })
                 }
-                {
-                    !viewing ? <div id="line" /> : <LineContainer ref={com => this.drawer = com} lineQuestions={page.elements.filter(element => element.name === 'LineQuestionModal')} checking={page.checking} />
-                }
-            </div>
+             </div>
         );
     }
 }
@@ -88,7 +101,7 @@ class LineContainer extends React.Component {
         points: [],
     };
     drawLine = element => {
-        if (this.state.start === null) {
+    	 if (this.state.start === null) {
             this.setState({
                 start: element,
             });
@@ -97,7 +110,7 @@ class LineContainer extends React.Component {
         }
     };
     draw = to => {
-        if (to.id === this.state.start.id) {
+    	 if (to.id === this.state.start.id) {
             this.setState({
                 start: null,
             });

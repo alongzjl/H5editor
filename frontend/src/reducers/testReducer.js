@@ -128,9 +128,9 @@ export default function (imState, action) {
         const pages = imState.get('pages');
         const currentPage = pages.get(imState.get('currentPage'));
         const newPage = currentPage.set('checking', action.checking);
-        const newState = imState.merge({ pages: pages.set(imState.get('currentPage'), newPage) });
+        const newState = imState.merge({ focus: { id: -2 },pages: pages.set(imState.get('currentPage'), newPage) });
         return newState.toJS();
-    }
+    } 
     /*  排序相关*/
     if (action.type === types.TEST_SORT_ANSWER_CHANGE) {
         return doChangeElementValue(imState, action.id, 'answer', action.answer);
