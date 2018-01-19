@@ -35,7 +35,7 @@ class LinePanel extends React.Component {
 
 const mapDispatchToProps = dispatch => ({
     add(num) {
-        const top = 100 + (50 * (num - 1));
+        const top = 50 + (50 * (num - 1));
         const line1 = new LineQuestionModal(num, '双击编辑文字', { left: '65px', top: `${top}px` }, 'left').plainObject();
         const line2 = new LineQuestionModal(num, '长按插入图片', { left: '215px', top: `${top}px` }, 'right').plainObject();
 

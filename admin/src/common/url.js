@@ -1,6 +1,7 @@
- // const URL = 'http://localhost:9080/api';
-const URL = 'http://192.168.1.82:9080/api';
-const URL_WORDOOR = 'http://192.168.1.82:9080/';
+const URL = 'http://editor.gopopon.com/api';
+const URL_WORDOOR = 'http://editor.gopopon.com/';
+//const URL = 'http://192.168.1.82:9080/api';
+//const URL_WORDOOR = 'http://192.168.1.82:9080/';
  const STATIC = false;
 
  let API_URL = {

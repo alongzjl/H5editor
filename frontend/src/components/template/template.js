@@ -39,7 +39,7 @@ export default class Template extends React.Component {
     loadData = () => {
     	
     	//获取我的模板列表
-        Fetch.get(`${API_URL.template.list}?page=${this.state.page}&isPublic=false&pageSize=7&name=${this.state.keyword}`).then(data => {
+        Fetch.get(`${API_URL.template.list}?page=${this.state.page}&isPublic=0&pageSize=7&name=${this.state.keyword}`).then(data => {
         	this.setState({
                 myTemplates: data.content,
                 myTotal: data.totalElements,
@@ -47,11 +47,11 @@ export default class Template extends React.Component {
             });
         }); 
         //获取公共模板
-        Fetch.get(`${API_URL.template.list}?page=1&isPublic=true&sortName=use_count&pageSize=8&name=${this.state.keyword}`).then(data => {
+        Fetch.get(`${API_URL.template.list}?page=1&isPublic=1&sortName=use_count&pageSize=8&name=${this.state.keyword}`).then(data => {
         	 this.setState({
                 hotTemplates: data.content,
                 hotTotal:data.totalElements
-            }); 
+           });  
         });
     };
     getKeyword = e => {

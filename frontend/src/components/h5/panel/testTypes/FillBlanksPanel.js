@@ -13,7 +13,7 @@ import Select from 'react-select';
 class FillBlanks extends React.Component {
     insertFillItem = () => {
         const size = this.props.page.elements.filter(element => element.name === 'FillBlanksModal').length;
-        const defaultTop = 250;
+        const defaultTop = 50;
         if (size === 0) {
             const color = '#7B818F';
             store.dispatch(addElements([

@@ -23,6 +23,7 @@ import './builder.less';
 class Builder extends React.Component {
 
     componentDidMount = () => {
+    	
         this.props.location.query.from !== 'wordoor_edit' ? new Auth().check() : null;
         if (this.props.location.query.templateId) {
             this.loadTemplate(this.props.location.query.templateId);
@@ -76,31 +77,31 @@ class Builder extends React.Component {
         const c_id = parseInt(this.props.location.query.material_id);
         const templateId = parseInt(this.props.location.query.templateId);
         const name = templateId ? this.props.location.query.name : `模板${new Date().getTime()}`;
-        let published = false;
+        let published = 0;
         if (this.props.location.query.from == 'admin') {
-            published = true;
-            Fetch.postJSON(API_URL.template.save, { id: templateId, name, pages: JSON.stringify(this.props.pages), published }).then(data => {
+            published = 1;
+            Fetch.postJSON(API_URL.template.save, { id: templateId, name, pages: JSON.stringify(this.props.pages), isPublic:published }).then(data => {
                 if (confirm('确定保存并返回模板列表页面!')) {
                     window.location.href = `${API_URL.domain}admin/index.html#/template`;
                     return false;
                 }
             });
         } else if (this.props.location.query.from == 'wordoor_add') {
-            Fetch.postJSON(API_URL.template.save, { id: templateId, name, pages: JSON.stringify(this.props.pages), published }).then(data => {
+            Fetch.postJSON(API_URL.template.save, { id: templateId, name, pages: JSON.stringify(this.props.pages), isPublic:published }).then(data => {
                 if (confirm('确定保存并返回模板列表页面!')) {
                     hashHistory.push('/template');
                     return false;
                 }
             });
         } else if (this.props.location.query.from == 'wordoor_edit') {
-            Fetch.postJSON(API_URL.course.save, { materialId: c_id, id: '', name: `课程${new Date().getTime()}`, templateId, pages: JSON.stringify(this.props.pages), published }).then(data => {
+            Fetch.postJSON(API_URL.course.save, { materialId: c_id, id: '', name: `课程${new Date().getTime()}`, templateId, pages: JSON.stringify(this.props.pages), isPublic:published }).then(data => {
                 if (confirm('确定保存并返回课程页面')) {
-                    window.location.href = `${API_URL.wordoor}wordoorFront/indexEdit.html`;
+                    window.location.href = `${API_URL.wordoor}indexEdit.html`; 
                     return false;
                 }
             });
         } else {
-            Fetch.postJSON(API_URL.template.save, { id: '', name, pages: JSON.stringify(this.props.pages), published }).then(data => {
+            Fetch.postJSON(API_URL.template.save, { id: '', name, pages: JSON.stringify(this.props.pages), isPublic:published }).then(data => {
                 if (confirm('确定保存并返回模板列表页面!')) {
                     hashHistory.push('/template');
                     return false;
@@ -129,12 +130,13 @@ class Builder extends React.Component {
     };
 
     render() {
-        return (
+    	 return (
             <div onKeyDown={this.disableBackSpace} tabIndex="0" className="rootDiv">
                 <Header
                     onPublish={this.publish}
                     onPreview={() => this.pageModal.show()}
                     onSaveTemplate={() => this.saveTemplateDialog.show()}
+                    currentPage={this.props.pages[this.props.currentPage]}
                 />
                 <div className="builder">
                     <Sidebar pages={this.props.pages} currentPage={this.props.currentPage} />

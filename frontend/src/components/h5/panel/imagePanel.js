@@ -37,8 +37,8 @@ export default class ImagePanel extends React.Component {
         }));
     };
     changeOpacity = opc => {
-        store.dispatch(changeStyle({
-            opacity: 1 - opc,
+    	store.dispatch(changeStyle({
+            opacity: opc,
         }));
     };
     changeBorder = e => {
@@ -138,8 +138,8 @@ export default class ImagePanel extends React.Component {
                 </div>
                 <div className="flex_row_between flex_vertical_middle line fs14 blackColor opacity">
                     {t('opacity')}
-                    <Slider onAfterChange={this.changeOpacity} min={0} max={1} step={0.1} />
-                    <span>{Number.parseInt((1 - style.opacity) * 100)}%</span>
+                    <Slider onChange={this.changeOpacity} min={0} max={1} step={0.1} value={style.opacity} />
+                    <span>{Number.parseInt(style.opacity * 100)}%</span>
                 </div>
                 <div className="flex_row_between flex_vertical_middle line fs14 blackColor opacity">
                     {t('rotation')}

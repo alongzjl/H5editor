@@ -22,8 +22,8 @@ import './page.less';
 import LineQuestion from './testTypes/LineQuestion';
 import Highlight from './Highlight';
 import TestModal from '../modal/TestModal';
-import { checkQuestion } from '../../../actions/testActions';
-
+import {changeSortAnswerStyle } from '../../../actions/testActions';
+ 
 /**
  * @param viewing 是否正在浏览
  */
@@ -57,20 +57,24 @@ class Page extends React.Component {
         }
     };
     drawLine = element => {
-        this.drawer.drawLine(element);
-    };
+    	!this.props.isTeacher ?  this.drawer.drawLine(element) : null;
+      };
+    correct = () => {
+    	 this.drawer.correct();
+    }
     render() {
-        const { page = { elements: [], style: {}, checking: false }, focusId, viewing = false, showImage, selects = [], isTeacher } = this.props;
-        return (
+        const { page = { elements: [], style: {}}, focusId, viewing = false, showImage, selects = [], isTeacher,stompClient } = this.props;
+        const rightOrColor ={right:'#00bcd3',error:'#e42e42',common:'#7b818f'} ;
+         return (
             <div style={page.style} onClick={this.handleClick}>
             	 {
-                    !viewing ? <div id="line" /> : <LineContainer ref={com => this.drawer = com} lineQuestions={page.elements.filter(element => element.name === 'LineQuestionModal')} checking={page.checking} />
+                    !viewing ? <div id="line" /> : <LineContainer ref={com => this.drawer = com} elements={page.elements} />
                 }
                 {
                     page.elements.map(element => {
                         const selected = selects.includes(element.id);
                         switch (element.name) {
-                        case 'WordModal': return <Word key={element.id} value={element} focusId={focusId} viewing={viewing} sort={page.elements} selected={selected} checking={page.checking} />;
+                        case 'WordModal': return <Word key={element.id} value={element} focusId={focusId} viewing={viewing} sort={page.elements} selected={selected} isTeacher={isTeacher} rightOrColor={rightOrColor} />;
                         case 'InputModal': return <Input key={element.id} value={element} focusId={focusId} viewing={viewing} />;
                         case 'ButtonModal': return <Button key={element.id} value={element} focusId={focusId} viewing={viewing} />;
                         case 'ImageModal': return <Image key={element.id} value={element} focusId={focusId} viewing={viewing} selected={selected} />;
@@ -79,8 +83,8 @@ class Page extends React.Component {
                         case 'ShapeModal': return <Shape key={element.id} value={element} focusId={focusId} viewing={viewing} selected={selected} />;
                         case 'NoteModal': return (isTeacher || !viewing) ? <Note key={element.id} value={element} focusId={focusId} viewing={viewing} /> : null;
                         case 'SortQuestionModal' : return <Sort key={element.id} value={element} focusId={focusId} viewing={viewing} />;
-                        case 'TestConfirmModal' : return <TestConfirm key={element.id} viewing={viewing} value={element} sort={page.elements} />;
-                        case 'FillBlanksModal' : return <FillBlanks key={element.id} value={element} focusId={focusId} viewing={viewing} checking={page.checking} />;
+                        case 'TestConfirmModal' : return !isTeacher || (isTeacher && element.title !== 'line' && element.title !== 'blank') ? <TestConfirm key={element.id} rightOrColor={rightOrColor} viewing={viewing} value={element} isTeacher={isTeacher} correct={element.title==='line'?this.correct:null} sort={page.elements} stompClient={stompClient} /> : null;
+                        case 'FillBlanksModal' : return <FillBlanks key={element.id} value={element} focusId={focusId} viewing={viewing} isTeacher={isTeacher} rightOrColor={rightOrColor} />;
                         case 'HighlightModal' : return <Highlight key={element.id} value={element} />;
                         case 'LineQuestionModal' : {
                             const to = page.elements.find(item => item.id === element.to);
@@ -124,8 +128,7 @@ class LineContainer extends React.Component {
             start: null,
             points: newPoints.concat([[this.state.start, to]]),
         });
-        store.dispatch(checkQuestion(false));
-    };
+     };
     getPoint = point => {
         const [from, to] = point;
         const fT = parseInt(from.style.top) + parseInt(from.style.height) / 2;
@@ -134,20 +137,27 @@ class LineContainer extends React.Component {
         const tL = parseInt(to.style.left) + parseInt(to.style.width) / 2;
         return [fL, fT, tL, tT];
     };
-    correct = () => this.state.points.every(point => {
-        const [from, to] = point;
-        return from.to === to.id;
-    });
+    correct = () => {
+    	const points = this.state.points.map(point => {
+	        const [from, to] = point;
+	        const rightLine = from.to === to.id ? "#00bcd3" :"#e42e42";
+	        from.showColor = rightLine;
+	        return point;
+    	});
+    	this.setState({
+    		points:points
+    	})
+    	const allRight = this.state.points.filter(item => item[0].to !== item[1].id); 
+    	 const allBackground = allRight.length === 0 ? '#00bcd3' : '#e42e42';
+    	const confirm = this.props.elements.filter(element => element.name === 'TestConfirmModal');
+    	store.dispatch(changeSortAnswerStyle(confirm[0].id,{ background:allBackground}))
+    };
     render() {
-        let color = '#00BCD3';
-        if (this.props.lineQuestions.length === 0) {
+    	const lineQuestions=this.props.elements.filter(element => element.name === 'LineQuestionModal')
+        if (lineQuestions.length === 0) {
             return null;
-        } else if (this.props.lineQuestions.length / 2 === this.state.points.length) {
-            if (!this.correct() && this.props.checking) {
-                color = 'red';
-            }
-        }
-        return (
+        } 
+       return (
             <div className="lineCanvas">
                 <Stage width={375} height={667}>
                     <Layer>
@@ -155,7 +165,7 @@ class LineContainer extends React.Component {
                             this.state.points.map((point, index) => <Line
                                 key={index}
                                 points={this.getPoint(point)}
-                                stroke={color}
+                                stroke={point[0].showColor}
                                 strokeWidth={1}
                             />)
                         }

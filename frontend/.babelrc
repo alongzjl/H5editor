@@ -4,5 +4,12 @@
     "react",
     "stage-0"
   ],
-  "plugins": ["transform-object-rest-spread", "transform-object-assign", "syntax-dynamic-import"]
+  "plugins": ["transform-object-rest-spread",
+ "transform-object-assign", 
+"syntax-dynamic-import",
+ ["transform-es2015-template-literals", {
+      "loose": true,
+      "spec": true
+    }]
+] 
 }

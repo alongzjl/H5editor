@@ -26,13 +26,13 @@ class PageContainer extends React.Component {
             <div className="pageContainer">
                 <div className="phone">
                     <ContextMenuTrigger id="contextMenu" holdToDisplay={-1}>
-                        <hr className="topLine" />
+                       {/*<hr className="topLine" />*/}
                         {
                             pages.map(
                                 (page, index) => currentPage === index ? <Page key={page.id} page={page} focusId={focusId} showImage={this.showImage} selects={selects} /> : null,
                             )
                         }
-                        <hr className="bottomLine" />
+                       {/*<hr className="bottomLine" />*/}
                     </ContextMenuTrigger>
                     <Sidebar />
                     <MultipleSelect selects={selects} />

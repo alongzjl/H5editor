@@ -31,7 +31,7 @@ export default class SaveTemplateDialog extends React.Component {
             noty.error(t('template_name_error'));
             return;
         }
-        Fetch.postJSON(API_URL.template.save, { id: this.props.templateId, name: this.state.name, pages: JSON.stringify(this.props.pages), published: false, public: !!this.props.isPublic }).then(data => {
+        Fetch.postJSON(API_URL.template.save, { id: this.props.templateId, name: this.state.name, pages: JSON.stringify(this.props.pages), isPublic: 0 }).then(data => {
             noty.success(t('save_success'));
             store.dispatch(changeTemplate(data, this.state.name));
             this.hide();

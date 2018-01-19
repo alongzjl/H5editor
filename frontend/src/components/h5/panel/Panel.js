@@ -89,12 +89,12 @@ export default class Panel extends React.Component {
             break;
         }
         default:
-            panels.push(<Tabs.Panel title={t('template_library')} key="template"><TemplatePanel isPublic token={this.props.token} /></Tabs.Panel>);
-            panels.push(<Tabs.Panel title={t('template_mine')} key="myTemplate"><TemplatePanel isPublic={false} token={this.props.token} /></Tabs.Panel>);
-            break;
+            panels.push(<Tabs.Panel title={t('template_library')} key="template"><TemplatePanel isPublic={1}  token={this.props.token} /></Tabs.Panel>);
+            panels.push(<Tabs.Panel title={t('template_mine')} key="myTemplate"><TemplatePanel isPublic={0} token={this.props.token} /></Tabs.Panel>);
+            break; 
         }
         if (panels.length === 0) {
-            return null;
+            return null; 
         }
         const testTab = focus.name == 'TestModal' || focus.name=='FillBlanksModal' || focus.name=='SortQuestionModal' || focus.name=='LineQuestionModal' ? 'testTab' : '';
         return (

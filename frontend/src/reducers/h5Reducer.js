@@ -150,9 +150,14 @@ export default function (state = initialState, action) {
         return imState.merge({ focus: { id: -1 }, selects: [] }).toJS();
     }
 
-    if (action.type === types.WORD_EDITABLE_CHANGE) {
+    if (action.type === types.WORD_ANSWER_CHOOSE_CHANGE) {
+        return doChangeElementValue(imState, action.id, 'chooseAnswer', action.chooseAnswer);
+    }
+     
+     if (action.type === types.WORD_EDITABLE_CHANGE) {
         return doChangeElementValue(imState, action.id, 'contenteditable', action.editable);
     }
+     
     if (action.type === types.WORD_TEXT_CHANGE) {
         // 因为排序题也是放在word里面，所以当word的文本变化的时候，需要处理sort
         const newState = resetSort(imState);

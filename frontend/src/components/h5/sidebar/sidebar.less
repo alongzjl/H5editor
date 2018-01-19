@@ -1,11 +1,11 @@
 .sidebar {
-    width: 256px;
+    width: 264px;
     position: absolute;
     box-shadow: 0 2px 4px 0 rgba(0,0,0,0.10);
     margin-top: 4px;
     height: calc(~"100% - 4px");
     overflow-y: auto;
-    @size: 140px;
+    @size: 256px;
     background-color: #fff;
     .row{
         height: @size;
@@ -15,28 +15,33 @@
         font-size: 16px;
         color: #486172; 
         position: relative;
-        padding-left: 16px;
-        input {
-            margin-top:54px;
+        .silderInput {
+            margin-top:222px;
+            margin-left:73px;
             border: 1px solid #00BCD3;
             border-radius: 2px;
-            height:30px;
-            width:137px;
+            height:22px;
+            width:110px;
             outline:none;
-            background:#fff;
-            font-family: 'PingFangSC-Regular';
-            font-size: 16px;
-            color: #486172;
-            letter-spacing: 1.33px;
+            background: #fff;
+           font-family: 'PingFangSC-Regular';
+            font-size: 12px;
+            color: #505766;
+            letter-spacing: 1px;
         }
         .pageTitle {
-            font-family: 'PingFangSC-Regular';
-            font-size: 16px;
-            color: #486172; 
-            letter-spacing: 1.33px;
-            height:100%;
-            padding-top:62px;
-            width:137px;
+           position:absolute;
+           top:222px;
+           left:73px;
+           font-family: 'PingFangSC-Regular';
+            font-size: 12px;
+            color: #505766;
+            letter-spacing: 1px;
+            background: #fff;
+            height:22px;
+             line-height:22px;
+             text-align: center;
+            width:110px;
              overflow: hidden;
             text-overflow: ellipsis;
             white-space: nowrap;
@@ -45,13 +50,13 @@
             width: 375px;
             height: 667px;
             position: absolute;
-            top: 13px;
-            right: 27px;
+            top: 20px;
+            left: 73px;
             background: #FFFFFF;
             box-shadow: 0 2px 8px 0 rgba(0,0,0,0.20);
             overflow: hidden;
-            transform: scale(0.17,0.17);
-            transform-origin:top right;
+           transform: scale(0.295, 0.293);
+            transform-origin:top left;
         }
         .pageNo{
             position: absolute;
@@ -77,5 +82,11 @@
     }
     .current{
         background-color: rgba(48,103,109,0.03);
+        .silderInput {
+             background:#E6E6E6;
+        }
+        .pageTitle {
+              background:#E6E6E6;
+        }
     }
 }

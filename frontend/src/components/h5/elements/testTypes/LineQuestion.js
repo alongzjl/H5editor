@@ -15,7 +15,7 @@ export default class LineQuestion extends React.Component {
     };
     onClicked = e => {
         e.stopPropagation();
-        store.dispatch(changeFocus(this.props.value));
+        //store.dispatch(changeFocus(this.props.value));
     };
     drawLine = () => {
         this.adjustLine(
@@ -119,6 +119,7 @@ export default class LineQuestion extends React.Component {
                     onClick={() => this.props.drawLine(value)}
                     onAnimationEnd={this.onAnimationEnd}
                 >
+                <span>{value.num}</span>
                     {
                         value.src ? <img src={API_URL.upload + value.src} alt="" width="100%" /> : <div dangerouslySetInnerHTML={{ __html: value.text }} />
                     }

@@ -6,7 +6,7 @@ import uiReducer from './uiReducer';
 const reducers = combineReducers({
     h5State: undoable(h5Reducer, {
         limit: 10, 
-        debug: true,
+        debug: false,  
         filter: action => action.notRedoable !== true,
         ignoreInitialState:true,
         neverSkipReducer:true

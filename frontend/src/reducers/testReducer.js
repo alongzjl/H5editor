@@ -18,7 +18,7 @@ export default function (imState, action) {
         let newPage;
         if (action.sort === 'column') {
             const startLeft = 65;
-            const startTop = 100;
+            const startTop = 60;
             newPage = currentPage.update('elements', list => list.map(element => {
                 if (element.get('name') === 'LineQuestionModal') {
                     const num = element.get('num');
@@ -65,7 +65,7 @@ export default function (imState, action) {
         const length = currentPage.get('elements').size / 2;
         if (action.sort === 'column') {
             const startLeft = 65;
-            const startTop = 100;
+            const startTop = 60;
             const usedNum = [];
             newPage = currentPage.update('elements', list => list.map(element => {
                 if (element.get('name') === 'LineQuestionModal') {
@@ -120,6 +120,9 @@ export default function (imState, action) {
     if (action.type === types.TEST_FILL_ANSWERINDEX_CHANGE) {
         return doChangeElementValue(imState, action.id, 'answerIndex', action.answerIndex);
     }
+    if (action.type === types.TEST_FILL_CHOOSEINDEX_CHANGE) {
+        return doChangeElementValue(imState, action.id, 'chooseIndex', action.chooseIndex);
+    }
     if (action.type === types.TEST_FILL_NUM_CHANGE) {
         return doChangeElementValue(imState, action.id, 'num', action.num);
     }
@@ -128,9 +131,9 @@ export default function (imState, action) {
         const pages = imState.get('pages');
         const currentPage = pages.get(imState.get('currentPage'));
         const newPage = currentPage.set('checking', action.checking);
-        const newState = imState.merge({ focus: { id: -2 },pages: pages.set(imState.get('currentPage'), newPage) });
+        const newState = imState.merge({ pages: pages.set(imState.get('currentPage'), newPage) });
         return newState.toJS();
-    } 
+    }
     /*  排序相关*/
     if (action.type === types.TEST_SORT_ANSWER_CHANGE) {
         return doChangeElementValue(imState, action.id, 'answer', action.answer);

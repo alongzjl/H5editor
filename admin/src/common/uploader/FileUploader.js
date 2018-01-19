@@ -53,7 +53,7 @@ export default class FileUploader extends React.Component {
             <Upload
                 name="file"
                 multiple={!!this.props.multiple}
-                action={`${API_URL.upload}/image`}
+                action={`${API_URL.domain}api/upload/image`}
                 listType="picture"
                 accept="image/*"
                 data={{ access_token: sessionStorage.token }}

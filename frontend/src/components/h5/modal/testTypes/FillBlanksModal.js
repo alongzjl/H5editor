@@ -13,5 +13,7 @@ export default class FillBlanksModal extends BaseModal {
         this.num = num;
         this.selectList = selectList;
         this.answerIndex = 0;
+        this.chooseIndex = -1;
+        this.contenteditable = false; 
     }
 }

@@ -9,9 +9,9 @@ export default class NoteModal extends BaseModal {
         this.text = text;
         this.style = {
             position: 'absolute',
-            top: '610px',
-            left: '327px',
-            width: '30px',
+            top:'482px',
+            left: '287px', 
+            width: '30px', 
             height: '30px',
         };
         this.name = 'NoteModal';

@@ -2,8 +2,8 @@ import React from 'react';
 import Select from 'react-select';
 import Rnd from '../../../common/rnd/ReactRnd';
 import store from '../../../../store';
-import { changeFocus } from '../../../../actions/h5Actions';
-import { changeFillSelectList, checkQuestion } from '../../../../actions/testActions';
+import { changeFocus,changeWordEditable } from '../../../../actions/h5Actions';
+import { changeFillSelectList, checkQuestion,changeFillChooseIndex} from '../../../../actions/testActions';
 import getPosition from '../getPosition';
 import './fillBlanks.less';
 
@@ -23,32 +23,35 @@ export default class FillBlanks extends React.Component {
     }
     addSelectList = (id, e) => {
         store.dispatch(changeFillSelectList(id, e.target.textContent));
+        store.dispatch(changeWordEditable(this.props.value.id, false));
+        this.fillBlankModal.contentEditable = false;
     };
-    changeUserAnswer = e => {
+    changeUserAnswer = (e,id,index) => {
         this.setState({
-            userAnswer: e.value,
+            userAnswer: e.target.innerHTML,
         });
-        store.dispatch(checkQuestion(false));
+         store.dispatch(changeFillChooseIndex(id, index));
     };
+    changeFillBlankModal = () => {
+    	 store.dispatch(changeWordEditable(this.props.value.id, true));
+    		this.fillBlankModal.contentEditable = true;
+    }; 
+    
     render() {
-        const { value, focusId, viewing, checking } = this.props;
-        if (viewing) {
+        const { value, focusId, viewing, checking,contenteditable,isTeacher,rightOrColor } = this.props;
+         if (viewing) {
             let selectList = value.selectList.replace(/／/ig, '/');
             selectList = selectList.split('/');
-            const correct = this.state.userAnswer === selectList[value.answerIndex];
-            let options = [{ value: '', label: '请选择答案' }];
-            options = options.concat(selectList.map(obj => ({ value: obj, label: obj })));
-            return (
-                <div style={{ ...value.style }} className={`${checking ? (correct ? '' : 'errorColor') : ''}`}>
-                    <Select
-                        name="form-field-name"
-                        value={this.state.userAnswer}
-                        style={{ color: `${checking ? (correct ? '' : 'red !important') : ''}` }}
-                        onChange={this.changeUserAnswer}
-                        clearable={false}
-                        searchable={false}
-                        options={options}
-                    />
+             return (
+                <div style={{ ...value.style }}> 
+                      <div className="fillBlankItem flex_row_start flex_vertical_middle">
+	                    <input className="inputClass" disabled value={this.state.userAnswer} style={{color:value.style.color}} />
+	                    <div className="addSelect">
+	                    	{
+	                    		selectList.map( (item,index) => <span key={index} className="tiankongAlong" ><span style={{color : isTeacher&&value.answerIndex === index ? rightOrColor.right : rightOrColor.common}} onClick={e => !isTeacher ? this.changeUserAnswer(e,value.id,index) : null}>{item}</span><span >&nbsp;/&nbsp;</span></span>)
+	                    	}
+	                    </div> 
+	                </div> 
                 </div>
             );
         }
@@ -65,7 +68,8 @@ export default class FillBlanks extends React.Component {
                     <input className="inputClass" disabled />
                     <div
                         className="addSelect"
-                        contentEditable
+                        ref={com => { this.fillBlankModal = com; }}
+                        onDoubleClick={this.changeFillBlankModal}
                         onBlur={args => this.addSelectList(value.id, args)}
                     >
                         {value.selectList}

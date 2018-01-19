@@ -36,6 +36,13 @@ export function changeFillAnswerIndex(id, answerIndex) {
         answerIndex,
     };
 }
+export function changeFillChooseIndex(id, chooseIndex) {
+    return {
+        type: types.TEST_FILL_CHOOSEINDEX_CHANGE,
+        id,
+        chooseIndex,
+    };
+}
 export function changeFillNum(id, num) {
     return {
         type: types.TEST_FILL_NUM_CHANGE,

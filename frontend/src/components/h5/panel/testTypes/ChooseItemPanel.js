@@ -131,12 +131,12 @@ const mapDispatchToProps = dispatch => ({
     addChooseClick() {
         const index = this.subscript;
         let content = '';
-        let top = 210;
+        let top = 110;
 
         const color = '#7B818F';
         const choose = new WordModal('编辑您的题目，下方的选项可以根据您的需求增加以及删除', {
             left: '32px',
-            top: '140px',
+            top: '40px',
             width: '310px',
             height: '52px',
             textAlign: 'left',
@@ -174,7 +174,7 @@ const mapDispatchToProps = dispatch => ({
         const item = new WordModal(content, {
             left: '32px',
             width: '310px',
-            top: `${210 + (num + 1) * 40}px`,
+            top: `${110 + (num + 1) * 40}px`,
             textAlign: 'left',
             position: 'absolute',
             fontSize: '16px',

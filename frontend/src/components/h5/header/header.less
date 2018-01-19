@@ -1,8 +1,7 @@
 .h5Header {
-    height: 150px;
+    height: 156px;
     margin:0 auto;
-    
-    background: #FFFFFF;
+    background: #00BCD3;
     box-shadow: 0 2px 4px 0 rgba(0,0,0,0.10);
 
     .logo {
@@ -22,17 +21,15 @@
         right:160px;
     }
     .finishCourse {
-        margin-top: 30px;
-        background: #00BCD3;
-        border: 1px solid #00BCD3;
-        border-radius: 8px;
-        width:140px;
-        height:40px;
-        line-height:40px;
-        text-align:center;
-        color:#fff; 
-        cursor:pointer; 
-        font-size:16px; 
+            margin-top: 30px;
+            background: #fff;
+            height: 40px;
+            line-height: 40px;
+            text-align: center;
+            color: #00BCD3;
+            cursor: pointer;
+            border-radius: 8px;
+            font-size: 16px;
     }
     .type_wordoor {
         height:150px;
@@ -43,7 +40,7 @@
             height:30px;
             li:nth-child(4) {
                 text-align:center;
-                color:rgba(151,151,151,0.20);
+                color:#fff;
                 padding-top:5px; 
                 margin:0 65px;   
             }
@@ -53,6 +50,28 @@
                 width:30px;
                 margin-right:38px;
                 cursor:pointer;
+                position:relative;
+                img {
+                    width:100%;
+                }
+                &>div {
+                    position:absolute;
+                    top:35px;
+                    left:50%;
+                    margin-left:-40px;
+                    z-index: 10;
+                    width:80px;
+                    height:28px;
+                    line-height:28px;
+                    text-align: center;
+                    background: #505766;
+                    box-shadow: 0 0 4px 0 rgba(0,0,0,0.50);
+                    border-radius: 4px;
+                    font-family: 'PingFangSC-Regular';
+                    font-size: 12px;
+                    color: #F8F9FB;
+                    letter-spacing: -0.29px;
+                }
             }
             li:nth-child(3) {
                 margin-right:0;
@@ -76,13 +95,29 @@
             margin-right: 43px;
             height: 30px;
         }
+        .Select.is-open > .Select-control .Select-arrow {
+              border-color:  transparent transparent rgba(255,255,255,.8)!important;
+        }
         .Select-control{
             width: 70px;
             margin-left: 0;
+            border:1px solid rgba(255,255,255,.8)!important;
+            background: #00BCD3!important;
+            .Select-input {
+                  background: #00BCD3!important;
+            }
+            .Select-value-label {
+                color:rgba(255,255,255,.8)!important;
+            }
+            .Select-arrow{
+                    border-color: rgba(255,255,255,.8) transparent transparent!important;
+            }
         }
         .Select-menu-outer{
             width: 70px;
-        }
+            margin-top:0;
+            border-radius:0;
+         }
         img{
             width: 30px;
             height: 30px;

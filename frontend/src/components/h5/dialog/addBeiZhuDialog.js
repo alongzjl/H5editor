@@ -19,10 +19,11 @@ class AddBeiZhuDialog extends React.Component {
         };
     }
     componentWillReceiveProps(nextProps) {
+    	const note_num = nextProps.currentPage ? nextProps.currentPage.elements.filter(item=>item.name === 'NoteModal') : 0 ;
         this.setState({
-            note: nextProps.focus&&nextProps.focus.name === 'NoteModal' ? nextProps.focus : { text: '' },
-        });
-    }
+            note: nextProps.focus&&note_num.length>0&&nextProps.focus.name === 'NoteModal' ? nextProps.focus : { text: '' },
+        }); 
+    } 
     hide = () => {
         store.dispatch(hideNoteModal(true));
     };

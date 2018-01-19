@@ -8,7 +8,7 @@ export const PAGE_COPY = Symbol('PAGE_COPY');
 export const PAGE_SORT = Symbol('PAGE_SORT');
 export const PAGE_REPLACE = Symbol('PAGE_REPLACE');
 export const PAGE_INIT = Symbol('PAGE_INIT');
-
+  
 // current page
 export const CURRENTPAGE_CHANGE = Symbol('CURRENTPAGE_CHANGE');
 
@@ -18,7 +18,7 @@ export const WORD_TEXT_CHANGE = Symbol('WORD_TEXT_CHANGE');
 export const WORD_PINYIN_CHANGE = Symbol('WORD_PINYIN_CHANGE');
 export const WORD_SYMBOL_CHANGE = Symbol('WORD_SYMBOL_CHANGE');
 export const WORD_SYMBOL_TOGGLE = Symbol('WORD_SYMBOL_TOGGLE');
-
+export const WORD_ANSWER_CHOOSE_CHANGE = Symbol('WORD_ANSWER_CHOOSE_CHANGE');
 // element
 export const ELEMENT_ADD = Symbol('ELEMENT_ADD');
 export const ELEMENT_DELETE = Symbol('ELEMENT_DELETE');
@@ -78,8 +78,9 @@ export const TEST_LINE_QUESTION_AUTO_SORT = Symbol('TEST_LINE_QUESTION_AUTO_SORT
 
 export const TEST_FILL_SELECT_CHANGE = Symbol('TEST_FILL_SELECT_CHANGE');
 export const TEST_FILL_ANSWERINDEX_CHANGE = Symbol('TEST_FILL_ANSWERINDEX_CHANGE');
+export const TEST_FILL_CHOOSEINDEX_CHANGE = Symbol('TEST_FILL_CHOOSEINDEX_CHANGE');
 export const TEST_FILL_NUM_CHANGE = Symbol('TEST_FILL_NUM_CHANGE');
-
+ 
 /* 排序相关*/
 export const TEST_SORT_ANSWER_CHANGE = Symbol('TEST_SORT_ANSWER_CHANGE');
 export const TEST_SORT_ANSWER_STYLE_CHANGE = Symbol('TEST_SORT_ANSWER_STYLE_CHANGE');

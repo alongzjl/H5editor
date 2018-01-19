@@ -13,13 +13,13 @@ import store from '../../../store';
 function PagePreview({ page }) {
     return (
         <div className="preview">
-            <Page page={{ ...page, checking: false }} viewing isTeacher />
+            <Page page={{ ...page, checking: false }} viewing={false} isTeacher={false} /> 
         </div>
     );
 }
 
 function Row({ page, pageNo, currentPage }) {
-    const title = page.title ? page.title : '';
+    const title = page.title ? page.title : `第${pageNo + 1}页`;
     const changeTitle = e => {
         store.dispatch(renamePage(page.id, e.target.value));
     };
@@ -35,8 +35,8 @@ function Row({ page, pageNo, currentPage }) {
         <ContextMenuTrigger id="sidebarContextMenu" collect={() => page} holdToDisplay={-1}>
             {
                 page.editable
-                    ? <div className={`row ${currentPage === pageNo ? 'current' : ''}`}><div className={`pageNo ${currentPage === pageNo ? 'pageNoFocus' : ''}`}>{pageNo + 1}</div><input onBlur={changeTitle} defaultValue={title} /><PagePreview page={page} /></div>
-                    : <div className={`row ${currentPage === pageNo ? 'current' : ''}`} onDoubleClick={onRename} onClick={onChangeCurrentPage}><div className={`pageNo ${currentPage === pageNo ? 'pageNoFocus' : ''}`}>{pageNo + 1}</div><p className="pageTitle" title={title}>{title}</p><PagePreview page={page} /></div>
+                    ? <div className={`row ${currentPage === pageNo ? 'current' : ''}`}>{/*<div className={`pageNo ${currentPage === pageNo ? 'pageNoFocus' : ''}`}>{pageNo + 1}</div>*/}<input className="silderInput" onBlur={changeTitle} defaultValue={title} /><PagePreview page={page} /></div>
+                    : <div className={`row ${currentPage === pageNo ? 'current' : ''}`} onDoubleClick={onRename} onClick={onChangeCurrentPage}>{/*<div className={`pageNo ${currentPage === pageNo ? 'pageNoFocus' : ''}`}>{pageNo + 1}</div>*/}<p className="pageTitle" title={title}>{title}</p><PagePreview page={page} /></div>
             }
         </ContextMenuTrigger>
     );

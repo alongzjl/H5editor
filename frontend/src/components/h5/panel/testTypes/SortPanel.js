@@ -16,10 +16,15 @@ class Sort extends React.Component {
         question_size: 0,
         answer_size:0,
         style_word: { height: '50px', width: '50px', textAlign: 'center', lineHeight: '50px', boxShadow: '2px 2px 4px rgba(0,0,0,.5)', borderRadius: '5px' },
-        defaultTop: 150,
+        defaultTop: 50,
         defaultLeft: 50,
     };
-   
+   componentDidMount(){
+   		const answerNumber = this.props.page.elements.filter(element => element.name === 'WordModal');
+   		this.setState({
+   			answer_size:answerNumber.length
+   		})
+   };
     /* 添加填空*/
     addQuestion = () => {
     	const index = this.state.question_size;
@@ -109,14 +114,14 @@ class Sort extends React.Component {
             <div className="join_test" onClick={this.addAnswer}>插入答案</div>
             <div className="join_test" onClick={this.sortNumber} style={{visibility:this.state.answer_size>0?'visible':'hidden'}}>打乱排序</div>
             {
-               questions.map(item => <RightAnswer key={item.num} index={item.num} deleteThis={() => { this.deleteThis(item.num, item.id); }} answers={answers} sortId={item.id} />)
+               questions.map(item => <RightAnswer key={item.num} index={item.num} question={item.answer} deleteThis={() => { this.deleteThis(item.num, item.id); }} answers={answers} sortId={item.id} />)
             }
         </div>);
     }
 }
 class RightAnswer extends React.Component {
     state = {
-        rightAnswer: '',
+        rightAnswer: this.props.question ? this.props.question : this.props.answers[0].text,
     }
     delectThis = () => {
         this.props.deleteThis();

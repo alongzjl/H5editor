@@ -8,7 +8,7 @@ import SockJS from 'sockjs-client';
 import Stomp from 'stompjs';
 import 'swiper/dist/css/swiper.css';
 import store from '../../store';
-import { changeCourse, refreshAnimation } from '../../actions/h5Actions';
+import { changeCourse, refreshAnimation,changeCurrentPage } from '../../actions/h5Actions';
 import Page from './elements/Page';
 import Fetch from '../../common/FetchIt';
 import API_URL from '../../common/url';
@@ -22,7 +22,6 @@ function getQueryString(name) {
     
 }
 
-
 class Viewer extends React.Component {
     constructor() {
         super();
@@ -30,8 +29,11 @@ class Viewer extends React.Component {
     }
     state = {
         pages: [],
-        id:getQueryString('id'),
-        type:getQueryString('type')
+        key:getQueryString('key'),
+        m_key:getQueryString('m_key'),
+        type:getQueryString('type'),
+        student_id:getQueryString('student_id'),
+        teacher_id: getQueryString('teacher_id'),
     };
     componentDidMount = () => {
     	 this.loadData(this.load_style); 
@@ -54,17 +56,19 @@ class Viewer extends React.Component {
         this.stompClient = Stomp.over(socket);
         this.stompClient.connect({}, frame => {
             console.log(`Connected: ${frame}`);
-            const type = this.state.type;
-            if (type === 'c') {
+            const type = this.state.teacher_id ? 'c' : 'b';
+            if (type === 'b') {
                 this.stompClient.subscribe('/topic/flip', data => {
-                    const id = this.state.id;
+                    const id = this.state.m_key;
                     const message = JSON.parse(data.body);
                     if (message.data && id == message.data.id) {
                         this.swiper.slideTo(message.data.page);
                     }
                 });
             }
-        });
+        },error => {
+        	alert(error.headers.message);
+        }); 
     };
 
     disconnect = () => {
@@ -75,7 +79,7 @@ class Viewer extends React.Component {
     };
     
     loadData = (fn) => {
-        const id = this.state.id;
+        const id = this.state.key;
         if (!id) {
             const pages = window.pages;
             store.dispatch(changeCourse(0, pages));
@@ -92,20 +96,17 @@ class Viewer extends React.Component {
     initSwiper = () => {
         this.swiper = new Swiper('.swiper-container', {
             loop: false,
-            effect: 'coverflow', // 'slide' or 'fade' or 'cube' or 'coverflow' or 'flip'
+           // effect: 'coverflow', // 'slide' or 'fade' or 'cube' or 'coverflow' or 'flip'
             autoplay:false, 
             on:{
-            	 slideNextTransitionEnd: function(){
-				 refreshAn(); 
-				},
-				 slidePrevTransitionEnd: function(){
-			      refreshAn(); 
-			    },
+            	 slideChangeTransitionEnd: function(){
+					 refreshAn(this.activeIndex); 
+				} 
 			 }
          });
-        const type = this.state.type;
-        const id = this.state.id;
-        if (type === 'b') {
+         const type = this.state.teacher_id ? 'c' : 'b';
+        const id = this.state.m_key;
+        if (type === 'c') {
             this.swiper.on('slideChange', () => {
                 this.stompClient.send('/message/page/flip', {}, JSON.stringify({ name: 'flip page', data: { id, page: this.swiper.activeIndex } }));
             });
@@ -116,13 +117,26 @@ class Viewer extends React.Component {
     }
     render() {
         return (
-            <div className="swiper-container">
-                <div className="swiper-wrapper">
-                    {
-                        this.props.pages.map((page, index) => <div className="swiper-slide" key={page.id}><Page page={page} viewing isTeacher={this.state.type === 'b'} /></div>)
-                    }
-                </div>
-            </div>
+        	<div style={{height:'100%'}}>
+        		{
+        			this.state.type === 'pc' ? <div className="phone">
+			            <div className="swiper-container">
+			                <div className="swiper-wrapper">
+			                    {
+			                        this.props.pages.map((page, index) => <div className="swiper-slide" key={page.id}><Page page={page} viewing isTeacher={this.state.teacher_id ? true:false} stompClient={this.stompClient} /></div>)
+			                    }
+			                </div> 
+			            </div>
+		            </div> : <div className="swiper-container">
+			                <div className="swiper-wrapper">
+			                    {
+			                        this.props.pages.map((page, index) => <div className="swiper-slide" key={page.id}><Page page={page} viewing isTeacher={this.state.teacher_id ? true:false} stompClient={this.stompClient} /></div>)
+			                    } 
+			                </div> 
+			            </div>
+        		}
+        	</div>
+        	
         );
     }
 }
@@ -131,8 +145,9 @@ const mapStateToProps = function (store) {
         pages: store.h5State.present.pages,
     };
 };
-const refreshAn = () => { 
+const refreshAn = activeIndex => { 
     store.dispatch(refreshAnimation());
+     store.dispatch(changeCurrentPage(activeIndex));
 };
     
 export default connect(mapStateToProps)(Viewer);

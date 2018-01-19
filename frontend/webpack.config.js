@@ -57,8 +57,9 @@ module.exports = {
     },
     plugins: plugins(),
     externals: { // 全局引用
-    },
-    devtool: '#hidden-source-map',
+    
+    },  
+   // devtool: '#hidden-source-map',
     node: {
         net: 'empty',
     },

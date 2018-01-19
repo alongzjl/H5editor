@@ -24,6 +24,7 @@ export default class WordModal extends BaseModal {
         this.contenteditable = false;
         this.action = {};
         this.answer = answer;
+        this.chooseAnswer = false;
         this.fontFace = ''; 
         this.accessKey = 'acc87a2f8c8042b798071f8b61de1450'; 
     }

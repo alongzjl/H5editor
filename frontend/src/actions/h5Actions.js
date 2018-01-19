@@ -151,7 +151,7 @@ export function changeWordText(id, text) {
     return {
         type: types.WORD_TEXT_CHANGE,
         id,
-        text,
+        text, 
     };
 }
 export function changeWordPinyin(pinyin) {
@@ -164,6 +164,13 @@ export function changeWordFace(fontFace) {
     return {
         type: types.WORD_FONT_FACE_CHANGE,
         fontFace,
+    };
+}
+export function changeWordAnswerChoose(id,chooseAnswer) {
+    return {
+        type: types.WORD_ANSWER_CHOOSE_CHANGE,
+        id,
+        chooseAnswer,
     };
 }
 export function changeWordAccessKey(accessKey) {

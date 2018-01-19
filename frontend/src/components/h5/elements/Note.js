@@ -33,9 +33,9 @@ export default class Note extends React.Component {
         if (viewing) {
             return (
                 <div style={{ ...value.style, width: 'auto' }}>
-                    <img src={remarkImg} onClick={this.toggleNote} style={{ position: 'absolute' }} />
+                    <img src={remarkImg} onClick={this.toggleNote} />
                     {
-                        !this.state.hidden && <div>{value.text}</div>
+                        !this.state.hidden && <div style={{position:'absolute',height:'30px',lineHeight:'30px',width:'280px',right:'40px',top:0,textAlign:'right'}}>{value.text}</div>
                     }
                 </div>
             );

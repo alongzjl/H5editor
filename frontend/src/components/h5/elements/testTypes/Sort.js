@@ -23,7 +23,6 @@ export default class Sort extends React.Component {
         if (viewing) {
             return (
                 <div className="sortitem flex_row_start flex_vertical_middle" style={value.style}>
-                    <span className="index">{value.num}</span>
                     <div className="inputClass">{value.answerShow}</div>
                 </div>
             );

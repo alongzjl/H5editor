@@ -7,8 +7,8 @@ import store from '../../../store';
 import Shapes from './shapes/Shapes';
 import Action from './Action';
 import './word.less';
-import { changeFocus, changeWordEditable, changeWordText, changeStyle, changeWordSymbol, selectMultiple, changeWordPinyin } from '../../../actions/h5Actions';
-import { changeSortAnswerShow, changeSortQuestionStyle, checkQuestion } from '../../../actions/testActions';
+import { changeFocus, changeWordEditable, changeWordText, changeStyle, changeWordSymbol, selectMultiple, changeWordPinyin,changeWordAnswerChoose } from '../../../actions/h5Actions';
+import { changeSortAnswerShow, changeSortQuestionStyle, checkQuestion ,changeSortAnswerStyle} from '../../../actions/testActions';
 import { convert } from '../panel/WordPanel';
 
 function getStyle(value) {
@@ -85,7 +85,7 @@ class Word extends React.Component {
         }
     };
     render() {
-        const { value, viewing, focusId, sort, selected, checking } = this.props;
+        const { value, viewing, focusId, sort, selected, checking, isTeacher,rightOrColor} = this.props;
         value.pinyins = value.pinyins ? value.pinyins : [];
 
         let animation = {};
@@ -141,12 +141,13 @@ class Word extends React.Component {
                     value={value}
                     sort={sort}
                     onAnimationEnd={this.onAnimationEnd}
+                    isTeacher={isTeacher}
                 />
             );
         } else if (viewing && (isHaveSort === 'ItemsChoose')) {
             return (
                 <Action action={value.action}>
-                    <ItemsChoose value={value} checking={checking} onAnimationEnd={this.onAnimationEnd} />
+                    <ItemsChoose value={value} checking={checking} onAnimationEnd={this.onAnimationEnd} isTeacher={isTeacher} rightOrColor={rightOrColor} />
                 </Action>
             );
         } else if (viewing) {
@@ -201,10 +202,10 @@ class ItemsSort extends React.Component {
         store.dispatch(changeSortQuestionStyle({ color: 'black' }));
     };
     render() {
-        const { value, onAnimationEnd } = this.props;
+        const { value, onAnimationEnd, isTeacher} = this.props;
         return (
             <div
-                onClick={this.sortChoose}
+                onClick={!isTeacher ? this.sortChoose : null}
                 className={`sort_word ${value.style.className}`}
                 style={{ ...value.style, height: 'auto' }}
                 onAnimationEnd={onAnimationEnd}
@@ -217,47 +218,27 @@ class ItemsSort extends React.Component {
 
 class ItemsChoose extends React.Component {
     state = {
-        correct: undefined,
-        selected: '',
-    };
-    ItemsChooseClick = () => {
-    	const correct  = this.props.value.answer === 1 ? true : false;
-    	const selected = this.state.selected === '' ? 'optionSelected' : '';
+    	chooseAnswer:this.props.value.chooseAnswer
+    }
+    ItemsChooseClick = id => {
     	this.setState({
-            correct: correct,
-            selected: selected
-        });
-        store.dispatch(checkQuestion(true));
-    };
+    		chooseAnswer:!this.state.chooseAnswer
+    	},()=>{
+    		store.dispatch(changeWordAnswerChoose(id,this.state.chooseAnswer));
+    		const color = this.state.chooseAnswer ? this.props.rightOrColor.right : this.props.rightOrColor.common;
+    		store.dispatch(changeSortAnswerStyle(id,{ color:color }));
+    	})
+     };
     render() {
-        const { value, checking, onAnimationEnd, focusId } = this.props;
-        let text = value.text;
-        let img = '';
-        const imgStyle = {
-            width: '22px',
-            height: '22px',
-            position: 'absolute',
-            marginLeft: '-6px',
-        };
-        let color = value.style.color;
-        if (checking && this.state.selected !== '' && this.state.correct !== undefined) {
-            text = text.length > 2 ? text.substring(2) : text;
-            img = this.state.correct ? <img style={imgStyle} src={require('./images/correct.png')} /> : <img src={require('./images/wrong.png')} style={imgStyle} />;
-            color = this.state.correct ? '#00bcd3' : '#e42e42';
-        }
-        const spanStyle = {
-            textIndent: img !== '' ? '22px' : '0px',
-            display: 'inline-block',
-            color,
-        };
+        const { value, checking, onAnimationEnd,isTeacher} = this.props;
         return (
             <div
-                onClick={this.ItemsChooseClick}
-                className={`ItemsChoose ${!checking ? this.state.selected : ''} ${value.style.className}`}
+                onClick={()=>!isTeacher ? this.ItemsChooseClick(value.id) : null}
+                className={`ItemsChoose`}
                 style={{ ...value.style, height: 'auto' }}
                 onAnimationEnd={onAnimationEnd}
-            >
-                {img}<span style={spanStyle}>{ text }</span>
+            > 
+                <span>{ value.text }</span>
             </div>
         );
     }

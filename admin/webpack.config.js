@@ -37,6 +37,10 @@ module.exports = {
             filename: 'index.html',
             template: path.join(__dirname, '/index-tmpl.html'),
         }),
+        new UglifyJsPlugin({
+            sourceMap: false,
+            compress:true 
+        })
         // new CopyWebpackPlugin([{ from: 'lib/*', to: './' }]),
     ],
     externals: { // 全局引用

@@ -8,7 +8,7 @@ import ImageModal from '../modal/ImageModal';
 import FileUploader from '../../common/fileUpload/fileUploader';
 import DragUpload from '../../common/fileUpload/DragUpload';
 import store from '../../../store';
-import { addElements, changeImage, changePageStyle } from '../../../actions/h5Actions';
+import { addElements, changeImage, changePageStyle,changeStyle} from '../../../actions/h5Actions';
 import './addImageDialog.less';
 import Category from './Category';
 import Fetch from '../../../common/FetchIt';
@@ -35,7 +35,7 @@ export default class AddImageDialog extends React.Component {
     }
 
     addImages = res => {
-        if (this.state.category === 'backImage') {
+    	if (this.state.category === 'backImage') {
             store.dispatch(changePageStyle({
                 backgroundImage: `url(${API_URL.upload + res})`,
                 backgroundRepeat: 'no-repeat',
@@ -44,14 +44,25 @@ export default class AddImageDialog extends React.Component {
         } else if (this.props.focus.id) {
             store.dispatch(changeImage(res));
         } else {
-            this.saveRecent(res);
+        	this.saveRecent(res);
             store.dispatch(addElements(new ImageModal(res).plainObject()));
+        	const new_image = new Image();
+	    	new_image.src = API_URL.upload + res; 
+	    	const percent = new_image.width/new_image.height;
+	    	if(new_image.width> 370 && new_image.height<=510){
+	    		store.dispatch(changeStyle({width:370+'px',height:parseInt(370/percent)+'px'}));
+	    	}else if(new_image.width<= 370 && new_image.height>510){
+	    		store.dispatch(changeStyle({width:parseInt(510*percent)+'px',height:510+'px'}));
+	    	}else if(new_image.width> 370 && new_image.height>510){
+	    		new_image.width/370 >= new_image.height/510 ? store.dispatch(changeStyle({width:370+'px',height:parseInt(370/percent)+'px'})) : store.dispatch(changeStyle({width:parseInt(510*percent)+'px',height:510+'px'}));
+	    	}
         }
         this.imageModal.hide();
-    };
+   };
     saveRecent = src => {
         let images = localStorage.getItem('images');
         images = images ? JSON.parse(images) : [];
+       images = images.filter((item)=>{return item !== src});
         images.unshift(src);
         if (images.length > 24) {
             images.shift();
@@ -145,7 +156,7 @@ class Images extends React.Component {
     changePage = (page = 1) => {
         if (this.state.current === '最近使用') {
             const srcs = localStorage.getItem('images') ? JSON.parse(localStorage.getItem('images')) : [];
-            const images = srcs.map(src => ({ path: src }));
+            const images = srcs.map(src => ({ path: src ,id:page++}));
             this.setState({ images, total: images.length });
         } else if (this.state.current !== '本地上传') {
             this.loadData(page);
