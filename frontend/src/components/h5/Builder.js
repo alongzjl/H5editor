@@ -140,7 +140,7 @@ class Builder extends React.Component {
                 />
                 <div className="builder">
                     <Sidebar pages={this.props.pages} currentPage={this.props.currentPage} />
-                    <PageContainer pages={this.props.pages} focusId={this.props.focus.id} currentPage={this.props.currentPage} selects={this.props.selects} />
+                    <PageContainer pages={this.props.pages} focus={this.props.focus} currentPage={this.props.currentPage} selects={this.props.selects} />
                     <Panel focus={this.props.focus} currentPage={this.props.pages[this.props.currentPage]} pages={this.props.pages} token={this.props.location.query.access_token} />
                     <PreviewDialog ref={com => { this.pageModal = com; }} pages={this.props.pages} />
                     <SaveTemplateDialog

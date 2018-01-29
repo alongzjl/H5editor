@@ -1,0 +1,145 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.xyznotes.h5.course.dao.CourseMapper">
+    <cache flushInterval="300000" />
+
+    <select id="list" parameterType="com.xyznotes.h5.common.Criteria" resultType="Course">
+        SELECT
+            *
+        FROM course
+        <where>
+            course.is_delete = 0
+            <if test="conditionMap.user_id!=null">AND course.user_id = #{conditionMap.user_id}</if>
+            <if test="conditionMap.id!=null">AND id like concat('%',#{conditionMap.id},'%')</if>
+            <if test="conditionMap.name!=null">AND course.name like concat('%',#{conditionMap.name},'%')</if>
+            <if test="conditionMap.thisday!=null">AND date_format(create_date,'%Y-%m-%d')=date_format(now(),'%Y-%m-%d')</if>
+            <if test="conditionMap.thisweek!=null">AND YEARWEEK(date_format(create_date,'%Y-%m-%d')) = YEARWEEK(now())</if>
+            <if test="conditionMap.thismonth!=null">AND date_format(create_date,'%Y-%m')=date_format(now(),'%Y-%m')</if>
+            <if test="conditionMap.thisyear!=null">AND YEAR(create_date)=YEAR(NOW())</if>
+            <if test="conditionMap.start_date!=null">AND create_date &gt;= #{conditionMap.start_date}</if>
+            <if test="conditionMap.end_date!=null">AND create_date &lt;= #{conditionMap.end_date}</if>
+            <if test="conditionMap.material_id!=null">AND material_id = #{conditionMap.material_id}</if>
+        </where>
+        <if test="orderName != null">ORDER BY course.${orderName} ${orderDir}</if>
+        <if test="start != null and pageSize != null">LIMIT #{start},#{pageSize}</if>
+    </select>
+
+    <select id="count" parameterType="com.xyznotes.h5.common.Criteria" resultType="long">
+        SELECT
+            count(*)
+        FROM course
+        <where>
+            course.is_delete = 0
+            <if test="conditionMap.user_id!=null">AND course.user_id = #{conditionMap.user_id}</if>
+            <if test="conditionMap.id!=null">AND id like concat('%',#{conditionMap.id},'%')</if>
+            <if test="conditionMap.name!=null">AND course.name like concat('%',#{conditionMap.name},'%')</if>
+            <if test="conditionMap.thisyear!=null">AND YEAR(create_date)=YEAR(NOW())</if>
+            <if test="conditionMap.thisweek!=null">AND YEARWEEK(date_format(create_date,'%Y-%m-%d')) = YEARWEEK(now())</if>
+            <if test="conditionMap.thismonth!=null">AND date_format(create_date,'%Y-%m')=date_format(now(),'%Y-%m')</if>
+            <if test="conditionMap.start_date!=null">AND create_date &gt;= #{conditionMap.start_date}</if>
+            <if test="conditionMap.end_date!=null">AND create_date &lt;= #{conditionMap.end_date}</if>
+            <if test="conditionMap.material_id!=null">AND material_id = #{conditionMap.material_id}</if>
+        </where>
+    </select>
+
+    <select id="countScanCount" parameterType="com.xyznotes.h5.common.Criteria" resultType="Integer">
+        SELECT
+        IFNULL(SUM(scan_count), 0)
+        FROM course
+        <where>
+            course.is_delete = 0
+            <if test="conditionMap.user_id!=null"> AND course.user_id = #{conditionMap.user_id}</if>
+            <if test="conditionMap.start_date!=null"> AND create_date &gt;= #{conditionMap.start_date}</if>
+            <if test="conditionMap.end_date!=null"> AND create_date &lt;= #{conditionMap.end_date}</if>
+        </where>
+    </select>
+
+    <select id="countApplyCount" parameterType="com.xyznotes.h5.common.Criteria" resultType="Integer">
+        SELECT
+        IFNULL(SUM(apply_count), 0)
+        FROM course
+        <where>
+            course.is_delete = 0
+            <if test="conditionMap.user_id!=null"> AND course.user_id = #{conditionMap.user_id}</if>
+        </where>
+    </select>
+
+    <select id="allApplyCountByUserId" parameterType="com.xyznotes.h5.common.Criteria" resultType="Integer">
+        SELECT sum(apply_count)
+        FROM course
+        <where>
+            <if test="conditionMap.user_id!=null">course.user_id = #{conditionMap.user_id}</if>
+            <if test="conditionMap.thisday!=null">AND date_format(create_date,'%Y-%m-%d')=date_format(#{conditionMap.now},'%Y-%m-%d')</if>
+            <if test="conditionMap.thisweek!=null">AND YEARWEEK(date_format(create_date,'%Y-%m-%d')) = YEARWEEK(#{conditionMap.now})</if>
+            <if test="conditionMap.thismonth!=null">AND date_format(create_date,'%Y-%m')=date_format(#{conditionMap.now},'%Y-%m')</if>
+            <if test="conditionMap.thisyear!=null">AND YEAR(create_date)=YEAR(#{conditionMap.now})</if>
+        </where>
+    </select>
+
+    <select id="findById" parameterType="Integer" resultType="Course">
+        SELECT
+           *
+        FROM course
+        WHERE course.id = #{id} AND course.is_delete = 0
+    </select>
+
+    <insert id="save" parameterType="Course" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO course
+        (name,music_path, music_name, user_id, scan_count, apply_count, sign_count, create_date, cover, subtitle, state, is_delete, template_id, material_id, pages)
+        VALUES
+        (#{name}, #{musicPath}, #{musicName}, #{userId}, 0, 0, 0, now(), #{cover}, #{subtitle}, #{state}, 0, #{templateId}, #{materialId}, #{pages})
+    </insert>
+
+    <update id="updateContent" parameterType="Course">
+        UPDATE course
+        SET music_path=#{musicPath}, name=#{name}, subtitle=#{subtitle},cover=#{cover}, state=#{state},music_name=#{musicName}, template_id=#{templateId},material_id=#{materialId}, pages=#{pages}
+        WHERE id=#{id}
+    </update>
+
+    <update id="deleteById" parameterType="Course">
+        UPDATE course
+        SET is_delete = 1
+        WHERE id = #{id}
+    </update>
+
+    <update id="updateSignCount" parameterType="Integer">
+        UPDATE
+          course
+        SET sign_count = sign_count + 1
+        WHERE id=#{id}
+    </update>
+
+    <update id="updateApplyCount" parameterType="Integer">
+        UPDATE course
+        SET apply_count = apply_count + 1
+        where id = #{id}
+    </update>
+
+    <update id="updateScanCount" parameterType="Integer">
+        UPDATE course
+        SET scan_count = scan_count + 1
+        where id = #{id}
+    </update>
+
+    <update id="updateState" parameterType="Integer">
+        UPDATE course
+        SET state = 1
+        where id = #{id}
+    </update>
+
+    <select id="getCourseData" resultType="com.xyznotes.h5.course.dto.CourseDataDto">
+        SELECT
+        id as courseId,
+        name,
+        cover,
+        create_date as createDate,
+        scan_count as scanCount,
+        apply_count as applyCount,
+        user_id as userId,
+        material_id as materialId
+        FROM course
+        where state=1
+    </select>
+</mapper>

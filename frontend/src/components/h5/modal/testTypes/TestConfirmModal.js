@@ -8,6 +8,7 @@ export default class TestConfirmModal extends BaseModal {
         	...style
         }
         this.title = title;
-        this.editable = false;
+        this.editable = false; 
+        this.lineList = undefined;
     }
 }

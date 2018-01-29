@@ -17,10 +17,13 @@ import youziku from 'youziku';
 const youzikuClient = new youziku.youzikuClient("0bafdccfe4251c51c3256b963087ebdf");
 
 export const convert = text2Convert => {
-    let text = text2Convert.replace(/<[^>]+>/g, '');
+	
+	text2Convert = text2Convert.replace(/<div><br><\/div>/g,'<br>');
+	text2Convert = text2Convert.replace(/<div>/g,'<br>');
+	let text = text2Convert.replace(/<div>|<\/div>/g, '');
     const pinyinContent = pinyin(text);
-    return pinyinContent.map(item => {
-        let value = '';
+   return pinyinContent.map(item => {
+   	let value = '';
         const textStr = text.substring(0, 1);
         const testChinese = /^[\u4e00-\u9fa5]+$/;
         if (testChinese.test(textStr)) {
@@ -32,6 +35,7 @@ export const convert = text2Convert => {
         }
         return { pinyin: item[0], text: value };
     });
+    
 };
 
 export default class WordPanel extends React.Component {
@@ -156,8 +160,7 @@ export default class WordPanel extends React.Component {
         if (!(this.props.focus.pinyins && this.props.focus.pinyins.length > 0)) {
             pinyins = convert(this.props.focus.text);
         }
-
-        store.dispatch(changeWordPinyin(pinyins));
+    	store.dispatch(changeWordPinyin(pinyins));
     };
     addWordColor = () => {
         this.setState({

@@ -7,6 +7,7 @@ import store from '../../../../store';
 import { changeFocus, changeWordEditable, changeWordText, changeStyle } from '../../../../actions/h5Actions';
 import getPosition from '../getPosition';
 import API_URL from '../../../../common/url';
+import {adjustLine,cancelLine} from './lineShow';
 import './lineQuestion.less';
 
 export default class LineQuestion extends React.Component {
@@ -15,18 +16,18 @@ export default class LineQuestion extends React.Component {
     };
     onClicked = e => {
         e.stopPropagation();
-        //store.dispatch(changeFocus(this.props.value));
+        e.preventDefault();
+        store.dispatch(changeFocus(this.props.value));
     };
     drawLine = () => {
-        this.adjustLine(
+        adjustLine(
             this.props.value,
-            this.props.to,
-            document.getElementById('line'),
-        );
+            this.props.to
+         );
     };
     changeEditable = () => {
         store.dispatch(changeWordEditable(this.props.value.id, true));
-        store.dispatch(changeStyle({ height: 'auto' }));
+      // store.dispatch(changeStyle({ height: 'auto' }));
         store.dispatch(changeStyle({ minHeight: this.props.value.style.height }));
     };
     changeEditableFalse = () => {
@@ -39,50 +40,13 @@ export default class LineQuestion extends React.Component {
         this.changeEditableFalse();
         this.changeText(e);
     };
-    cancelLine = () => {
-        document.getElementById('line').style.visibility = 'hidden';
-    };
-    adjustLine = (from, to, line) => {
-        const fT = parseInt(from.style.top) + parseInt(from.style.height) / 2;
-        const tT = parseInt(to.style.top) + parseInt(to.style.height) / 2;
-        const fL = parseInt(from.style.left) + parseInt(from.style.width) / 2;
-        const tL = parseInt(to.style.left) + parseInt(to.style.width) / 2;
-        const CA = Math.abs(tT - fT);
-        const CO = Math.abs(tL - fL);
-        const H = Math.sqrt(CA * CA + CO * CO);
-        let ANG = 180 / Math.PI * Math.acos(CA / H);
 
-        if (tT > fT) {
-            var top = (tT - fT) / 2 + fT;
-        } else {
-            var top = (fT - tT) / 2 + tT;
-        }
-        if (tL > fL) {
-            var left = (tL - fL) / 2 + fL;
-        } else {
-            var left = (fL - tL) / 2 + tL;
-        }
-
-        if ((fT < tT && fL < tL) || (tT < fT && tL < fL) || (fT > tT && fL > tL) || (tT > fT && tL > fL)) {
-            ANG *= -1;
-        }
-        top -= H / 2;
-
-        line.style['-webkit-transform'] = `rotate(${ANG}deg)`;
-        line.style['-moz-transform'] = `rotate(${ANG}deg)`;
-        line.style['-ms-transform'] = `rotate(${ANG}deg)`;
-        line.style['-o-transform'] = `rotate(${ANG}deg)`;
-        line.style['-transform'] = `rotate(${ANG}deg)`;
-        line.style.top = `${top}px`;
-        line.style.left = `${left}px`;
-        line.style.height = `${H}px`;
-        line.style.visibility = 'visible';
-    };
     longClick = () => {
         this.timer = setTimeout(this.props.showImage, 1000);
     };
-    cancelLongClick = () => {
+    cancelLongClick = e => {
         clearTimeout(this.timer);
+         e && e.preventDefault();
     };
     rightClick = () => {
         this.cancelLongClick();
@@ -93,6 +57,7 @@ export default class LineQuestion extends React.Component {
             index: this.state.index + 1,
         });
     };
+   
     componentWillReceiveProps() {
         if (this.state.index === this.props.value.animations.length) {
             this.setState({
@@ -101,7 +66,7 @@ export default class LineQuestion extends React.Component {
         }
     }
     render() {
-        const { value, focusId, viewing } = this.props;
+        const { value, focusId, viewing,isTeacher } = this.props;
         let animation = {};
         if (value.animations.length > this.state.index) {
             animation = value.animations[this.state.index];
@@ -119,19 +84,21 @@ export default class LineQuestion extends React.Component {
                     onClick={() => this.props.drawLine(value)}
                     onAnimationEnd={this.onAnimationEnd}
                 >
-                <span>{value.num}</span>
-                    {
-                        value.src ? <img src={API_URL.upload + value.src} alt="" width="100%" /> : <div dangerouslySetInnerHTML={{ __html: value.text }} />
-                    }
+                {
+                	isTeacher ? <span>{value.num}</span> : null
+                }
+                {
+                    value.src ? <img src={API_URL.upload + value.src} alt="" width="100%" /> : <div dangerouslySetInnerHTML={{ __html: value.text }} />
+                }
                 </div>
             );
         }
         return (
             <Rnd
                 onDragStart={this.onClicked}
-                onDrag={this.cancelLongClick}
+                onDrag={e => {this.cancelLongClick(e)}}
                 className={focusId === value.id ? 'focused' : ''}
-                isDraggable
+                isDraggable={!value.contenteditable}
                 style={value.style}
                 onDoubleClick={this.changeEditable}
                 initial={{...getPosition(value.style), width: style.width, height: style.height}}
@@ -140,11 +107,11 @@ export default class LineQuestion extends React.Component {
                     className={(focusId === value.id || focusId === -1) ? `${animation.className} lineQuestion` : 'lineQuestion'}
                     style={{ ...style, left: 'auto', top: 'auto' }}
                     onMouseOver={this.drawLine}
-                    onMouseOut={this.cancelLine}
+                    onMouseOut={cancelLine}
                     onMouseDown={this.longClick}
                     onContextMenu={this.rightClick}
                     onBlur={this.handleBlur}
-                    onMouseUp={this.cancelLongClick}
+                    onMouseUp={e => {this.cancelLongClick(e)}}
                     onAnimationEnd={this.onAnimationEnd}
                 >
                     <span>{value.num}</span>

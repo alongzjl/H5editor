@@ -215,50 +215,7 @@ export default class ReactRnd extends Component {
 				            left: `${x}px`,
 				            top: `${y}px`,
 				        }));
-        /*if(x<1 || x>376-e.target.clientWidth || y<84 || y>602-e.target.clientHeight){
-        	 const n = new Noty({
-                text: '元素已超出可编辑区域，将会不可见，是否确定？',
-                layout: 'center',
-                type: 'alert',
-                modal: true,
-                buttons: [
-                    Noty.button('确定', 'noty-confirm', () => {
-                        store.dispatch(changeStyle({
-				            position: 'absolute',
-				            left: `${x}px`,
-				            top: `${y}px`,
-				        }));
-                        n.close();
-                    }),
-				Noty.button('取消', 'noty-cancel', () => {
-					
-					if(x<1){
-						x = 1;
-					}else if(x>376-e.target.clientWidth){
-						x = 376-e.target.clientWidth
-					}
-					if(y<84){
-						y=84;
-					}else if(y>602-e.target.clientHeight){
-						y = 602-e.target.clientHeight;
-					}
-                    	store.dispatch(changeStyle({
-				            position: 'absolute',
-				            left: `${x}px`,
-				            top: `${y}px`,
-				        }));
-                        n.close();
-                    }),
-                ], 
-            }).show();
-        }else{
-        	store.dispatch(changeStyle({
-				            position: 'absolute',
-				            left: `${x}px`,
-				            top: `${y}px`, 
-				        }));
-        }*/
-         this.isDragging = false;
+     	 this.isDragging = false;
         this.props.onDragStop(e, ui);
     }
     onRotate(current) {

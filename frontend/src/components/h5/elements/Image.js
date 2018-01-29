@@ -8,6 +8,7 @@ import API_URL from '../../../common/url';
 import Action from './Action';
 import { changeFocus, selectMultiple } from '../../../actions/h5Actions';
 import getPosition from './getPosition';
+import {adjustLine,cancelLine} from './testTypes/lineShow';
 
 export default class Image extends React.Component {
     state = {
@@ -28,6 +29,12 @@ export default class Image extends React.Component {
         this.setState({
             index: this.state.index + 1,
         });
+    };
+     drawLine = () => {
+        adjustLine(
+            this.props.value,
+            this.props.to
+        );
     };
     componentWillReceiveProps() {
         this.setState({
@@ -54,6 +61,7 @@ export default class Image extends React.Component {
                         className={animation.className}
                         style={{ ...style, boxShadow }}
                         onAnimationEnd={() => this.onAnimationEnd()}
+                        onClick={() => {value.to ?this.props.lineTo(value) : null}}
                     />
                 </Action>
             );
@@ -67,6 +75,9 @@ export default class Image extends React.Component {
                 style={style}
                 initial={getPosition(value)}
             >
+            {
+            	value.to ? <span style={{position:'absolute',top:'-20px',left:'-5px',fontSize:'12px'}}>{value.num}</span> : null
+            }
                 <img
                     src={API_URL.upload + value.src}
                     className={(focusId === value.id || focusId === -1) ? `${animation.className} ${selectedClass}` : selectedClass}
@@ -83,6 +94,8 @@ export default class Image extends React.Component {
                         animationIterationCount: animation.animationIterationCount,
                         boxShadow: `rgba(${style.shadow.r}, ${style.shadow.g}, ${style.shadow.b}, ${style.shadow.a}) 0px 8px 10px`,
                     }}
+                    onMouseOver={value.to ? this.drawLine : null}
+                    onMouseOut={cancelLine}
                     onMouseDown={this.disableDrag}
                     onAnimationEnd={() => this.onAnimationEnd()}
                 />

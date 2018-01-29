@@ -14,6 +14,14 @@ export function changeLineQuestionSort(sort) {
     };
 }
 
+export function changeLineQuestionTo(id,to) {
+    return {
+        type: types.TEST_LINE_QUESTION_TO_CHANGE,
+        id,
+        to,
+    };
+}
+
 export function autoChangeLineQuestionSort(sort) {
     return {
         type: types.TEST_LINE_QUESTION_AUTO_SORT,
@@ -93,7 +101,13 @@ export function changeSortQuestionStyle(style) {
         notRedoable: true,
     };
 }
-
+export function changeLineShow(id, lineList) {
+    return {
+        type: types.TEST_LINE_SHOW_CHANGE,
+        id,
+        lineList,
+    };
+}
 export function checkQuestion(checking) {
     return {
         type: types.TEST_CHECK,

@@ -60,10 +60,17 @@
         text-align: left;
         border-bottom: none;
     }
-    .Select-menu-outer{
-        width: 100%;
-        left: 0;
-    }
+      .Select-menu-outer{
+            width: 100%;
+            left: 0;
+            .Select-option {
+                width: 100%;
+                overflow: hidden;
+                text-overflow: ellipsis;
+                white-space: nowrap;
+                text-align: center;
+            }
+        }
     .answerSelect{
         margin-bottom: 20px;
         cursor: pointer; 
@@ -77,17 +84,21 @@
         height: 22px;
         width: 196px;
         overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
         font-family: Helvetica;
         font-size: 16px;
         color: #7B818F;
         line-height: 22px;
         margin-bottom: 22px;
         cursor: auto;
+        position:relative;
         .delSpan{
-            float: right;
+           position:absolute;
             width: 12px;
             height: 12px;
-            margin-top: 5px;
+            top: 5px;
+            right:0;
             background: url("../images/music_delete.png") no-repeat center;
             cursor: pointer;
         }

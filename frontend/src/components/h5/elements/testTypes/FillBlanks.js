@@ -9,8 +9,7 @@ import './fillBlanks.less';
 
 export default class FillBlanks extends React.Component {
     state = {
-        index: 0,
-        userAnswer: '',
+        index: 0
     };
     onClicked = e => {
         e.stopPropagation();
@@ -23,14 +22,11 @@ export default class FillBlanks extends React.Component {
     }
     addSelectList = (id, e) => {
         store.dispatch(changeFillSelectList(id, e.target.textContent));
-        store.dispatch(changeWordEditable(this.props.value.id, false));
+        store.dispatch(changeWordEditable(id, false));
         this.fillBlankModal.contentEditable = false;
     };
     changeUserAnswer = (e,id,index) => {
-        this.setState({
-            userAnswer: e.target.innerHTML,
-        });
-         store.dispatch(changeFillChooseIndex(id, index));
+        store.dispatch(changeFillChooseIndex(id, index));
     };
     changeFillBlankModal = () => {
     	 store.dispatch(changeWordEditable(this.props.value.id, true));
@@ -42,11 +38,12 @@ export default class FillBlanks extends React.Component {
          if (viewing) {
             let selectList = value.selectList.replace(/／/ig, '/');
             selectList = selectList.split('/');
+            const value_show = value.chooseIndex;
              return (
                 <div style={{ ...value.style }}> 
-                      <div className="fillBlankItem flex_row_start flex_vertical_middle">
-	                    <input className="inputClass" disabled value={this.state.userAnswer} style={{color:value.style.color}} />
-	                    <div className="addSelect">
+                      <div className="fillBlankItem">
+	                    <input className="inputClass" disabled value={selectList[value_show]} style={{color:value.style.color}} />
+	                    <div className="addSelect"> 
 	                    	{
 	                    		selectList.map( (item,index) => <span key={index} className="tiankongAlong" ><span style={{color : isTeacher&&value.answerIndex === index ? rightOrColor.right : rightOrColor.common}} onClick={e => !isTeacher ? this.changeUserAnswer(e,value.id,index) : null}>{item}</span><span >&nbsp;/&nbsp;</span></span>)
 	                    	}
@@ -63,7 +60,7 @@ export default class FillBlanks extends React.Component {
                 style={value.style}
                 initial={getPosition(value.style)}
             >
-                <div className="fillBlankItem flex_row_start flex_vertical_middle">
+                <div className="fillBlankItem">
                     <span className="index">{value.num}</span>
                     <input className="inputClass" disabled />
                     <div

@@ -33,7 +33,7 @@ class Viewer extends React.Component {
         m_key:getQueryString('m_key'),
         type:getQueryString('type'),
         student_id:getQueryString('student_id'),
-        teacher_id: getQueryString('teacher_id'),
+        teacher_id: getQueryString('teacher_id')
     };
     componentDidMount = () => {
     	 this.loadData(this.load_style); 
@@ -51,19 +51,19 @@ class Viewer extends React.Component {
 		document.head.appendChild(newStyle);
 	}
     connect = () => {
-        const baseDomain = API_URL.domain.substring(0, API_URL.domain.indexOf('/', 8));
+    	const baseDomain = API_URL.domain.substring(0, API_URL.domain.indexOf('/', 8));
         const socket = new SockJS(`${baseDomain}/ws`);
         this.stompClient = Stomp.over(socket);
         this.stompClient.connect({}, frame => {
             console.log(`Connected: ${frame}`);
             const type = this.state.teacher_id ? 'c' : 'b';
             if (type === 'b') {
-                this.stompClient.subscribe('/topic/flip', data => {
+                this.stompClient.subscribe('/topic/page_flip', data => {
                     const id = this.state.m_key;
-                    const message = JSON.parse(data.body);
-                    if (message.data && id == message.data.id) {
+                     const message = JSON.parse(data.body);
+                    if (message.name == 'flip' && id == message.data.id) {
                         this.swiper.slideTo(message.data.page);
-                    }
+                    } 
                 });
             }
         },error => {
@@ -94,21 +94,30 @@ class Viewer extends React.Component {
         }
     };
     initSwiper = () => {
+    	const that = this;
         this.swiper = new Swiper('.swiper-container', {
             loop: false,
            // effect: 'coverflow', // 'slide' or 'fade' or 'cube' or 'coverflow' or 'flip'
-            autoplay:false, 
+            resistanceRatio : 0.5,
+             mousewheel: true,
+             watchSlidesProgress : true,
             on:{
             	 slideChangeTransitionEnd: function(){
 					 refreshAn(this.activeIndex); 
-				} 
+				},
+				progress: function(progress) {
+					
+				},
+				 touchMove: function(event){
+			     // console.log(event);
+			    }
 			 }
          });
          const type = this.state.teacher_id ? 'c' : 'b';
         const id = this.state.m_key;
         if (type === 'c') {
             this.swiper.on('slideChange', () => {
-                this.stompClient.send('/message/page/flip', {}, JSON.stringify({ name: 'flip page', data: { id, page: this.swiper.activeIndex } }));
+                this.stompClient.send('/message/page/flip', {}, JSON.stringify({ name: 'flip', data: { id, page: this.swiper.activeIndex } }));
             });
         }
     };
@@ -116,21 +125,21 @@ class Viewer extends React.Component {
         this.disconnect();
     }
     render() {
-        return (
+    	 return (
         	<div style={{height:'100%'}}>
         		{
         			this.state.type === 'pc' ? <div className="phone">
 			            <div className="swiper-container">
 			                <div className="swiper-wrapper">
 			                    {
-			                        this.props.pages.map((page, index) => <div className="swiper-slide" key={page.id}><Page page={page} viewing isTeacher={this.state.teacher_id ? true:false} stompClient={this.stompClient} /></div>)
+			                        this.props.pages.map((page, index) => <div className="swiper-slide" key={page.id}><Page page={page} viewing mKey={this.state.m_key} isTeacher={this.state.teacher_id ? true:false} stompClient={this.stompClient} /></div>)
 			                    }
 			                </div> 
 			            </div>
 		            </div> : <div className="swiper-container">
 			                <div className="swiper-wrapper">
 			                    {
-			                        this.props.pages.map((page, index) => <div className="swiper-slide" key={page.id}><Page page={page} viewing isTeacher={this.state.teacher_id ? true:false} stompClient={this.stompClient} /></div>)
+			                        this.props.pages.map((page, index) => <div className="swiper-slide" key={page.id}><Page page={page} viewing mKey={this.state.m_key} isTeacher={this.state.teacher_id ? true:false} stompClient={this.stompClient} /></div>)
 			                    } 
 			                </div> 
 			            </div>

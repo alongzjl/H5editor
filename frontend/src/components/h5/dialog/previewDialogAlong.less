@@ -1,0 +1,76 @@
+.previewDialog{
+    position:relative;
+    .content {
+           width: 278px;
+            height: 572px;
+            background: url('./images/iPhone_6.png') no-repeat top left;
+            background-size: 100% 100%;
+            padding: 48px 18px 68px;
+            box-sizing: border-box;
+         .phone_title {
+                background: #fff url('./images/phone.png') no-repeat top left;
+                background-size: 100% 100%; 
+                position: relative;
+                height: 100%; 
+                padding: 55px 0 40px;
+                box-sizing: border-box;
+              .swiper-container {
+                 width: 720px;
+                height: 355px;
+              overflow: visible;
+                 margin-left: -239px;
+                .swiper-wrapper {
+                   .swiper-slide {
+                       width:240px;
+                       &>div {
+                             width: 375px;
+                            height: 522px;
+                            transform: scale(0.64, 0.68);
+                            transform-origin: top left;
+                             background: #FFFFFF;
+                              position:relative;
+                             overflow: hidden;
+                        }
+                      }
+                }
+            }
+         }
+        
+    }
+    .pagepercent{
+        position:relative;
+        opacity: 0.56;
+        font-family: PingFangSC-Semibold;
+        font-size: 14px;
+        color: #FFFFFF;
+        letter-spacing: 1.17px;
+        text-align: center;
+        height:16px;
+    }
+    
+    .right, .left{
+        width: 80px;
+        height:80px;
+        position: absolute;
+        top: 500px;
+    }
+    .right{
+        right: 200px;
+    }
+    .left{
+        left: 200px;
+    }
+
+    .hideDialog{
+        color: #ffffff;
+        &:hover{
+            cursor: pointer;
+        }
+    }
+}
+div.skylight-overlay{
+    z-index: 990 !important;
+}
+.skylight-dialog{
+    z-index: 999 !important;
+}

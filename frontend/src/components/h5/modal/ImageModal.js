@@ -17,5 +17,7 @@ export default class ImageModal extends BaseModal {
         };
         this.animations = [];
         this.action = {};
+        this.to = undefined;
+        this.showColor = '#000';
     }
 }

@@ -66,20 +66,22 @@ class ChooseItem extends React.Component {
         store.dispatch(delElementId(id));
     };
     add = () => {
-        if (this.props.page.elements.some(element => (element.answer !== undefined && element.answer !== -1))) {
-            Noty.error(t('choose_question_exist'));
+    	const elements = this.props.page.elements;
+        if (elements.find(element => element.name === 'TestConfirmModal')) {
+            Noty.error('一个页面只能设置一个题目！');
         } else {
             this.props.addChooseClick();
         }
     };
     render() {
         const arr = this.props.page.elements.filter(element => element.name === 'WordModal' && (element.answer !== undefined && element.answer !== -1));
+        
         let fillOptions = this.props.page.elements.filter(element => element.name === 'WordModal' && element.answer > -1);
-        fillOptions = fillOptions.map(item => ({ value: item.id, label: item.text }));
+        fillOptions = fillOptions.map(item => ({ value: item.id, label: item.text,num:item.num }));
         return (
             <div className="itemsBox">
                 <div onClick={this.add} className="addChoose">插入选择题</div>
-                <div onClick={() => { this.props.addItemsClick(fillOptions.length); }} className="addChooseItem">添加选项</div>
+                <div onClick={() => { this.props.addItemsClick(fillOptions.map(item=>item.num)); }} className="addChooseItem">添加选项</div>
                 <div style={{ visibility: arr.length > 0 ? 'visible' : 'hidden' }}>
                     <p className="addSubItem">正确答案：
                         <span onClick={this.subItem} className="subItem">-</span>
@@ -132,8 +134,7 @@ const mapDispatchToProps = dispatch => ({
         const index = this.subscript;
         let content = '';
         let top = 110;
-
-        const color = '#7B818F';
+		const color = '#7B818F';
         const choose = new WordModal('编辑您的题目，下方的选项可以根据您的需求增加以及删除', {
             left: '32px',
             top: '40px',
@@ -157,18 +158,26 @@ const mapDispatchToProps = dispatch => ({
                 position: 'absolute',
                 fontSize: '16px',
                 color,
-            }, val.answer).plainObject();
+            }, val.answer,key+1).plainObject();
             dispatch(addChooseItems(item));
         });
         store.dispatch(addElements(new TestConfirmModal('choose').plainObject()));
         dispatch(changeFocus(new TestModal().plainObject()));
     },
-    addItemsClick(num) {
+    addItemsClick(fillList) {
         // 向select中添加一条选项，并刷新题目
-        const obj = {
+        let num = fillList.length;
+         const obj = {
             item: ' 编辑答案',
             answer: 0,
         };
+        fillList.sort((a,b)=> a>b);
+        for(var i = 0;i<fillList.length;i++){
+        	if(fillList[i] !== i+1){
+        		num = i;
+        		break;
+        	}
+        }
         const color = '#7B818F';
         const content = `${this.subscript[num]}. ${obj.item}`;
         const item = new WordModal(content, {
@@ -179,7 +188,7 @@ const mapDispatchToProps = dispatch => ({
             position: 'absolute',
             fontSize: '16px',
             color,
-        }, obj.answer).plainObject();
+        }, obj.answer,num+1).plainObject();
         dispatch(addChooseItems(item));
         dispatch(changeFocus(new TestModal().plainObject()));
     },

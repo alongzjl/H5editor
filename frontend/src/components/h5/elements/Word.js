@@ -75,14 +75,46 @@ class Word extends React.Component {
         this.changeEditableFalse();
         this.changeText(e);
     };
-    handleEnter = e => {
+     handleEnter = e => {
         if (e.keyCode === 13) {
             const lineHeight = Number.parseInt(this.props.value.style.lineHeight);
             const height = Number.parseInt(this.props.value.style.height);
             store.dispatch(changeStyle({
                 height: `${height + lineHeight}px`,
             }));
-        }
+         }
+    };
+    handleCopy = e => {
+    	if(e.keyCode === 86){
+    		this.copyText(e);
+    	}
+    };
+    //复制word文本的处理
+    copyText = e => {
+    	const html_content = e.target.innerHTML;
+    	const dom_now = document.createElement('div');
+    	 dom_now.innerHTML = html_content;
+    	 const dom_span = dom_now.childNodes;
+    	 let text_show = '';
+    	 dom_span.forEach(item=>{
+    	 	if(item.nodeName === 'DIV'){
+    	 		item.childNodes.forEach(val => {
+	    	 		text_show += this.copySearch(val);
+	    	 	})
+    	 	}else{
+    	 			text_show += this.copySearch(item);
+    	 	}
+    	})
+    	 store.dispatch(changeWordText(this.props.value.id, text_show));
+     };
+    //循环遍历dom
+    copySearch = (item) => {
+    		let text_show = '';
+    		item.nodeName === '#text' ? text_show += item.nodeValue : null;
+    	 	item.nodeName === 'BR' ? text_show += '<br/ >' : null; 
+    	 	item.nodeName === 'P' ? text_show += item.innerText + '<br/ >' : null;
+    	 	item.nodeName === 'SPAN' ? text_show += item.innerText + '<br/ >' : null;
+    	 	return text_show
     };
     render() {
         const { value, viewing, focusId, sort, selected, checking, isTeacher,rightOrColor} = this.props;
@@ -177,8 +209,9 @@ class Word extends React.Component {
                     style={getStyle(value)}
                     contentEditable={value.contenteditable}
                     onBlur={this.handleBlur}
-                    onContextMenu={this.wordClicked}
+                  	onContextMenu={this.wordClicked}
                     onKeyDown={this.handleEnter}
+                    onKeyUp = {e =>{this.handleCopy(e) }}
                     onAnimationEnd={this.onAnimationEnd}
                     dangerouslySetInnerHTML={{ __html: value.text }}
                 />
@@ -246,7 +279,7 @@ class ItemsChoose extends React.Component {
 
 class Item extends React.Component {
     componentDidUpdate(prevProp, prevState) {
-        this.text.innerHTML = prevProp.text[0];
+    	this.text.innerHTML = prevProp.text;
     }
     blur = (key, value) => {
         if (key === 'text') {
@@ -258,7 +291,7 @@ class Item extends React.Component {
     render() {
         const { pinyin, text, contenteditable } = this.props;
         return (
-            <div className="flex_column_start pinyinItem">
+            <div className="pinyinItem">
                 <div
                     dangerouslySetInnerHTML={{ __html: pinyin }}
                     contentEditable={contenteditable}
@@ -293,8 +326,7 @@ class PinYinWord extends React.Component {
     };
     render() {
         const { viewing, value, onClick, onDoubleClick, focusId, onAnimationEnd, selected } = this.props;
-
-        const className = getClassName(value.style.textAlign);
+		 const className = getClassName(value.style.textAlign);
         if (viewing) {
             return (
                 <div
@@ -303,7 +335,17 @@ class PinYinWord extends React.Component {
                     onAnimationEnd={onAnimationEnd}
                 >
                     {
-                        value.pinyins.map((item, index) => <Item pinyin={item.pinyin} text={item.text} key={`item${index}`} />)
+                        value.pinyins.map((item, index) =>{
+                        	if(item.text.indexOf('<br>')>-1){
+	                        		let thisCount = 0;
+	                        			item.text.replace(/<br>/g, function (m, i) {
+									    	thisCount++;
+									  });
+                        			return <div className="flex_column_start pinyinItem" key={`item${index}`} style={{width:'100%',height:`${thisCount*12}px`}} ></div>;
+                        	}else{
+                        		return <Item pinyin={item.pinyin} text={item.text} key={`item${index}`} />;
+                        	}
+                         })
                     }
                 </div>
             );
@@ -325,16 +367,24 @@ class PinYinWord extends React.Component {
                     onAnimationEnd={onAnimationEnd}
                 >
                     {
-                        value.pinyins.map((item, index) => (
-                            <Item
-                                pinyin={item.pinyin}
-                                text={item.text}
-                                key={`item${index}`}
-                                index={index}
-                                contenteditable={value.contenteditable}
-                                onBlur={this.handleBlur}
-                            />
-                        ))
+                        value.pinyins.map((item, index) => {
+                        		if(item.text.indexOf('<br>')>-1){
+                        			let thisCount = 0;
+                        			item.text.replace(/<br>/g, function (m, i) {
+								    	thisCount++;
+								  });
+								return <div className="flex_column_start pinyinItem" style={{width:'100%',height:`${thisCount*12}px`}} key={`item${index}`}></div>;
+	                        	}else{
+	                        		return <Item
+	                                pinyin={item.pinyin}
+	                                text={item.text}
+	                                key={`item${index}`}
+	                                index={index}
+	                                contenteditable={value.contenteditable}
+	                                onBlur={this.handleBlur}
+	                            />;
+                        	}
+                        })
                     }
                 </div>
             </Rnd>

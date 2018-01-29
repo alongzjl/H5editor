@@ -1,35 +1,58 @@
 import React from 'react';
 import store from '../../../../store';
-import { changeSortAnswerStyle} from '../../../../actions/testActions';
+import { changeSortAnswerStyle,changeSortAnswerShow,changeFillChooseIndex, changeLineShow} from '../../../../actions/testActions';
+import { changeWordAnswerChoose } from '../../../../actions/h5Actions';
 import './fillBlanks.less';
-import SockJS from 'sockjs-client';
-import Stomp from 'stompjs';
 import API_URL from '../../../../common/url';
  
 export default class TestConfirm extends React.Component {
 	 
 	 componentDidMount () {
-	 	 this.connect();
+	 	 this.connect() ;
 	 };
 	connect = () => {
 		 const rightOrColor = this.props.rightOrColor;
-        this.props.isTeacher&&this.props.stompClient && this.props.stompClient.connect({}, frame => {
-        	this.props.stompClient.subscribe('/topic/flip', data => {
+		 const stompClient = this.props.stompClient;
+		 const mKey = this.props.mKey;
+        this.props.isTeacher && stompClient && stompClient.connect({}, frame => {
+        		stompClient.subscribe('/topic/choice_flip', data => {
                  const message = JSON.parse(data.body);
-                 switch (message.data.name) {
-                   		case 'sort' : this.correctSort(rightOrColor,message.data.list);
-                   		break;
-                   		case 'blank' : this.correctFillBlank(rightOrColor,message.data.list);
-                   		break;
-                   		case 'choose' : this.correctChooseItem(rightOrColor,message.data.list);
-                   		break;
-                   		default:;
-                   		break;
-                   }
-             });
-        })
+                 message.data.id ==mKey ?  this.choose_answer_show(rightOrColor,message.data.list) : null;
+              });
+              stompClient.subscribe('/topic/blank_flip', data => {
+                 const message = JSON.parse(data.body);
+                    message.data.id ==mKey ?  this.blank_answer_show(rightOrColor,message.data.list) : null;
+              });
+              stompClient.subscribe('/topic/sort_flip', data => {
+                 const message = JSON.parse(data.body);
+                    message.data.id ==mKey ?  this.sort_answer_show(rightOrColor,message.data.list) : null;
+              });
+              stompClient.subscribe('/topic/matching_flip', data => {
+              		const message = JSON.parse(data.body);
+              	     message.data.mKey ==mKey ?  store.dispatch(changeLineShow(message.data.id,JSON.stringify(message.data.list))) : null;
+              }); 
+        })  
    }; 
-	
+   //教师端显示学生做的答案
+	sort_answer_show = (rightOrColor,sortQuestions) => {
+		 sortQuestions.forEach(item =>{
+        	 store.dispatch(changeSortAnswerShow(item.id, item.answerShow));
+        });
+        this.correctSort(rightOrColor,sortQuestions)
+	};
+	blank_answer_show = (rightOrColor,sortQuestions) => {
+		 sortQuestions.forEach(item =>{
+        	 store.dispatch(changeFillChooseIndex(item.id, item.chooseIndex));
+        });
+        this.correctFillBlank(rightOrColor,sortQuestions)
+	};
+	choose_answer_show = (rightOrColor,sortQuestions) => {
+		 sortQuestions.forEach(item =>{
+        	store.dispatch(changeWordAnswerChoose(item.id,item.chooseAnswer));
+        });
+        this.correctChooseItem(rightOrColor,sortQuestions)
+	};
+	//学生端和教师端公用的做题的答案的样式展示
     correctSort = (rightOrColor,sortQuestions) => {
        sortQuestions.forEach(item =>{
         	const color = item.answer !== '' && item.answer === item.answerShow ? rightOrColor.right : rightOrColor.error;
@@ -56,34 +79,33 @@ export default class TestConfirm extends React.Component {
     	 const title = this.props.value.title;
     	 const rightOrColor = this.props.rightOrColor;
     	 const sortList = this.props.sort;
-    	 let allRight = [];
+    	 const mKey = this.props.mKey;
     	 let sortQuestions = [];
     	 switch (title) {
     	 	case 'sort' : 
     	 		sortQuestions = sortList.filter(item => item.name === 'SortQuestionModal');
+    	 		const post_data_sort = sortQuestions.map(item => {return {id:item.id,answerShow:item.answerShow,answer:item.answer}});
     	 		this.correctSort(rightOrColor,sortQuestions);
-    	 		allRight = sortQuestions.filter(item => item.answer == '' ||  item.answer != item.answerShow );
-    	 		 this.props.stompClient&&this.props.stompClient.send('/message/page/flip', {}, JSON.stringify({ name: 'sort test', data: { name:'sort', list: sortQuestions } }));
+    	 		 this.props.stompClient&&this.props.stompClient.send('/message/sort/flip', {}, JSON.stringify({ data: {id:mKey,  list: post_data_sort } }));
     	 	break;
     	 	case 'blank':
 	    	 	sortQuestions = sortList.filter(item => item.name === "FillBlanksModal");
+	    	 	const post_data_blank = sortQuestions.map(item => {return {id:item.id, chooseIndex:item.chooseIndex, answerIndex:item.answerIndex }});
 	    	 	this.correctFillBlank(rightOrColor,sortQuestions);
-	    	 	allRight = sortQuestions.filter(item => item.answerIndex != item.chooseIndex); 
-	    	 	 this.props.stompClient&&this.props.stompClient.send('/message/page/flip', {}, JSON.stringify({ name: 'blank test', data: { name:'blank', list: sortQuestions } }));
+	    	 	 this.props.stompClient&&this.props.stompClient.send('/message/blank/flip', {}, JSON.stringify({ data: { id:mKey,list: post_data_blank } }));
     	 	break;
     	 	case 'choose' :
 	    	 	sortQuestions = sortList.filter(item => item.name === "WordModal");
+	    	 	const post_data_choose = sortQuestions.map(item => {return {id:item.id,answer:item.answer,chooseAnswer:item.chooseAnswer}});
 	    	 	this.correctChooseItem(rightOrColor,sortQuestions) ;
-	    	 	allRight = sortQuestions.filter(item => (item.answer ===1 && !item.chooseAnswer) || (item.answer !=1 && item.chooseAnswer)); 
-	    	 	 this.props.stompClient&&this.props.stompClient.send('/message/page/flip', {}, JSON.stringify({ name: 'choose test', data: { name:'choose', list: sortQuestions } }));
+	    	 	 this.props.stompClient&&this.props.stompClient.send('/message/choice/flip', {}, JSON.stringify({ data: { id:mKey,list: post_data_choose } }));
     	 	break;
     	 	case 'line' : this.correctLine();
     	 	break;
     	 	default : ;
     	 	break;
     	 };
-    	 const allBackground = allRight.length === 0 ? rightOrColor.right : rightOrColor.error;
-         allRight ? store.dispatch(changeSortAnswerStyle(this.props.value.id,{ background:allBackground})) : null;
+    	 store.dispatch(changeSortAnswerStyle(this.props.value.id,{ background:'#7b818f'}));
       }; 
     render() {
         const { viewing,isTeacher,value } = this.props;
@@ -104,9 +126,10 @@ export default class TestConfirm extends React.Component {
 		        }); 
 		        const no_answer = sortList.filter(item=>item.answer !=='');
 		       return <div className="TestConfirm" style={{...this.props.value.style}} >{no_answer.length == 0 ? '未设置答案' : sortAnswers}</div>;
+        	}else {
+        		 return <div style={{display:'none'}}></div>;
         	}
-        	 return <div className="TestConfirm" style={{...this.props.value.style}} >确定</div>;
-        }else if(viewing && !isTeacher){
+         }else if(viewing && !isTeacher){
         	 return <div className="TestConfirm" style={{...this.props.value.style}} onClick={this.chooseRight}>确定</div>;
         }
         return (

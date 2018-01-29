@@ -94,6 +94,9 @@ export default function (state = initialState, action) {
         if (focus.get('name') === 'LineQuestionModal') {
             ids.push(focus.get('to'));
         }
+        if(focus.get('name') === 'ImageModal' && focus.get('to') !== undefined){
+        	 ids.push(focus.get('to'));
+        }
         if (focus.get('name') === 'FillBlanksModal') {
             if (action.id !== '') {
                 ids = [action.id];

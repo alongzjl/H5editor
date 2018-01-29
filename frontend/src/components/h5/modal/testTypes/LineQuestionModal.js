@@ -23,6 +23,6 @@ export default class LineQuestionModal extends BaseModal {
             ...style,
         };
         this.to = undefined;
-        this.showColor = '#000';
+         this.showColor = '#000';
     }
 }

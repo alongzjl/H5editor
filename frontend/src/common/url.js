@@ -14,7 +14,7 @@ if (!STATIC) {
          upload:`${URL_WORDOOR}upload/`,
          wordoor:'http://sim.content.gopopon.com/',
         course: {
-            save: `${URL}/course`, 
+            save: `${URL}/course`,
             show: `${URL}/course/`,
             list: `${URL}/courses`
         },

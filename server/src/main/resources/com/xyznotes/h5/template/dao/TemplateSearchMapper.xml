@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.xyznotes.h5.template.dao.TemplateSearchMapper">
+    <insert id="saveSearch" parameterType="String" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO template_search
+        (name, `count`)
+        VALUES
+        (#{name}, 1)
+    </insert>
+
+    <select id="findSearch" resultType="TemplateSearch" parameterType="String">
+        SELECT
+        *
+        FROM template_search where name = #{name}
+    </select>
+
+    <update id="updateSearch" parameterType="TemplateSearch">
+        UPDATE template_search
+        SET `count` = #{count}
+        WHERE id = #{id}
+    </update>
+
+    <select id="findTopSearches" resultType="TemplateSearch">
+        SELECT
+         *
+        FROM template_search
+        ORDER BY `count` DESC LIMIT 5
+    </select>
+
+</mapper>

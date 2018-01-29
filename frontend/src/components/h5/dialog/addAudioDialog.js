@@ -104,7 +104,7 @@ export default class AddAudioDialog extends React.Component {
                                     本地上传
                                 </li>
                             </ul>
-                            <button className="uploadBtn" onClick={this.previewAudio}>添加外链</button>
+                          {/* <button className="uploadBtn" onClick={this.previewAudio}>添加外链</button>*/}
                         </div>
                         <div className="right">
                             <Audios
@@ -275,7 +275,7 @@ class Audios extends React.Component {
                                     onMouseEnter={() => this.handleOver(index)}
                                     onMouseLeave={() => this.handleOver(null)}
                                     onClick={() => onChoose(item)}
-                                    key={item.id}
+                                    key={index}
                                     className={`flex_row_start flex_vertical_middle ${selected ? 'selected2' : ''}`}
                                 >
                                     <button

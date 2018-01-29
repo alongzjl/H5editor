@@ -21,25 +21,25 @@ class PageContainer extends React.Component {
         store.dispatch(refreshAnimation());
     };
     render() {
-        const { currentPage, pages, focusId, selects } = this.props;
-        return (
+        const { currentPage, pages, focus, selects } = this.props;
+         return (
             <div className="pageContainer">
                 <div className="phone">
                     <ContextMenuTrigger id="contextMenu" holdToDisplay={-1}>
                        {/*<hr className="topLine" />*/}
                         {
                             pages.map(
-                                (page, index) => currentPage === index ? <Page key={page.id} page={page} focusId={focusId} showImage={this.showImage} selects={selects} /> : null,
+                                (page, index) => currentPage === index ? <Page key={page.id} page={page} focusId={focus.id} showImage={this.showImage} selects={selects} /> : null,
                             )
                         }
-                       {/*<hr className="bottomLine" />*/}
+                       <hr className="bottomLine" />
                     </ContextMenuTrigger>
                     <Sidebar />
                     <MultipleSelect selects={selects} />
                     <button onClick={this.refreshAnimation} className="refreshAnimation">预览页面</button>
                 </div>
                 <H5ContextMenu />
-                <AddImageDialog ref={com => { this.addImageModal = com; }} focus={{ id: focusId }} />
+                <AddImageDialog ref={com => { this.addImageModal = com; }} focus={focus} />
             </div>
         );
     }

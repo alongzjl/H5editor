@@ -4,7 +4,7 @@
 import BaseModal from './BaseModal';
 
 export default class WordModal extends BaseModal {
-    constructor(text = '双击编辑文字', style = {}, answer = -1) {
+    constructor(text = '双击编辑文字', style = {}, answer = -1,num=0) {
         super();
         this.text = text;
         this.style = Object.assign({}, {
@@ -27,5 +27,6 @@ export default class WordModal extends BaseModal {
         this.chooseAnswer = false;
         this.fontFace = ''; 
         this.accessKey = 'acc87a2f8c8042b798071f8b61de1450'; 
+        this.num = num
     }
 }

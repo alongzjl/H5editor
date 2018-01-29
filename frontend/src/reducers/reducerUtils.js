@@ -13,7 +13,7 @@ import regeneratorRuntime from 'regenerator-runtime';
  * @returns {*}
  */
 function getNewElementAndNewPage(imState, elementId, key, value, valueIndex) {
-    const pages = imState.get('pages');
+	const pages = imState.get('pages');
     const currentPage = pages.get(imState.get('currentPage'));
     const elements = currentPage.get('elements');
     const index = elements.findIndex(element => element.get('id') === elementId);
@@ -39,7 +39,7 @@ function getNewElementAndNewPage(imState, elementId, key, value, valueIndex) {
 }
 
 export function doChangeElementValue(imState, elementId, key, value, valueIndex) {
-    const pages = imState.get('pages');
+	const pages = imState.get('pages');
     const [newElement, newPage] = getNewElementAndNewPage(imState, elementId, key, value, valueIndex);
     const newState = imState.merge({ pages: pages.set(imState.get('currentPage'), newPage), focus: newElement });
     return newState.toJS();
@@ -94,9 +94,13 @@ export const changePageValue = (imState, key, value) => {
             newPage = currentPage.update('elements', list => list.concat(value));
             focus = value[0];
         } else {
-            newPage = currentPage.update('elements', list => list.push(value));
-            focus = value;
-        }
+        	newPage = currentPage.update('elements', list => list.push(value));
+        	if(value.name === 'LineQuestionModal'){
+        		focus = {...value, name:"TestModal"};
+        	}else {
+        		 focus = value;
+        	}
+         }
     }
     const newState = imState.merge({ pages: pages.set(imState.get('currentPage'), newPage), focus });
     return newState.toJS();

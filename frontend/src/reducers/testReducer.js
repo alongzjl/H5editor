@@ -7,7 +7,7 @@ import {
 
 // 重要： state 里面要保持都是immutablejs 对象
 export default function (imState, action) {
-    if (action.type === types.TEST_LINE_QUESTION_ADD) {
+	if (action.type === types.TEST_LINE_QUESTION_ADD) {
         return changePageValue(imState, 'elements', action.questions);
     }
 
@@ -20,7 +20,7 @@ export default function (imState, action) {
             const startLeft = 65;
             const startTop = 60;
             newPage = currentPage.update('elements', list => list.map(element => {
-                if (element.get('name') === 'LineQuestionModal') {
+                if (element.get('name') === 'LineQuestionModal' || (element.get('name') === 'ImageModal' && element.get('to') !== undefined)) {
                     const num = element.get('num');
                     let left = startLeft;
                     const top = num * startTop;
@@ -38,7 +38,7 @@ export default function (imState, action) {
             const startLeft = 35;
             const startTop = 100;
             newPage = currentPage.update('elements', list => list.map(element => {
-                if (element.get('name') === 'LineQuestionModal') {
+                if (element.get('name') === 'LineQuestionModal' || (element.get('name') === 'ImageModal' && element.get('to') !== undefined)) {
                     const num = element.get('num');
                     const left = startLeft + (100 * (num - 1));
                     let top = startTop;
@@ -68,7 +68,7 @@ export default function (imState, action) {
             const startTop = 60;
             const usedNum = [];
             newPage = currentPage.update('elements', list => list.map(element => {
-                if (element.get('name') === 'LineQuestionModal') {
+                if (element.get('name') === 'LineQuestionModal' || (element.get('name') === 'ImageModal' && element.get('to') !== undefined)) {
                     let num = element.get('num');
                     let left = startLeft;
                     if (element.get('position') === 'right') {
@@ -88,7 +88,7 @@ export default function (imState, action) {
             const startTop = 100;
             const usedNum = [];
             newPage = currentPage.update('elements', list => list.map(element => {
-                if (element.get('name') === 'LineQuestionModal') {
+                if (element.get('name') === 'LineQuestionModal' || (element.get('name') === 'ImageModal' && element.get('to') !== undefined)) {
                     let num = element.get('num');
                     let top = startTop;
                     if (element.get('position') === 'right') {
@@ -108,6 +108,10 @@ export default function (imState, action) {
         return newState.toJS();
     }
 
+ if (action.type === types.TEST_LINE_QUESTION_TO_CHANGE) {
+        return doChangeElementValue(imState, action.id, 'to', action.to);
+    }
+ 
     if (action.type === types.TEST_CHOOSE_ADD) {
         return changePageValue(imState, 'elements', action.questions);
     }
@@ -144,7 +148,9 @@ export default function (imState, action) {
     if (action.type === types.TEST_SORT_ANSWER_SHOW_CHANGE) {
         return doChangeElementValue(imState, action.id, 'answerShow', action.answerShow);
     }
-
+ if (action.type === types.TEST_LINE_SHOW_CHANGE) {
+        return doChangeElementValue(imState, action.id, 'lineList', action.lineList);
+    }
     if (action.type === types.TEST_SORT_QUESTION_STYLE_CHANGE) {
         const pages = imState.get('pages');
         const currentPage = pages.get(imState.get('currentPage'));

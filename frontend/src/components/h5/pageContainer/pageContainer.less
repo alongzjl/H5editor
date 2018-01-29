@@ -5,6 +5,19 @@
     margin: 0 auto;
     padding-top: 58px;
     padding-bottom: 155px;
+    overflow: hidden;
+    .react-draggable {
+        &>div {
+            &>div:last-child {
+                &>div {
+                    display: none;
+                }
+                &>div:first-child {
+                    display: block;
+                }
+            }
+        }
+    }
     .phone {
         margin: 0 auto;
         background: url('./images/phone.png') no-repeat top left;
@@ -19,7 +32,15 @@
                 width: 375px;
                 height: 522px;
         } 
-
+        .react-draggable {
+           &>div {
+                .focused {
+                &>div {
+                    display: block;
+                }
+            }
+           }
+        }
         .alignElement{
             width: 250px;
             padding: 20px;

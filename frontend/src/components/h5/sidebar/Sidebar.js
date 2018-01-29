@@ -6,13 +6,15 @@ import { ContextMenuTrigger } from 'react-contextmenu';
 import { SortableContainer, SortableElement } from 'react-sortable-hoc';
 import SidebarContextMenu from './SidebarContextMenu';
 import Page from '../elements/Page';
-import { renamePage, changePageEditable, changeCurrentPage, sortPage } from '../../../actions/h5Actions';
+import { renamePage, changePageEditable, changeCurrentPage, sortPage,changeFocus } from '../../../actions/h5Actions';
+import TestModal from '../modal/TestModal';
 import './sidebar.less';
 import store from '../../../store';
 
 function PagePreview({ page }) {
-    return (
+    return ( 
         <div className="preview">
+        	<div className="shadow"></div>
             <Page page={{ ...page, checking: false }} viewing={false} isTeacher={false} /> 
         </div>
     );
@@ -29,14 +31,15 @@ function Row({ page, pageNo, currentPage }) {
         e.stopPropagation();
     };
     const onChangeCurrentPage = () => {
-        store.dispatch(changeCurrentPage(pageNo));
+    	store.dispatch(changeCurrentPage(pageNo));
+    	page.elements && page.elements.filter(item => item.name === 'TestConfirmModal').length > 0 ?  store.dispatch(changeFocus(new TestModal().plainObject())) : null;
     };
     return (
         <ContextMenuTrigger id="sidebarContextMenu" collect={() => page} holdToDisplay={-1}>
             {
                 page.editable
-                    ? <div className={`row ${currentPage === pageNo ? 'current' : ''}`}>{/*<div className={`pageNo ${currentPage === pageNo ? 'pageNoFocus' : ''}`}>{pageNo + 1}</div>*/}<input className="silderInput" onBlur={changeTitle} defaultValue={title} /><PagePreview page={page} /></div>
-                    : <div className={`row ${currentPage === pageNo ? 'current' : ''}`} onDoubleClick={onRename} onClick={onChangeCurrentPage}>{/*<div className={`pageNo ${currentPage === pageNo ? 'pageNoFocus' : ''}`}>{pageNo + 1}</div>*/}<p className="pageTitle" title={title}>{title}</p><PagePreview page={page} /></div>
+                    ? <div className={`row ${currentPage === pageNo ? 'current' : ''}`}><input className="silderInput" onBlur={changeTitle} defaultValue={title} /><PagePreview page={page} /></div>
+                    : <div className={`row ${currentPage === pageNo ? 'current' : ''}`} onDoubleClick={onRename} onClick={onChangeCurrentPage}><p className="pageTitle" title={title}>{title}</p><PagePreview page={page} /></div>
             }
         </ContextMenuTrigger>
     );

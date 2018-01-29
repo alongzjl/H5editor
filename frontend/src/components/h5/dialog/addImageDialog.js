@@ -8,7 +8,8 @@ import ImageModal from '../modal/ImageModal';
 import FileUploader from '../../common/fileUpload/fileUploader';
 import DragUpload from '../../common/fileUpload/DragUpload';
 import store from '../../../store';
-import { addElements, changeImage, changePageStyle,changeStyle} from '../../../actions/h5Actions';
+import { addElements, changeImage, changePageStyle,changeStyle,delElementId} from '../../../actions/h5Actions';
+import { changeLineQuestionTo} from '../../../actions/testActions';
 import './addImageDialog.less';
 import Category from './Category';
 import Fetch from '../../../common/FetchIt';
@@ -41,8 +42,16 @@ export default class AddImageDialog extends React.Component {
                 backgroundRepeat: 'no-repeat',
                 backgroundSize: 'cover',
             }));
-        } else if (this.props.focus.id) {
-            store.dispatch(changeImage(res));
+        } else if (this.props.focus) {
+        	const focus = this.props.focus;
+        	store.dispatch(delElementId(focus.id));
+        	const line_img = new ImageModal(res).plainObject();
+        	line_img.to = focus.to;
+        	line_img.num = focus.num;
+        	line_img.position = focus.position;
+             store.dispatch(addElements(line_img));
+             store.dispatch(changeStyle({...focus.style,width:100+'px',height:100+'px'}));
+             store.dispatch(changeLineQuestionTo(focus.to,line_img.id));
         } else {
         	this.saveRecent(res);
             store.dispatch(addElements(new ImageModal(res).plainObject()));

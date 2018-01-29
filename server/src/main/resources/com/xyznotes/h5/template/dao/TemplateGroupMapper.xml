@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.xyznotes.h5.template.dao.TemplateGroupMapper">
+    <cache flushInterval="300000" />
+
+    <insert id="save" parameterType="TemplateGroup" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO template_group
+        (group_name, group_number, use_count, parent_id)
+        VALUES
+        (#{groupName}, #{groupNumber},0, #{parentId})
+    </insert>
+
+    <select id="findByParent" resultType="TemplateGroup" parameterType="Integer">
+        SELECT
+        id,
+        group_name,
+        group_number,
+        parent_id
+        FROM template_group
+        <where>
+            <choose>
+                <when test="param1!=null">
+                    parent_id = #{param1}
+                </when>
+                <otherwise>
+                    parent_id is null
+                </otherwise>
+            </choose>
+        </where>
+        ORDER BY group_number asc
+    </select>
+
+    <update id="updateUseCount" parameterType="Integer">
+        UPDATE template_group
+        SET use_count = use_count +1
+        WHERE id = #{id}
+    </update>
+
+    <select id="count" resultType="long" parameterType="Integer">
+        SELECT
+        count(*)
+        FROM template_group
+        <where>
+            <choose>
+                <when test="id!=null">
+                    parent_id = #{id}
+                </when>
+                <otherwise>
+                    parent_id is null
+                </otherwise>
+            </choose>
+        </where>
+    </select>
+
+    <select id="findByGroupName" parameterType="String" resultType="TemplateGroup">
+        SELECT
+         *
+        FROM template_group
+        WHERE group_name = #{groupName}
+    </select>
+
+    <select id="findByGroupNumber" parameterType="Integer" resultType="TemplateGroup">
+        SELECT
+        *
+        FROM template_group
+        WHERE group_number = #{groupNumber}
+    </select>
+
+    <select id="findById" parameterType="Integer" resultType="TemplateGroup">
+        SELECT
+        id,
+        group_name,
+        group_number,
+        use_count,
+        parent_id
+        FROM template_group
+        WHERE id = #{id}
+    </select>
+
+    <update id="update" parameterType="TemplateGroup">
+        UPDATE template_group
+        SET group_name=#{groupName}, group_number=#{groupNumber}, parent_id=#{parent.id}
+        WHERE id=#{id}
+    </update>
+
+    <delete id="delete" parameterType="TemplateGroup">
+        DELETE FROM template_group
+        WHERE id = #{id} OR parent_id = #{id}
+    </delete>
+
+</mapper>

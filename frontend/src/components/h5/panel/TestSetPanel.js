@@ -17,21 +17,25 @@ export default class TestSetPanel extends React.Component {
         });
     };
     componentWillReceiveProps(nextProps) {
-        this.setType(nextProps.page.elements);
+    	this.setType(nextProps.page.elements);
     }
-    componentDidMount() {
-        this.setType(this.props.page.elements);
+    componentWillMount() {
+    	 this.setType(this.props.page.elements);
     }
     setType = elements => {
         for (const element of elements) {
             if (element.name === 'FillBlanksModal') {
                 this.chooseType(2);
+                return
             } else if (element.name === 'SortQuestionModal') {
-                this.chooseType(4);
+            	this.chooseType(4);
+            	return
             } else if (element.name === 'WordModal' && element.answer !== undefined && element.answer !== -1 && element.answer !== 'sort') {
                 this.chooseType(1);
+                return
             } else if (element.name === 'LineQuestionModal') {
                 this.chooseType(3);
+                return
             }
         }
     };
@@ -39,10 +43,10 @@ export default class TestSetPanel extends React.Component {
         const types = [
             { type: 1, display: t('question_select'), content: <ChooseItem focus={this.props.focus} page={this.props.page} /> },
             { type: 2, display: t('question_blank'), content: <FillBlanks focus={this.props.focus} page={this.props.page} /> },
-            { type: 3, display: t('question_line'), content: <OnLine size={this.props.page.elements.filter(element => element.name === 'LineQuestionModal').length} /> },
+            { type: 3, display: t('question_line'), content: <OnLine page={this.props.page} /> },
             { type: 4, display: t('question_sort'), content: <Sort focus={this.props.focus} page={this.props.page} /> },
         ];
-        return (
+         return (
             <div>
                 <div className="testSetPanelHead"> {t('question_select_title')}</div>
                 <ul className="testLists">

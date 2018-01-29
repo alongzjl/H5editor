@@ -194,7 +194,7 @@ class Header extends React.Component {
                 <AddAudioDialog ref={com => { this.addAudioModal = com; }} />
                 <AddVideoDialog ref={com => { this.addVideoModal = com; }} />
                 <AddBeiZhuDialog currentPage={this.props.currentPage} />
-                <AddImageDialog ref={com => { this.addImageModal = com; }} focus={{}} />
+                <AddImageDialog ref={com => { this.addImageModal = com; }} focus={undefined} />
             </div>
         );
     }
