@@ -14,7 +14,7 @@ import PageModal from './modal/PageModal';
 import Sidebar from './sidebar/Sidebar';
 import Fetch from '../../common/FetchIt';
 import API_URL from '../../common/url';
-import PreviewDialog from './dialog/PreviewDialogAlong';
+import PreviewDialog from './dialog/PreviewDialog';
 import SaveTemplateDialog from './dialog/SaveTemplateDialog';
 import Auth from '../../common/Auth';
 import t from '../i18n';

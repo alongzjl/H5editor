@@ -30,10 +30,10 @@ function plugins() {
     }));
     return arr;
 }
-module.exports = {
+module.exports = { 
     entry: {
         front: ['./src/index.js'],
-        viewer: ['./src/viewer.js'],
+        viewer: ['./viewer/viewer.js'],
     },
     output: { path: `${__dirname}/dist`, filename: 'js/[name].[hash].js', publicPath: '/' },
     module: {
@@ -59,7 +59,7 @@ module.exports = {
     externals: { // 全局引用
     
     },  
-   // devtool: '#hidden-source-map',
+    devtool: '#hidden-source-map',
     node: {
         net: 'empty',
     },

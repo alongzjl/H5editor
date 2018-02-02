@@ -66,7 +66,7 @@ export default class LineQuestion extends React.Component {
         }
     }
     render() {
-        const { value, focusId, viewing,isTeacher } = this.props;
+        const { value, focusId,isTeacher } = this.props;
         let animation = {};
         if (value.animations.length > this.state.index) {
             animation = value.animations[this.state.index];
@@ -76,24 +76,7 @@ export default class LineQuestion extends React.Component {
             animationDuration: animation.animationDuration,
             animationIterationCount: animation.animationIterationCount,
         });
-        if (viewing) {
-            return (
-                <div
-                    className={`lineQuestion ${animation.className}`}
-                    style={{ ...style, position: 'absolute' }}
-                    onClick={() => this.props.drawLine(value)}
-                    onAnimationEnd={this.onAnimationEnd}
-                >
-                {
-                	isTeacher ? <span>{value.num}</span> : null
-                }
-                {
-                    value.src ? <img src={API_URL.upload + value.src} alt="" width="100%" /> : <div dangerouslySetInnerHTML={{ __html: value.text }} />
-                }
-                </div>
-            );
-        }
-        return (
+     return (
             <Rnd
                 onDragStart={this.onClicked}
                 onDrag={e => {this.cancelLongClick(e)}}

@@ -7,8 +7,6 @@ import Resizable from 'react-resizable-box';
 import Rotate from './Rotate';
 import store from '../../../store';
 import { changeStyle } from '../../../actions/h5Actions';
-import Noty from 'noty';
-import 'noty/lib/noty.css';
 
 const boxStyle = {
     width: 'auto',
@@ -204,18 +202,18 @@ export default class ReactRnd extends Component {
     }
 
     onDragStop(e, ui) {
-    	 if (this.isResizing || !this.isDragging) return;
+        if (this.isResizing || !this.isDragging) return;
         const allowX = this.props.moveAxis === 'x';
         const allowY = this.props.moveAxis === 'y';
         const allowBoth = this.props.moveAxis === 'both';
-        let x = allowX || allowBoth ? ui.x : this.state.x;
-        let y = allowY || allowBoth ? ui.y : this.state.y;
+        const x = allowX || allowBoth ? ui.x : this.state.x;
+        const y = allowY || allowBoth ? ui.y : this.state.y;
         store.dispatch(changeStyle({
-				            position: 'absolute',
-				            left: `${x}px`,
-				            top: `${y}px`,
-				        }));
-     	 this.isDragging = false;
+            position: 'absolute',
+            left: `${x}px`,
+            top: `${y}px`,
+        }));
+        this.isDragging = false;
         this.props.onDragStop(e, ui);
     }
     onRotate(current) {

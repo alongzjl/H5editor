@@ -23,16 +23,7 @@ export default class Video extends React.Component {
         const srcIndex = value.code.indexOf('src=');
         const srcEnd = value.code.indexOf(' ', srcIndex);
         const src = value.code.substring(srcIndex + 5, srcEnd - 1);
-
-        if (this.props.viewing) {
-            return (
-                <div className={value.className} style={value.style}>
-                    <iframe width={value.style.width} height={value.style.height} src={src} allowFullScreen frameBorder={0} />
-                </div>
-            );
-        }
-
-        const selectedClass = selected ? 'selected' : '';
+		const selectedClass = selected ? 'selected' : '';
         return (
             <Rnd
                 onDragStart={this.onClicked}

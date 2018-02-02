@@ -75,7 +75,6 @@ class ChooseItem extends React.Component {
     };
     render() {
         const arr = this.props.page.elements.filter(element => element.name === 'WordModal' && (element.answer !== undefined && element.answer !== -1));
-        
         let fillOptions = this.props.page.elements.filter(element => element.name === 'WordModal' && element.answer > -1);
         fillOptions = fillOptions.map(item => ({ value: item.id, label: item.text,num:item.num }));
         return (

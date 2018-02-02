@@ -47,6 +47,7 @@ function TemplatePage({ index, template, onShowMore }) {
     return (
         <div className={`templatePage ${index % 3 === 0 ? 'rowStart' : ''}`}>
             <div className="preview" onClick={showNote}>
+            	<div className="prewView"></div>
                 <Page page={pages[0]} viewing />
             </div>
         </div>

@@ -1,56 +1,84 @@
 import React from 'react';
 import SkyLight from 'react-skylight';
+import Swiper from 'swiper';
 import Page from '../elements/Page';
+import { refreshAnimation ,changeCurrentPage} from '../../../actions/h5Actions';
+import store from '../../../store';
 import './previewDialog.less';
+import 'swiper/dist/css/swiper.css';
 import disableScroll from './disableScroll';
 
 export default class PreviewDialog extends React.Component {
     state = {
         currentPage: 0,
-        refreshAnimation: false,
-        next: true,
+         next: true,
     };
+    
     show = () => {
         this.previewModal.show();
-    };
+        setTimeout(this.initSwiper,1);
+     }; 
+    
     hide = () => {
         this.previewModal.hide();
     };
-    next = () => {
-        if (this.state.refreshAnimation) {
-            return;
-        }
-        const current = this.state.currentPage + 1;
-        if (current !== this.props.pages.length) {
-            this.setState({
-                currentPage: current < this.props.pages.length ? current : this.props.pages.length,
-                refreshAnimation: true,
-                next: true,
-            });
-        }
-    };
-    previous = () => {
-        if (this.state.refreshAnimation) {
-            return;
-        }
-        const current = this.state.currentPage - 1;
-        this.setState({
-            currentPage: current > 0 ? current : 0,
-            refreshAnimation: true,
-            next: false,
-        });
-    };
-    onAnimationEnd = e => {
-        this.finished = this.finished ? (this.finished + 1) : 1;
-        if (this.finished === this.started) {
-            this.setState({
-                refreshAnimation: false,
-            });
-        }
-    };
-    onAnimationStart = e => {
-        this.started = this.started ? (this.started + 1) : 1;
-    };
+    refreshAn = activeIndex => { 
+		 store.dispatch(changeCurrentPage(activeIndex));
+	     store.dispatch(refreshAnimation());
+	};
+    initSwiper = () => {
+    	var that = this;
+    	 this.swiper = new Swiper('.swiper-container', {
+    	 	watchSlidesProgress: true,
+    	 	slidesPerView: 'auto',
+    	 	centeredSlides: true,
+            loop: false,
+            loopedSlides: 3,
+            effect: 'slide', // 'slide' or 'fade' or 'cube' or 'coverflow' or 'flip'
+            autoplay:false, 
+            navigation: {
+			    nextEl: '.swiper-button-next',
+			    prevEl: '.swiper-button-prev',
+			  },
+			  pagination: {
+			        el: '.swiper-pagination',
+			        type: 'custom',
+			        renderCustom: function (swiper, current, total) {
+			          return current + ' / ' + total;
+			        }
+			  },
+			on:{
+            	 slideChangeTransitionEnd: function(){
+					 that.refreshAn(this.activeIndex); 
+				},
+				 progress: function(progress) {
+			    	for (var i = 0; i < this.slides.length; i++) {
+						var slide = this.slides.eq(i);
+						var slideProgress = this.slides[i].progress;
+						var modify = 1;
+						if (Math.abs(slideProgress) > 1) {
+							modify = (Math.abs(slideProgress) - 1) * 0.3;
+						}
+						const translate = slideProgress * modify * (-60) + 'px';  
+						const scale = 1 - Math.abs(slideProgress) / 3;
+						const zIndex = 999 - Math.abs(Math.round(10 * slideProgress));
+						slide.transform('translateX(' + translate + ') scale(' + scale + ')');
+						slide.css('zIndex', zIndex);
+						slide.css('opacity', 1);
+						if (Math.abs(slideProgress) > 3) {
+							slide.css('opacity', 0);
+						} 
+					}
+				},
+				setTransition: function(transition) {
+					for (var i = 0; i < this.slides.length; i++) {
+						var slide = this.slides.eq(i)
+						slide.transition(transition);
+					}
+				}
+			 }
+         });
+     };
     render() {
         const previewDialog = {
             height: 'auto',
@@ -62,20 +90,6 @@ export default class PreviewDialog extends React.Component {
             top: '60px',
             backgroundColor: 'rgba(0,0,0,0)',
         };
-        const animations = [];
-        if (this.state.next) {
-            animations.push({ trans: 'trans1', scale: 'scale1' });
-            animations.push({ trans: 'trans3', scale: 'scale3' });
-            animations.push({ trans: 'transBg', scale: 'scaleBg' });
-            animations.push({ trans: 'trans2', scale: 'scale2' });
-            animations.push({ trans: 'animated4', scale: '' });
-        } else {
-            animations.push({ trans: 'animated4', scale: '' });
-            animations.push({ trans: 'trans33', scale: 'scale33' });
-            animations.push({ trans: 'transBg2', scale: 'scaleBg' });
-            animations.push({ trans: 'trans22', scale: 'scale22' });
-            animations.push({ trans: 'trans4', scale: 'scale4' });
-        }
         return (
             <SkyLight
                 dialogStyles={previewDialog}
@@ -84,68 +98,25 @@ export default class PreviewDialog extends React.Component {
                 title=""
                 {...disableScroll()}
             >
-                <div className="previewDialog">
-                    <div className="pagepercent">{this.state.currentPage + 1}/{this.props.pages.length}</div>
+				<div className="previewDialog">
+                    <div className="pagepercent">
+                    	<div className="swiper-pagination"></div>
+                    </div>
                     <div className="hideDialog" onClick={this.hide}>退出预览</div>
                     <div className="flex_row_center flex_vertical_bottom">
-                        <img className="left" src={require('./images/left.png')} onClick={this.previous} />
-                        <div className="flex_row_center flex_vertical_middle" onAnimationEnd={this.onAnimationEnd} onAnimationStart={this.onAnimationStart}>
-                            {
-                                this.props.pages[this.state.currentPage - 2] && (
-                                    <div className={`pages1 ${this.state.refreshAnimation ? animations[0].trans : ''}`}>
-                                        <div>
-                                            <div className={`preview1 ${this.state.refreshAnimation ? animations[0].scale : ''}`}>
-                                                <Page page={this.props.pages[this.state.currentPage - 2]} viewing isTeacher />
-                                            </div>
-                                        </div>
-                                    </div>
-                                )
-                            }
-                            {
-                                this.props.pages[this.state.currentPage - 1] && (
-                                    <div className={`pages3 ${this.state.refreshAnimation ? animations[1].trans : ''}`}>
-                                        <div>
-                                            <div className={`preview ${this.state.refreshAnimation ? animations[1].scale : ''}`}>
-                                                <Page page={this.props.pages[this.state.currentPage - 1]} viewing isTeacher />
-                                            </div>
-                                        </div>
-                                    </div>
-                                )
-                            }
-                            <div className="bg">
-                                <div className="overlapTop" />
-                                <div className={`bg2 ${this.state.refreshAnimation ? animations[2].trans : ''}`}>
-                                    <div className={`currentPage ${this.state.refreshAnimation ? animations[2].scale : ''}`}>
-                                        <Page page={this.props.pages[this.state.currentPage]} viewing isTeacher />
-                                    </div>
-                                </div>
-                                <div className="overlapBottom" />
-                                <div className="title">{this.props.pages[this.state.currentPage] ? this.props.pages[this.state.currentPage].title : ''}</div>
-                            </div>
-                            {
-                                this.props.pages[this.state.currentPage + 1] && (
-                                    <div className={`pages2 ${this.state.refreshAnimation ? animations[3].trans : ''}`}>
-                                        <div>
-                                            <div className={`preview ${this.state.refreshAnimation ? animations[3].scale : ''}`}>
-                                                <Page page={this.props.pages[this.state.currentPage + 1]} viewing isTeacher />
-                                            </div>
-                                        </div>
-                                    </div>
-                                )
-                            }
-                            {
-                                this.props.pages[this.state.currentPage + 2] && (
-                                    <div className={`pages4 ${this.state.refreshAnimation ? animations[4].trans : ''}`}>
-                                        <div>
-                                            <div className={`preview1 ${this.state.refreshAnimation ? animations[4].scale : ''}`}>
-                                                <Page page={this.props.pages[this.state.currentPage + 2]} viewing isTeacher />
-                                            </div>
-                                        </div>
-                                    </div>
-                                )
-                            }
+                        <img className="left swiper-button-prev" src={require('./images/left.png')} />
+                        <div className="content">
+                        	<div className="phone_title">
+                        	<div className="swiper-container">
+				                <div className="swiper-wrapper"> 
+				                	 {
+				                        this.props.pages.map((page, index) => <div className="swiper-slide" key={page.id} style={{width:'240px'}}><div><div className="prewView"></div><Page page={page} view="phone" /></div></div>)
+				                    }
+				                </div>
+				            </div>
+				            </div>
                         </div>
-                        <img className="right" src={require('./images/right.png')} onClick={this.next} />
+                       <img className="right swiper-button-next" src={require('./images/right.png')} />
                     </div>
                 </div>
             </SkyLight>

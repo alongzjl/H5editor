@@ -42,7 +42,7 @@ export default class Image extends React.Component {
         });
     }
     render() {
-        const { value, focusId, viewing, selected } = this.props;
+        const { value, focusId, selected } = this.props;
         let animation = {};
         if (value.animations.length > this.state.index) {
             animation = value.animations[this.state.index];
@@ -53,20 +53,7 @@ export default class Image extends React.Component {
             animationIterationCount: animation.animationIterationCount,
         });
         const boxShadow = style.shadow ? `rgba(${style.shadow.r}, ${style.shadow.g}, ${style.shadow.b}, ${style.shadow.a}) 0px 8px 10px` : {};
-        if (viewing) {
-            return (
-                <Action action={value.action}>
-                    <img
-                        src={API_URL.upload + value.src}
-                        className={animation.className}
-                        style={{ ...style, boxShadow }}
-                        onAnimationEnd={() => this.onAnimationEnd()}
-                        onClick={() => {value.to ?this.props.lineTo(value) : null}}
-                    />
-                </Action>
-            );
-        }
-        const selectedClass = selected ? 'selected' : '';
+       const selectedClass = selected ? 'selected' : '';
         return (
             <Rnd
                 onDragStart={this.onClicked}

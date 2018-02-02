@@ -19,15 +19,8 @@ export default class Sort extends React.Component {
     }
 
     render() {
-        const { value, focusId, viewing } = this.props;
-        if (viewing) {
-            return (
-                <div className="sortitem flex_row_start flex_vertical_middle" style={value.style}>
-                    <div className="inputClass">{value.answerShow}</div>
-                </div>
-            );
-        }
-        return (
+        const { value, focusId} = this.props;
+       return (
             <Rnd
                 onDragStart={this.onClicked}
                 className={focusId === value.id ? 'focused' : ''}

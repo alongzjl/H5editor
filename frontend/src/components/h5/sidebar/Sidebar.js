@@ -15,7 +15,7 @@ function PagePreview({ page }) {
     return ( 
         <div className="preview">
         	<div className="shadow"></div>
-            <Page page={{ ...page, checking: false }} viewing={false} isTeacher={false} /> 
+            <Page page={page} /> 
         </div>
     );
 }

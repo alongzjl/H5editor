@@ -28,18 +28,7 @@ export default class Note extends React.Component {
     };
 
     render() {
-        const { value, viewing, focusId } = this.props;
-
-        if (viewing) {
-            return (
-                <div style={{ ...value.style, width: 'auto' }}>
-                    <img src={remarkImg} onClick={this.toggleNote} />
-                    {
-                        !this.state.hidden && <div style={{position:'absolute',height:'30px',lineHeight:'30px',width:'280px',right:'40px',top:0,textAlign:'right'}}>{value.text}</div>
-                    }
-                </div>
-            );
-        }
+        const { value, focusId } = this.props;
         const x = value.style.left ? parseInt(value.style.left) : 0;
         const y = value.style.top ? parseInt(value.style.top) : 0;
         return (

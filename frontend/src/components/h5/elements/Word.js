@@ -62,8 +62,7 @@ class Word extends React.Component {
     };
     changeEditable = () => {
         store.dispatch(changeWordEditable(this.props.value.id, true));
-        store.dispatch(changeStyle({ height: 'auto' }));
-        store.dispatch(changeStyle({ minHeight: this.props.value.style.height }));
+         store.dispatch(changeStyle({ minHeight: this.props.value.style.height }));
     };
     changeEditableFalse = () => {
         store.dispatch(changeWordEditable(this.props.value.id, false));
@@ -77,7 +76,7 @@ class Word extends React.Component {
     };
      handleEnter = e => {
         if (e.keyCode === 13) {
-            const lineHeight = Number.parseInt(this.props.value.style.lineHeight);
+        	 const lineHeight = Number.parseInt(this.props.value.style.lineHeight);
             const height = Number.parseInt(this.props.value.style.height);
             store.dispatch(changeStyle({
                 height: `${height + lineHeight}px`,
@@ -117,7 +116,7 @@ class Word extends React.Component {
     	 	return text_show
     };
     render() {
-        const { value, viewing, focusId, sort, selected, checking, isTeacher,rightOrColor} = this.props;
+        const { value, focusId, sort, selected} = this.props;
         value.pinyins = value.pinyins ? value.pinyins : [];
 
         let animation = {};
@@ -136,7 +135,6 @@ class Word extends React.Component {
                 <PinYinWord
                     onClick={this.wordClicked}
                     value={value}
-                    viewing={viewing}
                     onAnimationEnd={this.onAnimationEnd}
                     onDoubleClick={this.changeEditable}
                     focusId={focusId}
@@ -149,52 +147,14 @@ class Word extends React.Component {
                 <SymbolWord
                     onClick={this.wordClicked}
                     value={value}
-                    viewing={viewing}
-                    onAnimationEnd={this.onAnimationEnd}
+                   onAnimationEnd={this.onAnimationEnd}
                     onDoubleClick={this.changeEditable}
                     focusId={focusId}
                     selected={selected}
                 />
             );
         }
-
-        let isHaveSort = '';
-        if (value.answer !== undefined && value.answer !== '' && value.answer !== -1) {
-            if (value.answer === 'sort') {
-                isHaveSort = 'SortQuestionModal';
-            } else {
-                isHaveSort = 'ItemsChoose';
-            }
-        }
-
-        if (viewing && (isHaveSort === 'SortQuestionModal')) {
-            return (
-                <ItemsSort
-                    value={value}
-                    sort={sort}
-                    onAnimationEnd={this.onAnimationEnd}
-                    isTeacher={isTeacher}
-                />
-            );
-        } else if (viewing && (isHaveSort === 'ItemsChoose')) {
-            return (
-                <Action action={value.action}>
-                    <ItemsChoose value={value} checking={checking} onAnimationEnd={this.onAnimationEnd} isTeacher={isTeacher} rightOrColor={rightOrColor} />
-                </Action>
-            );
-        } else if (viewing) {
-            return (
-                <Action action={value.action}>
-                    <div
-                        className={value.style.className}
-                        style={{ ...value.style, height: 'auto', lineHeight: 'normal' }}
-                        dangerouslySetInnerHTML={{ __html: value.text }}
-                        onAnimationEnd={this.onAnimationEnd}
-                    />
-                </Action>
-            );
-        }
-        const selectedClass = selected ? 'selected' : '';
+	 const selectedClass = selected ? 'selected' : '';
         return (
             <Rnd
                 onDragStart={this.wordClicked}
@@ -221,61 +181,6 @@ class Word extends React.Component {
 }
 export default Word;
 
-class ItemsSort extends React.Component {
-    sortChoose = () => {
-        const sortList = this.props.sort;
-        const sortQuestions = sortList.filter(item => item.name === 'SortQuestionModal');
-        const exist = sortQuestions.find(question => question.answerShow === this.props.value.text);
-        if (exist) {
-            store.dispatch(changeSortAnswerShow(exist.id, ''));
-        } else {
-            const blank = sortQuestions.find(question => question.answerShow === '');
-            store.dispatch(changeSortAnswerShow(blank.id, this.props.value.text));
-        }
-        store.dispatch(changeSortQuestionStyle({ color: 'black' }));
-    };
-    render() {
-        const { value, onAnimationEnd, isTeacher} = this.props;
-        return (
-            <div
-                onClick={!isTeacher ? this.sortChoose : null}
-                className={`sort_word ${value.style.className}`}
-                style={{ ...value.style, height: 'auto' }}
-                onAnimationEnd={onAnimationEnd}
-            >
-                { value.text }
-            </div>
-        );
-    }
-}
-
-class ItemsChoose extends React.Component {
-    state = {
-    	chooseAnswer:this.props.value.chooseAnswer
-    }
-    ItemsChooseClick = id => {
-    	this.setState({
-    		chooseAnswer:!this.state.chooseAnswer
-    	},()=>{
-    		store.dispatch(changeWordAnswerChoose(id,this.state.chooseAnswer));
-    		const color = this.state.chooseAnswer ? this.props.rightOrColor.right : this.props.rightOrColor.common;
-    		store.dispatch(changeSortAnswerStyle(id,{ color:color }));
-    	})
-     };
-    render() {
-        const { value, checking, onAnimationEnd,isTeacher} = this.props;
-        return (
-            <div
-                onClick={()=>!isTeacher ? this.ItemsChooseClick(value.id) : null}
-                className={`ItemsChoose`}
-                style={{ ...value.style, height: 'auto' }}
-                onAnimationEnd={onAnimationEnd}
-            > 
-                <span>{ value.text }</span>
-            </div>
-        );
-    }
-}
 
 class Item extends React.Component {
     componentDidUpdate(prevProp, prevState) {
@@ -325,32 +230,8 @@ class PinYinWord extends React.Component {
         store.dispatch(changeWordPinyin(newPinyins));
     };
     render() {
-        const { viewing, value, onClick, onDoubleClick, focusId, onAnimationEnd, selected } = this.props;
-		 const className = getClassName(value.style.textAlign);
-        if (viewing) {
-            return (
-                <div
-                    className={`${className} ${value.style.className}`}
-                    style={value.style}
-                    onAnimationEnd={onAnimationEnd}
-                >
-                    {
-                        value.pinyins.map((item, index) =>{
-                        	if(item.text.indexOf('<br>')>-1){
-	                        		let thisCount = 0;
-	                        			item.text.replace(/<br>/g, function (m, i) {
-									    	thisCount++;
-									  });
-                        			return <div className="flex_column_start pinyinItem" key={`item${index}`} style={{width:'100%',height:`${thisCount*12}px`}} ></div>;
-                        	}else{
-                        		return <Item pinyin={item.pinyin} text={item.text} key={`item${index}`} />;
-                        	}
-                         })
-                    }
-                </div>
-            );
-        }
-
+        const { value, onClick, onDoubleClick, focusId, onAnimationEnd, selected } = this.props;
+		const className = getClassName(value.style.textAlign);
         const selectedClass = selected ? 'selected' : '';
         return (
             <Rnd
@@ -363,6 +244,7 @@ class PinYinWord extends React.Component {
             >
                 <div
                     className={`${className} ${selectedClass} ${focusId === value.id ? value.style.className : ''}`}
+                    id='wordPinyin'
                     style={getStyle(value)}
                     onAnimationEnd={onAnimationEnd}
                 >
@@ -406,7 +288,7 @@ class SymbolWord extends React.Component {
         }
     };
     render() {
-        const { viewing, value, onClick, onDoubleClick, focusId, onAnimationEnd } = this.props;
+        const { value, onClick, onDoubleClick, focusId, onAnimationEnd } = this.props;
         const symbolStyle = {
             fill: '#00BCD3',
             stroke: 'none',
@@ -415,25 +297,7 @@ class SymbolWord extends React.Component {
             height: '10px',
         };
         const className = getClassName(value.style.textAlign);
-        if (viewing) {
-            return (
-                <div
-                    className={`flex_row_start ${value.style.className}`}
-                    style={value.style}
-                    onAnimationEnd={onAnimationEnd}
-                >
-                    {
-                        value.symbol.map((item, index) => (
-                            <div className={`${className} flex_vertical_middle`} key={`symbol${index}`}>
-                                <Shapes name={item.symbol} style={Object.assign({}, symbolStyle, { fill: value.style.color })} />
-                                <SymbolContent item={item} contenteditable={false} index={index} style={value.style} />
-                            </div>
-                        ))
-                    }
-                </div>
-            );
-        }
-        return (
+       return (
             <Rnd
                 onDragStart={onClick}
                 className={focusId === value.id ? 'focused' : ''}

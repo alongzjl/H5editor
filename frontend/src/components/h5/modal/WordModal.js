@@ -10,6 +10,7 @@ export default class WordModal extends BaseModal {
         this.style = Object.assign({}, {
             position: 'absolute',
             height: '26px',
+            lineHeight:'26px',
             fontSize: '20px',
             width: '120px',
             textAlign: 'left',

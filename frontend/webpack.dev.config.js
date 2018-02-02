@@ -8,18 +8,18 @@ function plugins() {
     const arr = []; 
     arr.push(new CleanWebpackPlugin([`${__dirname}/dist`], { verbose: false }));
    arr.push(new webpack.optimize.CommonsChunkPlugin({
-           names: ["common","react",'second',"manifest"]
+           names: ["common","react",'second','third',"manifest"]
 	 }));
 	  
     arr.push(new ExtractTextPlugin({ filename: 'css/[id].css' }))
     arr.push(new HtmlWebpackPlugin({
-        chunks: ['front','react','second','common','manifest'],
+        chunks: ['front','react','second','common','third','manifest'],
         chunksSortMode: 'dependency' ,
         filename: 'index.html',
         template: path.join(__dirname, '/index-tmpl.html'),
     }));
     arr.push(new HtmlWebpackPlugin({
-        chunks: ['viewer','react','second','common','manifest'],
+        chunks: ['viewer','react','second','common','third','manifest'],
         chunksSortMode: 'dependency' ,
         filename: 'viewer.html',   
         template: path.join(__dirname, '/viewer-tmpl.html'),
@@ -31,14 +31,16 @@ module.exports = {
     entry: {
         front: './src/index.js',
         viewer: './src/viewer.js',
-        react:['react','react-dom','react-router'], 
-        second:['swiper','react-redux','youziku']
+        react:['react','react-dom','react-router','redux','redux-undo','react-simpletabs','react-color','react-resizable-box'], 
+        second:['react-redux','youziku','react-skylight','noty','swiper','react-contextmenu','react-draggable'],
+        third:['pinyin','react-select','sockjs-client','stompjs'] 
     },
     output: { path: `${__dirname}/dist`, filename: 'js/[name].[hash].js', publicPath: './' },
     module: {
         rules: [{
             test: /\.js?$/,
             exclude: /node_modules/,
+             include: path.resolve(__dirname, 'src'),
             use: [{ loader: 'babel-loader' }],
         }, {
             test: /\.less$/,
@@ -53,6 +55,9 @@ module.exports = {
             test: /\.(eot|woff|woff2|ttf|svg)$/,
             use: ['file-loader?name=fonts/[name].[ext]'],
         }],
+    },
+     resolve: {
+        modules: [path.resolve(__dirname, 'node_modules')]
     },
     plugins: plugins(),
     externals: { // 全局引用

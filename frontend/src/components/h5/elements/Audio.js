@@ -59,24 +59,8 @@ export default class Audio extends React.Component {
     };
 
     render() {
-        const { value, focusId, viewing, selected } = this.props;
-        if (viewing) {
-            return (
-                <div style={value.style} className="audio-common">
-                    <div className="player">
-                        <div>
-                            <img src={this.state.playing ? require('./images/stopvoice.png') : require('./images/play.jpg')} onClick={this.togglePlay} />
-                            <div className="progress">
-                                <div className="dot" style={{ marginLeft: `${this.state.position * 100}%` }}>&nbsp;</div>
-                            </div>
-                        </div>
-                    </div>
-                    <audio src={API_URL.upload + value.src} ref={com => { this.audio = com; }} />
-                </div>
-            );
-        }
-
-        const selectedClass = selected ? 'selected' : '';
+        const { value, focusId,  selected } = this.props;
+       const selectedClass = selected ? 'selected' : '';
         return (
             <Rnd
                 onDragStart={this.onClicked}
